@@ -142,62 +142,12 @@
             transition-delay: 0.2s;
         }
 
-        .top-navbar {
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #e5e5e5;
-            padding: 8px 0;
-            font-size: 0.85rem;
-        }
-
-        .top-nav-link {
-            color: #6c757d;
-            text-decoration: none;
-            margin-right: 20px;
-            display: inline-flex;
-            align-items: center;
-            transition: color 0.2s;
-        }
-
-        .top-nav-link:hover {
-            color: #FF5722;
-            /* Warna orange sesuai tema */
-        }
-
-        .top-nav-link i {
-            font-size: 1rem;
-            margin-right: 6px;
-            color: #FF5722;
-        }
-
-        .top-email {
-            color: #6c757d;
-        }
     </style>
 </head>
 
 <body>
     <script src="{{ asset('assets/vendor/js/dropdown-hover.js') }}"></script>
     <script src="{{ asset('assets/vendor/js/mega-dropdown.js') }}"></script>
-    <div class="top-navbar d-none d-lg-block">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="top-nav-links">
-                    <a href="/shipping-rate" class="top-nav-link">
-                        <i class="ti ti-ship"></i> Shipping Rate
-                    </a>
-                    <a href="/sailing-schedule" class="top-nav-link">
-                        <i class="ti ti-calendar-event"></i> Sailing Schedule
-                    </a>
-                    <a href="/airways-tracking" class="top-nav-link">
-                        <i class="ti ti-search"></i> Airways Tracking
-                    </a>
-                </div>
-                <div class="top-email">
-                    <i class="ti ti-mail me-1"></i> admin@asiaconnex.net
-                </div>
-            </div>
-        </div>
-    </div>
     <!-- Navbar: Start -->
     <nav class="layout-navbar shadow-none py-0 mt-7">
         <div class="container">
