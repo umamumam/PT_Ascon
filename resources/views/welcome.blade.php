@@ -2,7 +2,7 @@
 @section('content')
 <section id="hero-animation">
     <div id="landingHero" class="section-py landing-hero position-relative">
-        <img src="{{ asset('assets/img/front-pages/backgrounds/landing.jpg') }}" alt="hero background"
+        <img src="{{ asset('assets/img/front-pages/backgrounds/Landing.jpg') }}" alt="hero background"
             class="position-absolute top-0 start-50 translate-middle-x object-fit-cover w-100 h-100"
             style="filter: brightness(0.8);" />
 
