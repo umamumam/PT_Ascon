@@ -149,7 +149,7 @@
     <script src="{{ asset('assets/vendor/js/dropdown-hover.js') }}"></script>
     <script src="{{ asset('assets/vendor/js/mega-dropdown.js') }}"></script>
     <!-- Navbar: Start -->
-    <nav class="layout-navbar shadow-none py-0 mt-7">
+    <nav class="layout-navbar shadow-none py-0">
         <div class="container">
             <div class="navbar navbar-expand-lg landing-navbar px-3 px-md-8">
                 <!-- Menu logo wrapper: Start -->
