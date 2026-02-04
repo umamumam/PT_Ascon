@@ -141,6 +141,7 @@
     <script src="{{ asset('assets/js/pages-account-settings-account.js') }}"></script>
     <script src="{{ asset('assets/js/app-logistics-dashboard.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
+    <script src="{{ asset('assets/js/modal-add-new-address.js') }}"></script>
 
     <script>
         $(document).ready(function() {

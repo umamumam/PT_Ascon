@@ -15,4 +15,14 @@ class Port extends Model
         'port_code',
         'port_name',
     ];
+
+    public function schedulesAsPol()
+    {
+        return $this->hasMany(SailingSchedule::class, 'pol_id');
+    }
+
+    public function schedulesAsPod()
+    {
+        return $this->hasMany(SailingSchedule::class, 'pod_id');
+    }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\PortController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VesselController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SailingScheduleController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -39,6 +40,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('users', UserController::class);
     Route::resource('ports', PortController::class);
     Route::resource('vessels', VesselController::class);
+
+    Route::get('schedules/template/download', [SailingScheduleController::class, 'downloadTemplate'])->name('schedules.template.download');
+    Route::post('schedules/import', [SailingScheduleController::class, 'import'])->name('schedules.import');
+    Route::resource('schedules', SailingScheduleController::class);
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

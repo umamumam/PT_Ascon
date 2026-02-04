@@ -26,11 +26,11 @@
                         <div data-i18n="Dashboard">Dashboard</div>
                     </a>
                 </li>
-                <li class="menu-item {{ request()->is('fleet*') ? 'active' : '' }}">
+                {{-- <li class="menu-item {{ request()->is('fleet*') ? 'active' : '' }}">
                     <a href="/fleet" class="menu-link">
                         <div data-i18n="Fleet">Fleet</div>
                     </a>
-                </li>
+                </li> --}}
             </ul>
         </li>
 
@@ -44,6 +44,12 @@
             <a href="/vessels" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-ship"></i>
                 <div data-i18n="Vessels">Vessels</div>
+            </a>
+        </li>
+        <li class="menu-item {{ request()->is('schedules*') ? 'active' : '' }}">
+            <a href="/schedules" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-calendar-event"></i>
+                <div data-i18n="Sailing Schedule">Sailing Schedule</div>
             </a>
         </li>
 

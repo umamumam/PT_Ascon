@@ -12,4 +12,14 @@ class Vessel extends Model
     protected $fillable = [
         'vessel_name',
     ];
+
+    public function schedules()
+    {
+        return $this->hasMany(SailingSchedule::class, 'vessel_id');
+    }
+
+    public function connectingSchedules()
+    {
+        return $this->hasMany(SailingSchedule::class, 'connecting_vessel_id');
+    }
 }

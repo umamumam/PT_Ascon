@@ -13,6 +13,36 @@ return new class extends Migration
     {
         Schema::create('sailing_schedules', function (Blueprint $table) {
             $table->id();
+            $table->enum('type', ['Export', 'Import']);
+            $table->enum('service', ['LCL', 'FCL']);
+
+            // Relasi ke tabel ports
+            $table->foreignId('pol_id')->constrained('ports')->onDelete('cascade');
+            $table->foreignId('pod_id')->constrained('ports')->onDelete('cascade');
+
+            // Relasi ke tabel vessels
+            $table->foreignId('vessel_id')->constrained('vessels')->onDelete('cascade');
+            $table->string('voyage');
+
+            // Jadwal
+            $table->date('etd');
+            $table->date('eta_destination');
+            $table->date('eta_destination1')->nullable();
+            $table->date('eta_destination2')->nullable();
+            $table->date('eta_destination3')->nullable();
+            $table->date('eta_destination4')->nullable();
+            $table->date('eta_destination5')->nullable();
+            $table->date('eta_destination6')->nullable();
+            $table->date('eta_destination7')->nullable();
+            $table->text('eta_text')->nullable();
+
+            // Connecting Vessel (Relasi ke tabel vessels lagi)
+            $table->foreignId('connecting_vessel_id')->nullable()->constrained('vessels')->onDelete('set null');
+            $table->string('connecting_voyage')->nullable();
+            $table->date('connecting_etd')->nullable();
+            $table->date('connecting_eta')->nullable();
+
+            $table->text('remarks_field')->nullable();
             $table->timestamps();
         });
     }
