@@ -33,6 +33,9 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/sailing', [SailingScheduleController::class, 'publicSchedules'])->name('public.schedules');
+Route::get('/etracking', [TrackingController::class, 'publicTracking'])->name('public.tracking');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::get('/profile/setting', [ProfileController::class, 'setting'])->name('profile.setting');
@@ -46,7 +49,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('schedules/template/download', [SailingScheduleController::class, 'downloadTemplate'])->name('schedules.template.download');
     Route::post('schedules/import', [SailingScheduleController::class, 'import'])->name('schedules.import');
-    Route::get('/sailing', [SailingScheduleController::class, 'publicSchedules'])->name('public.schedules');
+
     Route::resource('schedules', SailingScheduleController::class);
 
     Route::get('trackings/template/download', [TrackingController::class, 'downloadTemplate'])
@@ -55,7 +58,7 @@ Route::middleware('auth')->group(function () {
         ->name('trackings.import');
     Route::post('/tracking/{trackingId}/details', [TrackingDetailController::class, 'store'])
         ->name('tracking_details.store');
-    Route::get('/etracking', [TrackingController::class, 'publicTracking'])->name('public.tracking');
+
     Route::resource('trackings', TrackingController::class);
 });
 
