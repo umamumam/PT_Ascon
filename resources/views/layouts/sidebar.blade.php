@@ -40,16 +40,22 @@
                 <div data-i18n="Ports">Ports</div>
             </a>
         </li>
-        <li class="menu-item {{ request()->is('vessels*') ? 'active' : '' }}">
+        {{-- <li class="menu-item {{ request()->is('vessels*') ? 'active' : '' }}">
             <a href="/vessels" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-ship"></i>
                 <div data-i18n="Vessels">Vessels</div>
             </a>
-        </li>
+        </li> --}}
         <li class="menu-item {{ request()->is('schedules*') ? 'active' : '' }}">
             <a href="/schedules" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-calendar-event"></i>
                 <div data-i18n="Sailing Schedule">Sailing Schedule</div>
+            </a>
+        </li>
+        <li class="menu-item {{ request()->is('trackings*') ? 'active' : '' }}">
+            <a href="/trackings" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-ship"></i>
+                <div data-i18n="Tracking">Tracking</div>
             </a>
         </li>
 

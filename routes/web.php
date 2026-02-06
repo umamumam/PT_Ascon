@@ -1,10 +1,13 @@
 <?php
 
+use App\Models\Tracking;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PortController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VesselController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TrackingController;
+use App\Http\Controllers\TrackingDetailController;
 use App\Http\Controllers\SailingScheduleController;
 
 Route::get('/', function () {
@@ -43,7 +46,17 @@ Route::middleware('auth')->group(function () {
 
     Route::get('schedules/template/download', [SailingScheduleController::class, 'downloadTemplate'])->name('schedules.template.download');
     Route::post('schedules/import', [SailingScheduleController::class, 'import'])->name('schedules.import');
+    Route::get('/sailing', [SailingScheduleController::class, 'publicSchedules'])->name('public.schedules');
     Route::resource('schedules', SailingScheduleController::class);
+
+    Route::get('trackings/template/download', [TrackingController::class, 'downloadTemplate'])
+        ->name('trackings.template.download');
+    Route::post('trackings/import', [TrackingController::class, 'import'])
+        ->name('trackings.import');
+    Route::post('/tracking/{trackingId}/details', [TrackingDetailController::class, 'store'])
+        ->name('tracking_details.store');
+    Route::get('/etracking', [TrackingController::class, 'publicTracking'])->name('public.tracking');
+    Route::resource('trackings', TrackingController::class);
 });
 
 require __DIR__ . '/auth.php';

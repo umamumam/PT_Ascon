@@ -190,7 +190,7 @@
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="/sailing">Sailing Schedule</a></li>
-                                <li><a class="dropdown-item" href="/tracking">Tracking</a></li>
+                                <li><a class="dropdown-item" href="/etracking">Tracking</a></li>
                             </ul>
                         </li>
                         <li class="nav-item">

@@ -20,8 +20,7 @@ return new class extends Migration
             $table->foreignId('pol_id')->constrained('ports')->onDelete('cascade');
             $table->foreignId('pod_id')->constrained('ports')->onDelete('cascade');
 
-            // Relasi ke tabel vessels
-            $table->foreignId('vessel_id')->constrained('vessels')->onDelete('cascade');
+            $table->string('vessel');
             $table->string('voyage');
 
             // Jadwal
@@ -36,8 +35,7 @@ return new class extends Migration
             $table->date('eta_destination7')->nullable();
             $table->text('eta_text')->nullable();
 
-            // Connecting Vessel (Relasi ke tabel vessels lagi)
-            $table->foreignId('connecting_vessel_id')->nullable()->constrained('vessels')->onDelete('set null');
+            $table->string('connecting_vessel')->nullable();
             $table->string('connecting_voyage')->nullable();
             $table->date('connecting_etd')->nullable();
             $table->date('connecting_eta')->nullable();

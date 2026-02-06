@@ -112,7 +112,6 @@
                 </div>
             </div>
         </div>
-        <!-- Filter Section -->
         <div class="card mb-4">
             <div class="card-header">
                 <h5 class="card-title mb-0">Explore Sailing Schedule</h5>
@@ -120,7 +119,6 @@
             <div class="card-body">
                 <form action="{{ route('schedules.index') }}" method="GET" id="filterForm">
                     <div class="row g-3">
-                        <!-- Type Filter -->
                         <div class="col-md-3">
                             <label class="form-label">Type</label>
                             <select name="type" class="form-select" onchange="this.form.submit()">
@@ -130,7 +128,6 @@
                             </select>
                         </div>
 
-                        <!-- Service Category Filter -->
                         <div class="col-md-3">
                             <label class="form-label">Service Category</label>
                             <select name="service" class="form-select" onchange="this.form.submit()">
@@ -142,8 +139,19 @@
                             </select>
                         </div>
 
-                        <!-- Port of Loading Filter -->
                         <div class="col-md-3">
+                            <label class="form-label">From Date</label>
+                            <input type="date" name="from_date" class="form-control" value="{{ $fromDate }}"
+                                onchange="this.form.submit()">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">To Date</label>
+                            <input type="date" name="to_date" class="form-control" value="{{ $toDate }}"
+                                onchange="this.form.submit()">
+                        </div>
+
+                        <div class="col-md-6">
                             <label class="form-label">Port of Loading</label>
                             <select name="pol_id" class="form-select select2" onchange="this.form.submit()">
                                 <option value="">Search loading port</option>
@@ -155,8 +163,7 @@
                             </select>
                         </div>
 
-                        <!-- Port of Destination Filter -->
-                        <div class="col-md-3">
+                        <div class="col-md-6">
                             <label class="form-label">Port of Destination</label>
                             <select name="pod_id" class="form-select select2" onchange="this.form.submit()">
                                 <option value="">Search destination port</option>
@@ -173,7 +180,8 @@
                         <div class="col-md-12 d-flex justify-content-between">
                             <div>
                                 <small class="text-muted">
-                                    @if(request()->hasAny(['type', 'service', 'pol_id', 'pod_id']))
+                                    @if(request()->hasAny(['type', 'service', 'pol_id', 'pod_id', 'from_date',
+                                    'to_date']))
                                     Showing {{ $schedules->count() }} filtered results
                                     @else
                                     Showing all {{ $schedules->count() }} results
@@ -233,7 +241,7 @@
                                 <small class="text-muted">{{ $item->service }}</small>
                             </td>
                             <td>
-                                <span class="fw-medium">{{ $item->vessel->vessel_name }}</span><br>
+                                <span class="fw-medium">{{ $item->vessel }}</span><br>
                                 <small>Voy: {{ $item->voyage }}</small>
                             </td>
                             <td>
@@ -245,8 +253,8 @@
                                 <small>{{ \Carbon\Carbon::parse($item->eta_destination)->format('d M Y') }}</small>
                             </td>
                             <td>
-                                @if($item->connecting_vessel_id)
-                                <small>{{ $item->connectingVessel->vessel_name }}</small>
+                                @if($item->connecting_vessel)
+                                <small>{{ $item->connecting_vessel }}</small>
                                 @else
                                 <span class="text-muted">-</span>
                                 @endif
@@ -264,7 +272,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="button" class="btn btn-sm btn-icon text-danger"
-                                            onclick="confirmDelete('{{ $item->id }}', '{{ $item->vessel->vessel_name }} - {{ $item->voyage }}')">
+                                            onclick="confirmDelete('{{ $item->id }}', '{{ $item->vessel }} - {{ $item->voyage }}')">
                                             <i class="ti ti-trash"></i>
                                         </button>
                                     </form>
@@ -275,7 +283,7 @@
                                     <div class="modal-dialog modal-lg modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Edit Schedule: {{ $item->vessel->vessel_name }}
+                                                <h5 class="modal-title">Edit Schedule: {{ $item->vessel }}
                                                     - {{ $item->voyage }}</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
@@ -305,18 +313,14 @@
                                                         </div>
                                                         <div class="col-md-6">
                                                             <label class="form-label">Vessel</label>
-                                                            <select name="vessel_id" class="select2 form-select" data-placeholder="Select Vessel" required>
-                                                                @foreach($vessels as $v)
-                                                                <option value="{{ $v->id }}" {{ $item->vessel_id ==
-                                                                    $v->id ? 'selected' : '' }}>{{ $v->vessel_name }}
-                                                                </option>
-                                                                @endforeach
-                                                            </select>
+                                                            <input type="text" name="vessel" class="form-control"
+                                                                value="{{ $item->vessel }}" required>
                                                         </div>
 
                                                         <div class="col-md-6">
                                                             <label class="form-label">POL (Port of Loading)</label>
-                                                            <select name="pol_id" class="select2 form-select" data-placeholder="Select POL" required>
+                                                            <select name="pol_id" class="select2 form-select"
+                                                                data-placeholder="Select POL" required>
                                                                 @foreach($ports as $p)
                                                                 <option value="{{ $p->id }}" {{ $item->pol_id == $p->id
                                                                     ? 'selected' : '' }}>{{ $p->port_code }} - {{
@@ -326,7 +330,8 @@
                                                         </div>
                                                         <div class="col-md-6">
                                                             <label class="form-label">POD (Port of Discharge)</label>
-                                                            <select name="pod_id" class="select2 form-select" data-placeholder="Select POD" required>
+                                                            <select name="pod_id" class="select2 form-select"
+                                                                data-placeholder="Select POD" required>
                                                                 @foreach($ports as $p)
                                                                 <option value="{{ $p->id }}" {{ $item->pod_id == $p->id
                                                                     ? 'selected' : '' }}>{{ $p->port_code }} - {{
@@ -383,14 +388,9 @@
 
                                                             <div class="col-md-6">
                                                                 <label class="form-label">Connecting Vessel</label>
-                                                                <select name="connecting_vessel_id" class="select2 form-select" data-placeholder="Select Connecting Vessel">
-                                                                    <option value="">Select Connecting Vessel</option>
-                                                                    @foreach($vessels as $v)
-                                                                    <option value="{{ $v->id }}" {{ $item->
-                                                                        connecting_vessel_id == $v->id ? 'selected' : ''
-                                                                        }}>{{ $v->vessel_name }}</option>
-                                                                    @endforeach
-                                                                </select>
+                                                                <input type="text" name="connecting_vessel"
+                                                                    class="form-control"
+                                                                    value="{{ $item->connecting_vessel }}">
                                                             </div>
                                                             <div class="col-md-6">
                                                                 <label class="form-label">Connecting Voyage</label>
@@ -466,16 +466,14 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Vessel</label>
-                                <select name="vessel_id" class="select2 form-select" data-placeholder="Select Vessel" required>
-                                    @foreach($vessels as $v)
-                                    <option value="{{ $v->id }}">{{ $v->vessel_name }}</option>
-                                    @endforeach
-                                </select>
+                                <input type="text" name="vessel" class="form-control" placeholder="Enter vessel name"
+                                    required>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">POL (Port of Loading)</label>
-                                <select name="pol_id" class="select2 form-select" data-placeholder="Select POL" required>
+                                <select name="pol_id" class="select2 form-select" data-placeholder="Select POL"
+                                    required>
                                     @foreach($ports as $p)
                                     <option value="{{ $p->id }}">{{ $p->port_code }} - {{ $p->port_name }}</option>
                                     @endforeach
@@ -483,7 +481,8 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">POD (Port of Discharge)</label>
-                                <select name="pod_id" class="select2 form-select" data-placeholder="Select POD" required>
+                                <select name="pod_id" class="select2 form-select" data-placeholder="Select POD"
+                                    required>
                                     @foreach($ports as $p)
                                     <option value="{{ $p->id }}">{{ $p->port_code }} - {{ $p->port_name }}</option>
                                     @endforeach
@@ -527,12 +526,8 @@
 
                         <div class="col-md-6">
                             <label class="form-label">Connecting Vessel</label>
-                            <select name="connecting_vessel_id" class="select2 form-select" data-placeholder="Select Connecting Vessel">
-                                <option value="">Select Connecting Vessel</option>
-                                @foreach($vessels as $v)
-                                <option value="{{ $v->id }}">{{ $v->vessel_name }}</option>
-                                @endforeach
-                            </select>
+                            <input type="text" name="connecting_vessel" class="form-control"
+                                placeholder="Connecting vessel">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Connecting Voyage</label>

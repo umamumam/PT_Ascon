@@ -16,7 +16,7 @@ class SailingSchedule extends Model
         'service',
         'pol_id',
         'pod_id',
-        'vessel_id',
+        'vessel',
         'voyage',
         'etd',
         'eta_destination',
@@ -28,7 +28,7 @@ class SailingSchedule extends Model
         'eta_destination6',
         'eta_destination7',
         'eta_text',
-        'connecting_vessel_id',
+        'connecting_vessel',
         'connecting_voyage',
         'connecting_etd',
         'connecting_eta',
@@ -43,15 +43,5 @@ class SailingSchedule extends Model
     public function pod()
     {
         return $this->belongsTo(Port::class, 'pod_id');
-    }
-
-    public function vessel()
-    {
-        return $this->belongsTo(Vessel::class, 'vessel_id');
-    }
-
-    public function connectingVessel()
-    {
-        return $this->belongsTo(Vessel::class, 'connecting_vessel_id');
     }
 }
