@@ -18,7 +18,8 @@ class TrackingDetail extends Model
         'place_of_activity',
         'date',
         'vessel_information',
-        'remarks'
+        'remarks',
+        'sequence',
     ];
 
     protected $casts = [

@@ -194,33 +194,257 @@ class SailingScheduleController extends Controller
 
     public function publicSchedules(Request $request)
     {
-        // Default values
-        $type = $request->input('type', 'Export'); // Default Export
-        $service = $request->input('service', 'LCL'); // Default LCL
+        $type = $request->input('type', 'Export');
+        $service = $request->input('service', 'LCL');
         $pol_id = $request->input('pol_id');
         $pod_id = $request->input('pod_id');
+
+        $localPorts = Port::whereIn('port_name', ['Jakarta', 'Semarang', 'Surabaya'])
+            ->orderBy('port_name')
+            ->get();
+
+        $internationalPorts = Port::whereNotIn('port_name', ['Jakarta', 'Semarang', 'Surabaya'])
+            ->orderBy('port_name')
+            ->get();
 
         $query = SailingSchedule::with(['pol', 'pod'])
             ->where('type', $type)
             ->where('service', $service);
 
-        // Filter tambahan jika user memilih port spesifik
-        if ($pol_id) $query->where('pol_id', $pol_id);
-        if ($pod_id) $query->where('pod_id', $pod_id);
+        if ($type == 'Export') {
+            $query->whereHas('pol', function($q) {
+                $q->whereIn('port_name', ['Jakarta', 'Semarang', 'Surabaya']);
+            });
+
+            if ($pol_id) {
+                $query->where('pol_id', $pol_id);
+            }
+
+            if ($pod_id) {
+                $query->where('pod_id', $pod_id);
+            }
+
+        } else {
+            $query->whereHas('pod', function($q) {
+                $q->whereIn('port_name', ['Jakarta', 'Semarang', 'Surabaya']);
+            });
+
+            if ($pol_id) {
+                $query->where('pol_id', $pol_id);
+            }
+
+            if ($pod_id) {
+                $query->where('pod_id', $pod_id);
+            }
+        }
 
         $schedules = $query->orderBy('etd', 'asc')->get();
 
-        // Mengambil daftar Port untuk dropdown filter
-        // Kita filter port berdasarkan logika: Jakarta, Semarang, Surabaya adalah Port Lokal (Indonesia)
-        $localPorts = Port::whereIn('port_name', ['Jakarta', 'Semarang', 'Surabaya'])->get();
-        $internationalPorts = Port::whereNotIn('port_name', ['Jakarta', 'Semarang', 'Surabaya'])->get();
+        $groupedSchedules = $schedules->groupBy(function($schedule) {
+            return $schedule->pol->port_name . ' - ' . $schedule->pod->port_name;
+        });
+
+        // Deteksi kolom yang perlu ditampilkan untuk setiap route
+        $columnsPerRoute = [];
+        foreach ($groupedSchedules as $route => $routeSchedules) {
+            $columns = [
+                'has_eta_text' => false,
+                'has_connecting' => false,
+                'has_remarks' => false,
+                'eta_destinations' => [] // Array untuk menyimpan kolom ETA destination yang terisi
+            ];
+
+            foreach ($routeSchedules as $schedule) {
+                // Cek ETA Text
+                if (!empty($schedule->eta_text)) {
+                    $columns['has_eta_text'] = true;
+                }
+
+                // Cek Connecting vessel
+                if (!empty($schedule->connecting_vessel) || !empty($schedule->connecting_voyage) ||
+                    !empty($schedule->connecting_etd) || !empty($schedule->connecting_eta)) {
+                    $columns['has_connecting'] = true;
+                }
+
+                // Cek Remarks
+                if (!empty($schedule->remarks_field)) {
+                    $columns['has_remarks'] = true;
+                }
+
+                // Cek kolom ETA destination tambahan (1-7)
+                for ($i = 1; $i <= 7; $i++) {
+                    $etaField = "eta_destination{$i}";
+                    if (!empty($schedule->$etaField) && !in_array($i, $columns['eta_destinations'])) {
+                        $columns['eta_destinations'][] = $i;
+                    }
+                }
+            }
+
+            // Urutkan eta_destinations
+            sort($columns['eta_destinations']);
+
+            $columnsPerRoute[$route] = $columns;
+        }
 
         return view('landing.sailing', compact(
             'schedules',
+            'groupedSchedules',
+            'columnsPerRoute',
             'type',
             'service',
+            'pol_id',
+            'pod_id',
             'localPorts',
             'internationalPorts'
         ));
+    }
+
+    public function downloadPdf(Request $request)
+    {
+        $type = $request->input('type', 'Export');
+        $service = $request->input('service', 'LCL');
+        $pol_id = $request->input('pol_id');
+        $pod_id = $request->input('pod_id');
+
+        $polName = null;
+        $podName = null;
+        $polCode = null;
+        $podCode = null;
+
+        if ($pol_id) {
+            $pol = Port::find($pol_id);
+            if ($pol) {
+                $polName = $pol->port_name;
+                $polCode = $pol->port_code;
+            }
+        }
+
+        if ($pod_id) {
+            $pod = Port::find($pod_id);
+            if ($pod) {
+                $podName = $pod->port_name;
+                $podCode = $pod->port_code;
+            }
+        }
+
+        $query = SailingSchedule::with(['pol', 'pod'])
+            ->where('type', $type)
+            ->where('service', $service);
+
+        if ($type == 'Export') {
+            $query->whereHas('pol', function($q) {
+                $q->whereIn('port_name', ['Jakarta', 'Semarang', 'Surabaya']);
+            });
+
+            if ($pol_id) {
+                $query->where('pol_id', $pol_id);
+            }
+
+            if ($pod_id) {
+                $query->where('pod_id', $pod_id);
+            }
+
+        } else {
+            $query->whereHas('pod', function($q) {
+                $q->whereIn('port_name', ['Jakarta', 'Semarang', 'Surabaya']);
+            });
+
+            if ($pol_id) {
+                $query->where('pol_id', $pol_id);
+            }
+
+            if ($pod_id) {
+                $query->where('pod_id', $pod_id);
+            }
+        }
+
+        $schedules = $query->orderBy('etd', 'asc')->get();
+
+        $groupedSchedules = $schedules->groupBy(function($schedule) {
+            return $schedule->pol->port_name . ' - ' . $schedule->pod->port_name;
+        });
+
+        $columnsPerRoute = [];
+        foreach ($groupedSchedules as $route => $routeSchedules) {
+            $columns = [
+                'has_eta_text' => false,
+                'has_connecting' => false,
+                'has_remarks' => false,
+                'eta_destinations' => []
+            ];
+
+            foreach ($routeSchedules as $schedule) {
+                if (!empty($schedule->eta_text)) {
+                    $columns['has_eta_text'] = true;
+                }
+
+                if (!empty($schedule->connecting_vessel) || !empty($schedule->connecting_voyage) ||
+                    !empty($schedule->connecting_etd) || !empty($schedule->connecting_eta)) {
+                    $columns['has_connecting'] = true;
+                }
+
+                if (!empty($schedule->remarks_field)) {
+                    $columns['has_remarks'] = true;
+                }
+
+                for ($i = 1; $i <= 7; $i++) {
+                    $etaField = "eta_destination{$i}";
+                    if (!empty($schedule->$etaField) && !in_array($i, $columns['eta_destinations'])) {
+                        $columns['eta_destinations'][] = $i;
+                    }
+                }
+            }
+
+            sort($columns['eta_destinations']);
+            $columnsPerRoute[$route] = $columns;
+        }
+
+        // Generate PDF
+        $export = new \App\Exports\SailingSchedulePdfExport(
+            $groupedSchedules,
+            $columnsPerRoute,
+            $type,
+            $service,
+            $polName,
+            $podName,
+            $polCode,
+            $podCode
+        );
+
+        return $export->download();
+    }
+
+    public function searchPorts(Request $request)
+    {
+        $query = $request->input('query', '');
+        $type = $request->input('type', 'pol');
+        $mode = $request->input('mode', 'Export');
+
+        if (empty($query)) {
+            return response()->json([]);
+        }
+
+        $portsQuery = Port::where('port_name', 'LIKE', "%{$query}%")
+            ->orWhere('port_code', 'LIKE', "%{$query}%");
+
+        if ($mode == 'Export') {
+            if ($type == 'pol') {
+                $portsQuery->whereIn('port_name', ['Jakarta', 'Semarang', 'Surabaya']);
+            } else {
+                $portsQuery->whereNotIn('port_name', ['Jakarta', 'Semarang', 'Surabaya']);
+            }
+        } else {
+            if ($type == 'pol') {
+                $portsQuery->whereNotIn('port_name', ['Jakarta', 'Semarang', 'Surabaya']);
+            } else {
+                $portsQuery->whereIn('port_name', ['Jakarta', 'Semarang', 'Surabaya']);
+            }
+        }
+
+        $ports = $portsQuery->orderBy('port_name')
+            ->limit(10)
+            ->get(['id', 'port_name', 'port_code']);
+
+        return response()->json($ports);
     }
 }

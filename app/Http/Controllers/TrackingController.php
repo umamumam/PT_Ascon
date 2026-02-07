@@ -121,46 +121,6 @@ class TrackingController extends Controller
         return Excel::download(new TrackingTemplateExport(), 'tracking_template.xlsx');
     }
 
-    // public function import(Request $request)
-    // {
-    //     $request->validate([
-    //         'excel_file' => 'required|file|mimes:xlsx,xls,csv|max:5120', // 5MB
-    //         'default_type' => 'nullable|in:Export,Import',
-    //         'default_shipment_type' => 'nullable|in:LCL,FCL',
-    //     ]);
-
-    //     try {
-    //         // Validasi sebelum import
-    //         $import = new TrackingImport();
-
-    //         // Set default values jika ada
-    //         if ($request->has('default_type') && !empty($request->default_type)) {
-    //             $import->setDefaultType($request->default_type);
-    //         }
-
-    //         if ($request->has('default_shipment_type') && !empty($request->default_shipment_type)) {
-    //             $import->setDefaultShipmentType($request->default_shipment_type);
-    //         }
-
-    //         Excel::import($import, $request->file('excel_file'));
-
-    //         return redirect()->route('trackings.index')
-    //             ->with('success', 'Data tracking berhasil diimport! Total data: ' . $import->getRowCount());
-    //     } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-    //         $failures = $e->failures();
-
-    //         $errorMessages = [];
-    //         foreach ($failures as $failure) {
-    //             $errorMessages[] = "Baris {$failure->row()}: {$failure->errors()[0]}";
-    //         }
-
-    //         return redirect()->route('trackings.index')
-    //             ->with('error', 'Terjadi kesalahan validasi: ' . implode('<br>', $errorMessages));
-    //     } catch (\Exception $e) {
-    //         return redirect()->route('trackings.index')
-    //             ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-    //     }
-    // }
     public function import(Request $request)
     {
         $request->validate([
@@ -223,7 +183,31 @@ class TrackingController extends Controller
     }
     public function publicTracking(Request $request)
     {
-        return view('landing.etracking', compact('request'
-        ));
+        $tracking = null;
+        $blNumber = $request->input('bl_number');
+        $type = $request->input('type', 'Export');
+        $shipmentType = $request->input('shipment_type', 'LCL');
+
+        if ($blNumber) {
+            $tracking = Tracking::with(['details' => function($query) {
+                $query->orderBy('date', 'asc')->orderBy('id', 'asc');
+            }])
+            ->where('bl_number', $blNumber)
+            ->where('type', $type)
+            ->where('shipment_type', $shipmentType)
+            ->first();
+        }
+
+        // Group details by sequence
+        $groupedDetails = [];
+        if ($tracking && $tracking->details) {
+            foreach ($tracking->details as $detail) {
+                if ($detail->sequence) {
+                    $groupedDetails[$detail->sequence][] = $detail;
+                }
+            }
+        }
+
+        return view('landing.etracking', compact('tracking', 'blNumber', 'type', 'shipmentType', 'groupedDetails'));
     }
 }

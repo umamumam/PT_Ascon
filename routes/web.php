@@ -33,8 +33,10 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/sailing', [SailingScheduleController::class, 'publicSchedules'])->name('public.schedules');
+Route::get('/sailing', [SailingScheduleController::class, 'publicSchedules'])->name('sailing-schedule');
 Route::get('/etracking', [TrackingController::class, 'publicTracking'])->name('public.tracking');
+Route::get('/sailing-schedule/search-ports', [SailingScheduleController::class, 'searchPorts'])->name('sailing-schedule.search-ports');
+Route::get('/sailing-schedule/download-pdf', [SailingScheduleController::class, 'downloadPdf'])->name('sailing-schedule.download-pdf');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');

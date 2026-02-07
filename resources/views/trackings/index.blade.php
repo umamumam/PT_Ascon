@@ -219,8 +219,8 @@
 
                                         <!-- View Details -->
                                         <li>
-                                            <button type="button" class="dropdown-item text-info"
-                                                data-bs-toggle="modal" data-bs-target="#modalShow{{ $tracking->id }}">
+                                            <button type="button" class="dropdown-item text-info" data-bs-toggle="modal"
+                                                data-bs-target="#modalShow{{ $tracking->id }}">
                                                 <i class="ti ti-eye me-2"></i> View Details
                                             </button>
                                         </li>
@@ -228,13 +228,16 @@
                                         <!-- Edit -->
                                         <li>
                                             <button type="button" class="dropdown-item text-primary"
-                                                data-bs-toggle="modal" data-bs-target="#modalEditTracking{{ $tracking->id }}">
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalEditTracking{{ $tracking->id }}">
                                                 <i class="ti ti-edit me-2"></i> Edit
                                             </button>
                                         </li>
 
                                         <!-- Delete -->
-                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
                                         <li>
                                             <button type="button" class="dropdown-item text-danger"
                                                 onclick="confirmDelete('{{ $tracking->id }}')">
@@ -334,18 +337,19 @@
                                                 </div>
 
                                                 <div class="table-responsive border rounded">
-                                                    <table class="table table-striped mb-0">
+                                                    <table class="table mb-0">
                                                         <thead class="table-light">
                                                             <tr>
                                                                 <th>Status</th>
                                                                 <th>Place of Activity</th>
                                                                 <th>Date</th>
                                                                 <th>Vessel Info</th>
+                                                                <th class="text-center">Indirect</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            @forelse($tracking->details->sortByDesc('date') as $detail)
-                                                            <tr>
+                                                            @forelse($tracking->details->sortBy('id') as $detail)
+                                                            <tr class="border-top">
                                                                 <td>
                                                                     <span class="badge bg-label-{{
                                                                             $detail->status == 'arrival' ? 'success' :
@@ -357,10 +361,20 @@
                                                                 <td>{{ $detail->place_of_activity }}</td>
                                                                 <td>{{ $detail->date->format('d M Y') }}</td>
                                                                 <td>{{ $detail->vessel_information ?? '-' }}</td>
+                                                                <td class="text-center">
+                                                                    @if($detail->sequence)
+                                                                    <span
+                                                                        class="badge badge-center rounded-pill bg-label-secondary">
+                                                                        {{ $detail->sequence }}
+                                                                    </span>
+                                                                    @else
+                                                                    -
+                                                                    @endif
+                                                                </td>
                                                             </tr>
                                                             @if($detail->remarks)
                                                             <tr>
-                                                                <td colspan="4" class="py-1 ps-4">
+                                                                <td colspan="5" class="py-1 ps-4 border-0">
                                                                     <small class="text-muted italic">Note: {{
                                                                         $detail->remarks }}</small>
                                                                 </td>
@@ -368,7 +382,7 @@
                                                             @endif
                                                             @empty
                                                             <tr>
-                                                                <td colspan="4" class="text-center py-4 text-muted">
+                                                                <td colspan="5" class="text-center py-4 text-muted">
                                                                     No tracking history available yet.
                                                                 </td>
                                                             </tr>

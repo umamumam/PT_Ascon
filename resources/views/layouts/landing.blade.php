@@ -36,6 +36,7 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/nouislider/nouislider.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/swiper/swiper.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/animate-css/animate.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }}" />
 
     <script src="{{ asset('assets/vendor/js/helpers.js') }}"></script>
 
@@ -354,11 +355,13 @@
     <!-- Vendors JS -->
     <script src="{{ asset('assets/vendor/libs/nouislider/nouislider.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/swiper/swiper.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
 
     <!-- Main JS -->
     <script src="{{ asset('assets/js/front-main.js') }}"></script>
     <!-- Page JS -->
     <script src="{{ asset('assets/js/front-page-landing.js') }}"></script>
+    <script src="{{ asset('assets/js/modal-add-new-address.js') }}"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const observerOptions = {

@@ -20,7 +20,25 @@ class TrackingDetailController extends Controller
 
         $tracking = Tracking::findOrFail($trackingId);
 
-        $tracking->details()->create($request->all());
+        $count = TrackingDetail::where('tracking_id', $trackingId)
+            ->where('status', $request->status)
+            ->count();
+
+        $data = $request->all();
+
+        if ($count == 1) {
+            $data['sequence'] = '1st';
+        } elseif ($count == 2) {
+            $data['sequence'] = '2nd';
+        } elseif ($count == 3) {
+            $data['sequence'] = '3rd';
+        } elseif ($count > 3) {
+            $data['sequence'] = ($count) . 'th';
+        } else {
+            $data['sequence'] = null;
+        }
+
+        $tracking->details()->create($data);
 
         return redirect()->back()->with('success', 'Status tracking berhasil diperbarui!');
     }

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('date')->nullable();
             $table->string('vessel_information')->nullable();
             $table->text('remarks')->nullable();
+            $table->enum('sequence', ['1st', '2nd', '3rd'])->nullable();
             $table->timestamps();
         });
     }

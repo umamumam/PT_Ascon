@@ -19,8 +19,8 @@ class SailingScheduleTemplateExport implements FromArray, WithHeadings, WithTitl
             [
                 'Export',           // type
                 'FCL',              // service
-                'Singapore',        // pol
-                'Jakarta',          // pod
+                'Jakarta',          // pol
+                'Singapore',        // pod
                 'HAPPY LUCKY',      // vessel
                 '001N',             // voyage
                 '2026-01-15',       // etd

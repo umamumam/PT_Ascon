@@ -134,7 +134,7 @@
     }
 </style>
 
-<div class="container py-5" style="margin-top: 7em">
+<div class="container py-5 mb-5" style="margin-top: 7em;">
     <div class="row">
         <div class="col-12 mb-4">
             <nav aria-label="breadcrumb">
@@ -153,58 +153,112 @@
         </div>
 
         <div class="col-12">
-            <div class="tracking-card shadow-sm">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h5 class="fw-bold m-0">Trace your package</h5>
-                    <div class="d-flex align-items-center">
-                        <span class="me-2 small fw-bold" style="color: var(--ascon-orange);">Export</span>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="modeSwitch">
+            <form method="GET" action="{{ route('public.tracking') }}" id="trackingForm">
+                <div class="tracking-card shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold m-0">Trace your package</h5>
+                        <div class="d-flex align-items-center">
+                            <span class="me-2 small fw-bold" style="color: var(--ascon-orange);"
+                                id="exportLabel">Export</span>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="modeSwitch" name="type_switch" {{
+                                    $type=='Import' ? 'checked' : '' }}>
+                            </div>
+                            <span class="ms-1 small text-muted" id="importLabel">Import</span>
                         </div>
-                        <span class="ms-1 small text-muted">Import</span>
+                        <input type="hidden" name="type" id="typeInput" value="{{ $type }}">
                     </div>
-                </div>
 
-                <div class="row g-3 mb-4">
-                    <div class="col-md-12">
-                        <label class="form-label-custom">Service Category</label>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="service-box active d-flex flex-column align-items-start">
-                                    <img src="{{ asset('LCL.png') }}" alt="LCL">
-                                    <span class="small fw-bold">Less than Container Load / LCL</span>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-12">
+                            <label class="form-label-custom">Service Category</label>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="service-box {{ $shipmentType == 'LCL' ? 'active' : '' }} d-flex flex-column align-items-start"
+                                        data-type="LCL">
+                                        <img src="{{ asset('LCL.png') }}" alt="LCL">
+                                        <span
+                                            class="small fw-bold {{ $shipmentType == 'LCL' ? '' : 'text-muted' }}">Less
+                                            than Container Load / LCL</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="service-box {{ $shipmentType == 'FCL' ? 'active' : '' }} d-flex flex-column align-items-start"
+                                        data-type="FCL">
+                                        <img src="{{ asset('FCL.png') }}" alt="FCL">
+                                        <span
+                                            class="small fw-bold {{ $shipmentType == 'FCL' ? '' : 'text-muted' }}">Full
+                                            Container Load / FCL</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="service-box d-flex flex-column align-items-start">
-                                    <img src="{{ asset('FCL.png') }}" alt="FCL">
-                                    <span class="small fw-bold text-muted">Full Container Load / FCL</span>
-                                </div>
+                            <input type="hidden" name="shipment_type" id="shipmentTypeInput"
+                                value="{{ $shipmentType }}">
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label-custom">Track your BL number</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="ti ti-search"></i></span>
+                                <input type="text" name="bl_number" class="form-control bl-input border-start-0"
+                                    placeholder="Enter BL number" value="{{ $blNumber ?? '' }}" required>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-12">
-                        <label class="form-label-custom">Track your BL number</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-white"><i class="ti ti-search"></i></span>
-                            <input type="text" class="form-control bl-input border-start-0"
-                                placeholder="Enter BL number">
+                    <div class="row pt-2">
+                        <div class="col-md-10">
+                            <button type="submit" class="btn-search text-uppercase">Search</button>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-outline-secondary w-100" style="padding: 12px;"
+                                onclick="window.location.href='{{ route('public.tracking') }}'">Reset</button>
                         </div>
                     </div>
                 </div>
-
-                <div class="row pt-2">
-                    <div class="col-md-10">
-                        <button class="btn-search text-uppercase">Search</button>
-                    </div>
-                    <div class="col-md-2">
-                        <button class="btn btn-outline-secondary w-100" style="padding: 12px;">Reset</button>
-                    </div>
-                </div>
-            </div>
+            </form>
         </div>
 
+        @if(!$blNumber)
+        <!-- Empty State - Before Search -->
+        <div class="col-12 mt-5">
+            <div class="text-center py-5" style="background: #fff; border-radius: 8px; border: 1px solid #e0e0e0;">
+                <div class="mb-4">
+                    <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Document Background -->
+                        <rect x="50" y="30" width="100" height="130" rx="5" fill="#f8f9fa" stroke="#dee2e6"
+                            stroke-width="2" />
+
+                        <!-- Document Lines -->
+                        <line x1="65" y1="50" x2="135" y2="50" stroke="#FF5722" stroke-width="3"
+                            stroke-linecap="round" />
+                        <line x1="65" y1="65" x2="120" y2="65" stroke="#dee2e6" stroke-width="2"
+                            stroke-linecap="round" />
+                        <line x1="65" y1="80" x2="125" y2="80" stroke="#dee2e6" stroke-width="2"
+                            stroke-linecap="round" />
+                        <line x1="65" y1="95" x2="115" y2="95" stroke="#dee2e6" stroke-width="2"
+                            stroke-linecap="round" />
+
+                        <!-- Magnifying Glass -->
+                        <circle cx="100" cy="120" r="20" fill="none" stroke="#2391ff" stroke-width="3" />
+                        <line x1="115" y1="135" x2="130" y2="150" stroke="#2391ff" stroke-width="3"
+                            stroke-linecap="round" />
+
+                        <!-- Checkmark in magnifying glass -->
+                        <path d="M92 120 L98 126 L108 114" stroke="#FF5722" stroke-width="2.5" fill="none"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <h5 class="fw-bold mb-3" style="color: #333;">Track Your Shipment</h5>
+                <p class="text-muted mb-0" style="max-width: 500px; margin: 0 auto; font-size: 0.95rem;">
+                    Enter your Bill of Lading (BL) number to track your shipment and view the latest package
+                    status in real time.
+                </p>
+            </div>
+        </div>
+        @endif
+
+        @if($tracking)
         <!-- BL Number Information Section -->
         <div class="col-12 mt-5">
             <div class="shadow-sm border rounded">
@@ -221,20 +275,63 @@
                                 <th>Destination</th>
                                 <th>Booking/BL Number</th>
                                 <th>Shipment Type</th>
+                                @if($tracking->shipment_type == 'LCL')
                                 <th>Total Measurement</th>
                                 <th>Total Packages</th>
+                                @else
+                                <th>Container Number</th>
+                                <th>Size Type</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>PT MASAKO JAYA<br><small class="text-muted">SEAMATRIX</small></td>
-                                <td>SKY GOLD<br><small class="text-muted">GENERAL<br>TRADING LLC</small></td>
-                                <td>Jakarta, Indonesia</td>
-                                <td>Jebel Ali, UAE</td>
-                                <td class="highlight">JEA-2035217590</td>
-                                <td>LCL</td>
-                                <td>10.00 m3</td>
-                                <td>86 Cartons</td>
+                                <td>{{ $tracking->shipper }}</td>
+                                <td>{{ $tracking->consignee }}</td>
+                                <td>{{ $tracking->origin }}</td>
+                                <td>{{ $tracking->destination }}</td>
+                                <td class="highlight">{{ $tracking->bl_number }}</td>
+                                <td>{{ $tracking->shipment_type }}</td>
+                                @if($tracking->shipment_type == 'LCL')
+                                <td>{{ $tracking->total_measurement ?? '-' }}</td>
+                                <td>{{ $tracking->total_packages ?? '-' }}</td>
+                                @else
+                                <td>{{ $tracking->container_number ?? '-' }}</td>
+                                <td>{{ $tracking->size_type ?? '-' }}</td>
+                                @endif
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vessel Information Section -->
+        <div class="col-12 mt-4">
+            <div class="shadow-sm border rounded">
+                <div class="update-section">
+                    Vessel Information
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="text-center" style="font-weight: 600; font-size: 0.85rem; padding: 12px;">
+                                    Vessel Voyage</th>
+                                <th class="text-center" style="font-weight: 600; font-size: 0.85rem; padding: 12px;">ETD
+                                    {{ $tracking->origin }}</th>
+                                <th class="text-center" style="font-weight: 600; font-size: 0.85rem; padding: 12px;">ETA
+                                    {{ $tracking->destination }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-center" style="padding: 12px; font-size: 0.85rem;">{{
+                                    $tracking->vessel_voyage }}</td>
+                                <td class="text-center" style="padding: 12px; font-size: 0.85rem;">{{
+                                    \Carbon\Carbon::parse($tracking->etd)->format('n/j/Y') }}</td>
+                                <td class="text-center" style="padding: 12px; font-size: 0.85rem;">{{
+                                    \Carbon\Carbon::parse($tracking->eta)->format('n/j/Y') }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -243,6 +340,7 @@
         </div>
 
         <!-- Shipment Updates Section -->
+        @if($tracking->details && $tracking->details->count() > 0)
         <div class="col-12 mt-4">
             <div class="shadow-sm border rounded">
                 <div class="update-section">
@@ -258,85 +356,101 @@
                     <div class="col-md-1">Remarks</div>
                 </div>
 
-                <!-- 1st Update -->
-                <div class="bg-white p-3">
-                    <div class="row update-row align-items-center">
-                        <div class="col-md-3"><span class="status-label">Departed</span></div>
-                        <div class="col-md-3">Jakarta, Indonesia</div>
-                        <div class="col-md-2">1/8/2026</div>
-                        <div class="col-md-3">SINAR SAMUJA V.1234</div>
-                        <div class="col-md-1 text-center">-</div>
-                    </div>
-                    <div class="row update-row align-items-center">
-                        <div class="col-md-3"><span class="status-label">Discharge</span></div>
-                        <div class="col-md-3">Tanjung Pelepas</div>
-                        <div class="col-md-2">1/8/2026</div>
-                        <div class="col-md-3">SINAR SAMUJA V.1234</div>
-                        <div class="col-md-1 text-center">-</div>
-                    </div>
-                    <div class="row update-row align-items-center">
-                        <div class="col-md-3"><span class="status-label">Connecting</span></div>
-                        <div class="col-md-3">Tanjung Pelepas</div>
-                        <div class="col-md-2">1/8/2026</div>
-                        <div class="col-md-3">SINAR SAMUJA V.1234</div>
-                        <div class="col-md-1 text-center">-</div>
-                    </div>
-                    <div class="row update-row align-items-center">
-                        <div class="col-md-3"><span class="status-label">Arrival</span></div>
-                        <div class="col-md-3">Jebel Ali</div>
-                        <div class="col-md-2">1/12/2026</div>
-                        <div class="col-md-3">SINAR SAMUJA V.1234</div>
-                        <div class="col-md-1 text-center">-</div>
-                    </div>
-                </div>
+                @php
+                $nullSequenceDetails = $tracking->details->whereNull('sequence');
+                $hasNullSequence = $nullSequenceDetails->count() > 0;
+                @endphp
 
-                <!-- 1st Update Label -->
+                @if($hasNullSequence)
+                <!-- Data tanpa sequence (null) ditampilkan pertama -->
+                <div class="bg-white p-3">
+                    @foreach($nullSequenceDetails as $detail)
+                    <div class="row update-row align-items-center">
+                        <div class="col-md-3"><span class="status-label">{{ ucfirst($detail->status) }}</span></div>
+                        <div class="col-md-3">{{ $detail->place_of_activity }}</div>
+                        <div class="col-md-2">{{ \Carbon\Carbon::parse($detail->date)->format('n/j/Y') }}</div>
+                        <div class="col-md-3">{{ $detail->vessel_information ?? '-' }}</div>
+                        <div class="col-md-1 text-center">{{ $detail->remarks ?? '-' }}</div>
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+
+                @foreach($groupedDetails as $sequence => $details)
+                <!-- Sequence Label -->
                 <div class="bg-light py-2 px-3 border-top border-bottom">
-                    <strong>1st Update</strong>
+                    <strong>{{ $sequence }} Update</strong>
                 </div>
 
-                <!-- Repeated Updates -->
+                <!-- Updates dengan sequence -->
                 <div class="bg-white p-3">
+                    @foreach($details as $detail)
                     <div class="row update-row align-items-center">
-                        <div class="col-md-3"><span class="status-label">Departure</span></div>
-                        <div class="col-md-3">Tanjung Pelepas</div>
-                        <div class="col-md-2">1/12/2026</div>
-                        <div class="col-md-3">SINAR SAMUJA V.1234</div>
-                        <div class="col-md-1 text-center">-</div>
+                        <div class="col-md-3"><span class="status-label">{{ ucfirst($detail->status) }}</span></div>
+                        <div class="col-md-3">{{ $detail->place_of_activity }}</div>
+                        <div class="col-md-2">{{ \Carbon\Carbon::parse($detail->date)->format('n/j/Y') }}</div>
+                        <div class="col-md-3">{{ $detail->vessel_information ?? '-' }}</div>
+                        <div class="col-md-1 text-center">{{ $detail->remarks ?? '-' }}</div>
                     </div>
-                    <div class="row update-row align-items-center">
-                        <div class="col-md-3"><span class="status-label">Arrival</span></div>
-                        <div class="col-md-3">Jebel Ali</div>
-                        <div class="col-md-2">1/12/2026</div>
-                        <div class="col-md-3">SINAR SAMUJA V.1234</div>
-                        <div class="col-md-1 text-center">-</div>
-                    </div>
+                    @endforeach
                 </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
 
-                <!-- 2nd Update Label -->
-                <div class="bg-light py-2 px-3 border-top border-bottom">
-                    <strong>2nd Update</strong>
+        @elseif($blNumber)
+        <div class="col-12 mt-5 mb-5">
+            <div class="text-center py-5" style="background: #fff3e0; border-radius: 8px; border: 2px solid #FF5722;">
+                <div class="mb-4">
+                    <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Folder -->
+                        <path
+                            d="M30 50 L30 140 C30 145 35 150 40 150 L140 150 C145 150 150 145 150 140 L150 60 C150 55 145 50 140 50 L100 50 L90 40 L40 40 C35 40 30 45 30 50 Z"
+                            fill="#f8f9fa" stroke="#dee2e6" stroke-width="2" />
+
+                        <!-- Folder tab -->
+                        <path d="M30 50 L30 55 L150 55 L150 50" fill="#e0e0e0" />
+
+                        <!-- Search icon in folder -->
+                        <circle cx="90" cy="95" r="22" fill="none" stroke="#FF5722" stroke-width="3" />
+                        <line x1="107" y1="112" x2="120" y2="125" stroke="#FF5722" stroke-width="3"
+                            stroke-linecap="round" />
+
+                        <!-- X mark inside search -->
+                        <line x1="82" y1="87" x2="98" y2="103" stroke="#FF5722" stroke-width="2.5"
+                            stroke-linecap="round" />
+                        <line x1="98" y1="87" x2="82" y2="103" stroke="#FF5722" stroke-width="2.5"
+                            stroke-linecap="round" />
+
+                        <!-- Question marks floating -->
+                        <text x="35" y="80" font-family="Arial" font-size="20" fill="#FF5722" opacity="0.6">?</text>
+                        <text x="130" y="75" font-family="Arial" font-size="18" fill="#FF5722" opacity="0.5">?</text>
+                        <text x="125" y="120" font-family="Arial" font-size="16" fill="#FF5722" opacity="0.4">?</text>
+                    </svg>
                 </div>
-
-                <!-- Final Updates -->
-                <div class="bg-white p-3">
-                    <div class="row update-row align-items-center">
-                        <div class="col-md-3"><span class="status-label">Departure</span></div>
-                        <div class="col-md-3">Tanjung Pelepas</div>
-                        <div class="col-md-2">1/12/2026</div>
-                        <div class="col-md-3">SINAR SAMUJA V.1234</div>
-                        <div class="col-md-1 text-center">-</div>
+                <div style="max-width: 600px; margin: 0 auto;">
+                    <h5 class="fw-bold mb-3" style="color: #FF5722;">
+                        <i class="ti ti-alert-circle"></i> Data Not Found
+                    </h5>
+                    <p class="mb-2" style="color: #666; font-size: 0.95rem;">
+                        Tracking data for BL Number <strong style="color: #FF5722;">{{ $blNumber }}</strong> could not
+                        be found for:
+                    </p>
+                    <div class="d-inline-flex align-items-center gap-2 px-3 py-2"
+                        style="background: white; border-radius: 6px; border: 1px solid #FF5722;">
+                        <span class="badge" style="background-color: #FF5722; font-size: 0.85rem;">{{ $type }}</span>
+                        <span style="color: #999;">•</span>
+                        <span class="badge" style="background-color: #2391ff; font-size: 0.85rem;">{{ $shipmentType
+                            }}</span>
                     </div>
-                    <div class="row update-row align-items-center">
-                        <div class="col-md-3"><span class="status-label">Arrival</span></div>
-                        <div class="col-md-3">Jebel Ali</div>
-                        <div class="col-md-2">1/12/2026</div>
-                        <div class="col-md-3">SINAR SAMUJA V.1234</div>
-                        <div class="col-md-1 text-center">-</div>
-                    </div>
+                    <p class="text-muted mt-3 mb-0" style="font-size: 0.85rem;">
+                        Please ensure the BL Number, Type (Export/Import), and Shipment Type (LCL/FCL) are correct.
+                    </p>
                 </div>
             </div>
         </div>
+        @endif
     </div>
 </div>
 
@@ -344,6 +458,9 @@
     // Service box selection
     document.querySelectorAll('.service-box').forEach(box => {
         box.addEventListener('click', function() {
+            const selectedType = this.getAttribute('data-type');
+            document.getElementById('shipmentTypeInput').value = selectedType;
+
             document.querySelectorAll('.service-box').forEach(b => {
                 b.classList.remove('active');
                 b.querySelector('span').classList.add('text-muted');
@@ -355,10 +472,36 @@
 
     // Mode switch functionality
     document.getElementById('modeSwitch').addEventListener('change', function() {
-        const exportLabel = this.previousElementSibling.previousElementSibling;
-        const importLabel = this.nextElementSibling;
+        const exportLabel = document.getElementById('exportLabel');
+        const importLabel = document.getElementById('importLabel');
+        const typeInput = document.getElementById('typeInput');
 
         if(this.checked) {
+            typeInput.value = 'Import';
+            importLabel.classList.remove('text-muted');
+            importLabel.classList.add('fw-bold');
+            importLabel.style.color = 'var(--ascon-orange)';
+            exportLabel.classList.remove('fw-bold');
+            exportLabel.classList.add('text-muted');
+            exportLabel.style.color = '';
+        } else {
+            typeInput.value = 'Export';
+            exportLabel.classList.remove('text-muted');
+            exportLabel.classList.add('fw-bold');
+            exportLabel.style.color = 'var(--ascon-orange)';
+            importLabel.classList.remove('fw-bold');
+            importLabel.classList.add('text-muted');
+            importLabel.style.color = '';
+        }
+    });
+
+    // Set initial state on page load
+    window.addEventListener('DOMContentLoaded', function() {
+        const modeSwitch = document.getElementById('modeSwitch');
+        const exportLabel = document.getElementById('exportLabel');
+        const importLabel = document.getElementById('importLabel');
+
+        if(modeSwitch.checked) {
             importLabel.classList.remove('text-muted');
             importLabel.classList.add('fw-bold');
             importLabel.style.color = 'var(--ascon-orange)';
