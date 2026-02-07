@@ -329,9 +329,9 @@
                                 <td class="text-center" style="padding: 12px; font-size: 0.85rem;">{{
                                     $tracking->vessel_voyage }}</td>
                                 <td class="text-center" style="padding: 12px; font-size: 0.85rem;">{{
-                                    \Carbon\Carbon::parse($tracking->etd)->format('n/j/Y') }}</td>
+                                    \Carbon\Carbon::parse($tracking->etd)->format('d/m/Y') }}</td>
                                 <td class="text-center" style="padding: 12px; font-size: 0.85rem;">{{
-                                    \Carbon\Carbon::parse($tracking->eta)->format('n/j/Y') }}</td>
+                                    \Carbon\Carbon::parse($tracking->eta)->format('d/m/Y') }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -368,7 +368,7 @@
                     <div class="row update-row align-items-center">
                         <div class="col-md-3"><span class="status-label">{{ ucfirst($detail->status) }}</span></div>
                         <div class="col-md-3">{{ $detail->place_of_activity }}</div>
-                        <div class="col-md-2">{{ \Carbon\Carbon::parse($detail->date)->format('n/j/Y') }}</div>
+                        <div class="col-md-2">{{ \Carbon\Carbon::parse($detail->date)->format('d/m/Y') }}</div>
                         <div class="col-md-3">{{ $detail->vessel_information ?? '-' }}</div>
                         <div class="col-md-1 text-center">{{ $detail->remarks ?? '-' }}</div>
                     </div>
@@ -388,7 +388,7 @@
                     <div class="row update-row align-items-center">
                         <div class="col-md-3"><span class="status-label">{{ ucfirst($detail->status) }}</span></div>
                         <div class="col-md-3">{{ $detail->place_of_activity }}</div>
-                        <div class="col-md-2">{{ \Carbon\Carbon::parse($detail->date)->format('n/j/Y') }}</div>
+                        <div class="col-md-2">{{ \Carbon\Carbon::parse($detail->date)->format('d/m/Y') }}</div>
                         <div class="col-md-3">{{ $detail->vessel_information ?? '-' }}</div>
                         <div class="col-md-1 text-center">{{ $detail->remarks ?? '-' }}</div>
                     </div>
