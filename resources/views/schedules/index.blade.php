@@ -114,7 +114,7 @@
         </div>
         <div class="card mb-4">
             <div class="card-header">
-                <h5 class="card-title mb-0">Explore Sailing Schedule</h5>
+                <h5 class="card-title mb-0">Filter Sailing Schedule</h5>
             </div>
             <div class="card-body">
                 <form action="{{ route('schedules.index') }}" method="GET" id="filterForm">

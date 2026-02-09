@@ -224,33 +224,11 @@
         <div class="col-12 mt-5">
             <div class="text-center py-5" style="background: #fff; border-radius: 8px; border: 1px solid #e0e0e0;">
                 <div class="mb-4">
-                    <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Document Background -->
-                        <rect x="50" y="30" width="100" height="130" rx="5" fill="#f8f9fa" stroke="#dee2e6"
-                            stroke-width="2" />
-
-                        <!-- Document Lines -->
-                        <line x1="65" y1="50" x2="135" y2="50" stroke="#FF5722" stroke-width="3"
-                            stroke-linecap="round" />
-                        <line x1="65" y1="65" x2="120" y2="65" stroke="#dee2e6" stroke-width="2"
-                            stroke-linecap="round" />
-                        <line x1="65" y1="80" x2="125" y2="80" stroke="#dee2e6" stroke-width="2"
-                            stroke-linecap="round" />
-                        <line x1="65" y1="95" x2="115" y2="95" stroke="#dee2e6" stroke-width="2"
-                            stroke-linecap="round" />
-
-                        <!-- Magnifying Glass -->
-                        <circle cx="100" cy="120" r="20" fill="none" stroke="#2391ff" stroke-width="3" />
-                        <line x1="115" y1="135" x2="130" y2="150" stroke="#2391ff" stroke-width="3"
-                            stroke-linecap="round" />
-
-                        <!-- Checkmark in magnifying glass -->
-                        <path d="M92 120 L98 126 L108 114" stroke="#FF5722" stroke-width="2.5" fill="none"
-                            stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
+                    <img src="{{ asset('undraw.png') }}" alt="No Data"
+                        style="width:250px;">
                 </div>
-                <h5 class="fw-bold mb-3" style="color: #333;">Track Your Shipment</h5>
-                <p class="text-muted mb-0" style="max-width: 500px; margin: 0 auto; font-size: 0.95rem;">
+                {{-- <h5 class="fw-bold mb-3" style="color: #333;">Track Your Shipment</h5> --}}
+                <p class="mb-0" style="max-width: 500px; margin: 0 auto; font-size: 0.95rem;">
                     Enter your Bill of Lading (BL) number to track your shipment and view the latest package
                     status in real time.
                 </p>
@@ -307,7 +285,7 @@
         </div>
 
         <!-- Vessel Information Section -->
-        <div class="col-12 mt-4">
+        {{-- <div class="col-12 mt-4">
             <div class="shadow-sm border rounded">
                 <div class="update-section">
                     Vessel Information
@@ -337,7 +315,7 @@
                     </table>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Shipment Updates Section -->
         @if($tracking->details && $tracking->details->count() > 0)

@@ -15,7 +15,7 @@
     <div class="menu-inner-shadow"></div>
 
     <ul class="menu-inner py-1">
-        <li class="menu-item {{ request()->is('dashboard*') ? 'active open' : '' }}">
+        {{-- <li class="menu-item {{ request()->is('dashboard*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-home"></i>
                 <div data-i18n="Dashboards">Dashboards</div>
@@ -26,13 +26,13 @@
                         <div data-i18n="Dashboard">Dashboard</div>
                     </a>
                 </li>
-                {{-- <li class="menu-item {{ request()->is('fleet*') ? 'active' : '' }}">
+                <li class="menu-item {{ request()->is('fleet*') ? 'active' : '' }}">
                     <a href="/fleet" class="menu-link">
                         <div data-i18n="Fleet">Fleet</div>
                     </a>
-                </li> --}}
+                </li>
             </ul>
-        </li>
+        </li> --}}
 
         <li class="menu-item {{ request()->is('ports*') ? 'active' : '' }}">
             <a href="/ports" class="menu-link">

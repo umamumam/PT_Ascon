@@ -167,6 +167,7 @@
                             <th>Type</th>
                             <th>Vessel / Voyage</th>
                             <th>ETA</th>
+                            <th>Status</th>
                             <th width="70">Actions</th>
                         </tr>
                     </thead>
@@ -203,6 +204,25 @@
                             </td>
                             <td>{{ $tracking->vessel_voyage }}</td>
                             <td>{{ $tracking->eta->format('d M') }}</td>
+                            <td>
+                                @if($tracking->details->count() > 0)
+                                @php
+                                $latestDetail = $tracking->details->sortByDesc('id')->first();
+                                @endphp
+                                <div class="d-flex flex-column gap-1">
+                                    <span class="badge bg-label-success">
+                                        <i class="ti ti-check me-1"></i> Updated
+                                    </span>
+                                    <small class="text-muted">
+                                        Last: {{ ucfirst($latestDetail->status) }}
+                                    </small>
+                                </div>
+                                @else
+                                <span class="badge bg-label-secondary">
+                                    <i class="ti ti-clock me-1"></i> No Update
+                                </span>
+                                @endif
+                            </td>
                             <td>
                                 <div class="dropdown">
                                     <button type="button" class="btn btn-sm btn-icon" data-bs-toggle="dropdown">

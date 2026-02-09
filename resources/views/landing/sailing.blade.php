@@ -436,15 +436,15 @@
         @else
         <div class="col-12 mt-5">
             <div class="no-data-message shadow-sm border rounded p-5 text-center">
-                <img src="https://cdn-icons-png.flaticon.com/512/6598/6598519.png" alt="No Data"
-                    style="width:120px; opacity:0.8;">
-                <h5 class="mt-4 fw-bold">No sailing schedule found</h5>
-                <p class="text-muted mb-3">
-                    Try adjusting your filters or check back later
+                <img src="{{ asset('undraw.png') }}" alt="No Data"
+                    style="width:250px;">
+                {{-- <h5 class="mt-4 fw-bold">No sailing schedule found</h5> --}}
+                <p class="mb-5 mt-4">
+                    Oops! Sorry schedule you are looking for is not available right now.
                 </p>
-                <button type="button" id="resetBtnEmpty" class="btn btn-outline-danger px-4">
+                {{-- <button type="button" id="resetBtnEmpty" class="btn btn-outline-danger px-4">
                     Reset Filter
-                </button>
+                </button> --}}
             </div>
         </div>
         <script>
