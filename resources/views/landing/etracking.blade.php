@@ -224,8 +224,7 @@
         <div class="col-12 mt-5">
             <div class="text-center py-5" style="background: #fff; border-radius: 8px; border: 1px solid #e0e0e0;">
                 <div class="mb-4">
-                    <img src="{{ asset('undraw.png') }}" alt="No Data"
-                        style="width:250px;">
+                    <img src="{{ asset('undraw.png') }}" alt="No Data" style="width:250px;">
                 </div>
                 {{-- <h5 class="fw-bold mb-3" style="color: #333;">Track Your Shipment</h5> --}}
                 <p class="mb-0" style="max-width: 500px; margin: 0 auto; font-size: 0.95rem;">
@@ -284,6 +283,7 @@
             </div>
         </div>
 
+        {{--
         <!-- Vessel Information Section -->
         <div class="col-12 mt-4">
             <div class="shadow-sm border rounded">
@@ -315,7 +315,131 @@
                     </table>
                 </div>
             </div>
+        </div> --}}
+        <!-- Vessel Information Section -->
+        <div class="col-12 mt-4">
+            <div class="shadow-sm border rounded">
+                <div class="update-section">
+                    Vessel Information
+                </div>
+                <div class="p-3">
+                    <div class="d-flex flex-wrap align-items-stretch gap-2">
+
+                        <div class="flex-fill" style="min-width: 200px;">
+                            <div class="border rounded p-3 h-100"
+                                style="background: #f8fbff; border-color: #2391ff !important;">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge me-2"
+                                        style="background-color: #2391ff; font-size: 0.75rem;">Main</span>
+                                    <small class="text-muted fw-bold">Vessel</small>
+                                </div>
+                                <div class="fw-bold mb-2" style="font-size: 0.9rem;">{{ $tracking->vessel_voyage }}
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">ETD {{ $tracking->origin }}
+                                        </div>
+                                        <div class="fw-medium" style="font-size: 0.85rem;">{{
+                                            \Carbon\Carbon::parse($tracking->etd)->format('d M Y') }}</div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="text-muted" style="font-size: 0.75rem;">ETA {{
+                                            $tracking->destination }}</div>
+                                        <div class="fw-medium" style="font-size: 0.85rem;">{{
+                                            \Carbon\Carbon::parse($tracking->eta)->format('d M Y') }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @foreach($connectingVessels as $index => $conn)
+                        <div class="d-flex align-items-center">
+                            <div class="text-center px-1">
+                                <i class="ti ti-arrow-right" style="color: #FF5722; font-size: 1.2rem;"></i>
+                            </div>
+                        </div>
+                        <div class="flex-fill" style="min-width: 200px;">
+                            <div class="border rounded p-3 h-100"
+                                style="background: #fff8f6; border-color: #FF5722 !important;">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge me-2"
+                                        style="background-color: #FF5722; font-size: 0.75rem;">Connecting {{ $index + 1
+                                        }}</span>
+                                    <small class="text-muted fw-bold">Vessel</small>
+                                </div>
+                                <div class="fw-bold mb-2" style="font-size: 0.9rem;">{{ $conn['vessel'] }}</div>
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">ETD</div>
+                                        <div class="fw-medium" style="font-size: 0.85rem;">
+                                            {{ $conn['etd'] ? \Carbon\Carbon::parse($conn['etd'])->format('d M Y') : '-'
+                                            }}
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="text-muted" style="font-size: 0.75rem;">ETA</div>
+                                        <div class="fw-medium" style="font-size: 0.85rem;">
+                                            {{ $conn['eta'] ? \Carbon\Carbon::parse($conn['eta'])->format('d M Y') : '-'
+                                            }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <!-- Vessel Information Section -->
+        {{-- <div class="col-12 mt-4">
+            <div class="shadow-sm border rounded">
+                <div class="update-section">
+                    Vessel Information
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="text-center" style="font-weight: 600; font-size: 0.85rem; padding: 12px;">
+                                    Vessel Voyage</th>
+                                <th class="text-center" style="font-weight: 600; font-size: 0.85rem; padding: 12px;">ETD
+                                    {{ $tracking->origin }}</th>
+                                <th class="text-center" style="font-weight: 600; font-size: 0.85rem; padding: 12px;">ETA
+                                    {{ $tracking->destination }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-center" style="padding: 12px; font-size: 0.85rem;">{{
+                                    $tracking->vessel_voyage }}</td>
+                                <td class="text-center" style="padding: 12px; font-size: 0.85rem;">{{
+                                    \Carbon\Carbon::parse($tracking->etd)->format('d/m/Y') }}</td>
+                                <td class="text-center" style="padding: 12px; font-size: 0.85rem;">{{
+                                    \Carbon\Carbon::parse($tracking->eta)->format('d/m/Y') }}</td>
+                            </tr>
+
+                            @foreach($connectingVessels as $index => $conn)
+                            <tr>
+                                <td class="text-center" style="padding: 12px; font-size: 0.85rem;">
+                                    <span class="badge bg-label-secondary me-1">Connecting {{ $index + 1 }}</span>
+                                    {{ $conn['vessel'] }}
+                                </td>
+                                <td class="text-center" style="padding: 12px; font-size: 0.85rem;">
+                                    {{ $conn['etd'] ? \Carbon\Carbon::parse($conn['etd'])->format('d/m/Y') : '-' }}
+                                </td>
+                                <td class="text-center" style="padding: 12px; font-size: 0.85rem;">
+                                    {{ $conn['eta'] ? \Carbon\Carbon::parse($conn['eta'])->format('d/m/Y') : '-' }}
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> --}}
 
         <!-- Shipment Updates Section -->
         @if($tracking->details && $tracking->details->count() > 0)

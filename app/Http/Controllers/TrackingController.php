@@ -195,22 +195,21 @@ class TrackingController extends Controller
     }
     public function publicTracking(Request $request)
     {
-        $tracking = null;
-        $blNumber = $request->input('bl_number');
-        $type = $request->input('type', 'Export');
+        $tracking     = null;
+        $blNumber     = $request->input('bl_number');
+        $type         = $request->input('type', 'Export');
         $shipmentType = $request->input('shipment_type', 'LCL');
 
         if ($blNumber) {
-            $tracking = Tracking::with(['details' => function($query) {
+            $tracking = Tracking::with(['details' => function ($query) {
                 $query->orderBy('date', 'asc')->orderBy('id', 'asc');
             }])
-            ->where('bl_number', $blNumber)
-            ->where('type', $type)
-            ->where('shipment_type', $shipmentType)
-            ->first();
+                ->where('bl_number', $blNumber)
+                ->where('type', $type)
+                ->where('shipment_type', $shipmentType)
+                ->first();
         }
 
-        // Group details by sequence
         $groupedDetails = [];
         if ($tracking && $tracking->details) {
             foreach ($tracking->details as $detail) {
@@ -220,6 +219,30 @@ class TrackingController extends Controller
             }
         }
 
-        return view('landing.etracking', compact('tracking', 'blNumber', 'type', 'shipmentType', 'groupedDetails'));
+        $connectingVessels = [];
+        if ($tracking) {
+            for ($i = 1; $i <= 3; $i++) {
+                $vesselField = "connecting_vessel{$i}";
+                $etdField    = "connecting_etd{$i}";
+                $etaField    = "connecting_eta{$i}";
+
+                if (!empty($tracking->$vesselField)) {
+                    $connectingVessels[] = [
+                        'vessel' => $tracking->$vesselField,
+                        'etd'    => $tracking->$etdField,
+                        'eta'    => $tracking->$etaField,
+                    ];
+                }
+            }
+        }
+
+        return view('landing.etracking', compact(
+            'tracking',
+            'blNumber',
+            'type',
+            'shipmentType',
+            'groupedDetails',
+            'connectingVessels'
+        ));
     }
 }

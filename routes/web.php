@@ -60,6 +60,8 @@ Route::middleware('auth')->group(function () {
         ->name('trackings.import');
     Route::post('/tracking/{trackingId}/details', [TrackingDetailController::class, 'store'])
         ->name('tracking_details.store');
+    Route::put('tracking-details/{id}', [TrackingDetailController::class, 'update'])->name('tracking_details.update');
+    Route::delete('tracking-details/{id}', [TrackingDetailController::class, 'destroy'])->name('tracking_details.destroy');
 
     Route::resource('trackings', TrackingController::class);
 });

@@ -533,24 +533,75 @@
 
                                                         <hr>
 
+                                                        <div class="col-12 mb-2">
+                                                            <small class="fw-bold text-muted">Connecting Vessel
+                                                                1</small>
+                                                        </div>
                                                         <div class="col-md-4 mb-3">
-                                                            <label class="form-label">Connecting Vessel</label>
+                                                            <label class="form-label">Connecting Vessel 1</label>
                                                             <input type="text" class="form-control"
-                                                                name="connecting_vessel"
-                                                                value="{{ $tracking->connecting_vessel }}" />
+                                                                name="connecting_vessel1"
+                                                                value="{{ $tracking->connecting_vessel1 }}" />
                                                         </div>
                                                         <div class="col-md-4 mb-3">
-                                                            <label class="form-label">Conn. ETD</label>
+                                                            <label class="form-label">Conn. ETD 1</label>
                                                             <input type="date" class="form-control"
-                                                                name="connecting_etd"
-                                                                value="{{ $tracking->connecting_etd ? $tracking->connecting_etd->format('Y-m-d') : '' }}" />
+                                                                name="connecting_etd1"
+                                                                value="{{ $tracking->connecting_etd1 ? $tracking->connecting_etd1->format('Y-m-d') : '' }}" />
                                                         </div>
                                                         <div class="col-md-4 mb-3">
-                                                            <label class="form-label">Conn. ETA</label>
+                                                            <label class="form-label">Conn. ETA 1</label>
                                                             <input type="date" class="form-control"
-                                                                name="connecting_eta"
-                                                                value="{{ $tracking->connecting_eta ? $tracking->connecting_eta->format('Y-m-d') : '' }}" />
+                                                                name="connecting_eta1"
+                                                                value="{{ $tracking->connecting_eta1 ? $tracking->connecting_eta1->format('Y-m-d') : '' }}" />
                                                         </div>
+
+                                                        <div class="col-12 mb-2">
+                                                            <small class="fw-bold text-muted">Connecting Vessel
+                                                                2</small>
+                                                        </div>
+                                                        <div class="col-md-4 mb-3">
+                                                            <label class="form-label">Connecting Vessel 2</label>
+                                                            <input type="text" class="form-control"
+                                                                name="connecting_vessel2"
+                                                                value="{{ $tracking->connecting_vessel2 }}" />
+                                                        </div>
+                                                        <div class="col-md-4 mb-3">
+                                                            <label class="form-label">Conn. ETD 2</label>
+                                                            <input type="date" class="form-control"
+                                                                name="connecting_etd2"
+                                                                value="{{ $tracking->connecting_etd2 ? $tracking->connecting_etd2->format('Y-m-d') : '' }}" />
+                                                        </div>
+                                                        <div class="col-md-4 mb-3">
+                                                            <label class="form-label">Conn. ETA 2</label>
+                                                            <input type="date" class="form-control"
+                                                                name="connecting_eta2"
+                                                                value="{{ $tracking->connecting_eta2 ? $tracking->connecting_eta2->format('Y-m-d') : '' }}" />
+                                                        </div>
+
+                                                        <div class="col-12 mb-2">
+                                                            <small class="fw-bold text-muted">Connecting Vessel
+                                                                3</small>
+                                                        </div>
+                                                        <div class="col-md-4 mb-3">
+                                                            <label class="form-label">Connecting Vessel 3</label>
+                                                            <input type="text" class="form-control"
+                                                                name="connecting_vessel3"
+                                                                value="{{ $tracking->connecting_vessel3 }}" />
+                                                        </div>
+                                                        <div class="col-md-4 mb-3">
+                                                            <label class="form-label">Conn. ETD 3</label>
+                                                            <input type="date" class="form-control"
+                                                                name="connecting_etd3"
+                                                                value="{{ $tracking->connecting_etd3 ? $tracking->connecting_etd3->format('Y-m-d') : '' }}" />
+                                                        </div>
+                                                        <div class="col-md-4 mb-3">
+                                                            <label class="form-label">Conn. ETA 3</label>
+                                                            <input type="date" class="form-control"
+                                                                name="connecting_eta3"
+                                                                value="{{ $tracking->connecting_eta3 ? $tracking->connecting_eta3->format('Y-m-d') : '' }}" />
+                                                        </div>
+
                                                         <div class="col-12 mb-3">
                                                             <label class="form-label">Remarks</label>
                                                             <textarea class="form-control" name="remarks"
@@ -673,18 +724,54 @@
 
                             <hr>
 
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Connecting Vessel</label>
-                                <input type="text" class="form-control" name="connecting_vessel" />
+                            <div class="col-12 mb-2">
+                                <small class="fw-bold text-muted">Connecting Vessel 1</small>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label class="form-label">Conn. ETD</label>
-                                <input type="date" class="form-control" name="connecting_etd" />
+                                <label class="form-label">Connecting Vessel 1</label>
+                                <input type="text" class="form-control" name="connecting_vessel1" />
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label class="form-label">Conn. ETA</label>
-                                <input type="date" class="form-control" name="connecting_eta" />
+                                <label class="form-label">Conn. ETD 1</label>
+                                <input type="date" class="form-control" name="connecting_etd1" />
                             </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Conn. ETA 1</label>
+                                <input type="date" class="form-control" name="connecting_eta1" />
+                            </div>
+
+                            <div class="col-12 mb-2">
+                                <small class="fw-bold text-muted">Connecting Vessel 2</small>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Connecting Vessel 2</label>
+                                <input type="text" class="form-control" name="connecting_vessel2" />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Conn. ETD 2</label>
+                                <input type="date" class="form-control" name="connecting_etd2" />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Conn. ETA 2</label>
+                                <input type="date" class="form-control" name="connecting_eta2" />
+                            </div>
+
+                            <div class="col-12 mb-2">
+                                <small class="fw-bold text-muted">Connecting Vessel 3</small>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Connecting Vessel 3</label>
+                                <input type="text" class="form-control" name="connecting_vessel3" />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Conn. ETD 3</label>
+                                <input type="date" class="form-control" name="connecting_etd3" />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Conn. ETA 3</label>
+                                <input type="date" class="form-control" name="connecting_eta3" />
+                            </div>
+
                             <div class="col-12 mb-3">
                                 <label class="form-label">Remarks</label>
                                 <textarea class="form-control" name="remarks" rows="2"
