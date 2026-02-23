@@ -365,6 +365,7 @@
                                                                 <th>Date</th>
                                                                 <th>Vessel Info</th>
                                                                 <th class="text-center">Indirect</th>
+                                                                <th class="text-center" width="80">Actions</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -372,9 +373,9 @@
                                                             <tr class="border-top">
                                                                 <td>
                                                                     <span class="badge bg-label-{{
-                                                                            $detail->status == 'arrival' ? 'success' :
-                                                                            ($detail->status == 'departed' ? 'primary' : 'warning')
-                                                                        }}">
+                                        $detail->status == 'arrival'  ? 'success' :
+                                        ($detail->status == 'departed' ? 'primary' : 'warning')
+                                    }}">
                                                                         {{ strtoupper($detail->status) }}
                                                                     </span>
                                                                 </td>
@@ -391,18 +392,37 @@
                                                                     -
                                                                     @endif
                                                                 </td>
+                                                                <td class="text-center">
+                                                                    <button type="button"
+                                                                        class="btn btn-sm btn-icon text-primary"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#modalEditDetail{{ $detail->id }}">
+                                                                        <i class="ti ti-edit"></i>
+                                                                    </button>
+                                                                    <form
+                                                                        action="{{ route('tracking_details.destroy', $detail->id) }}"
+                                                                        method="POST" class="d-inline"
+                                                                        onsubmit="return confirm('Hapus riwayat ini?')">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <button type="submit"
+                                                                            class="btn btn-sm btn-icon text-danger">
+                                                                            <i class="ti ti-trash"></i>
+                                                                        </button>
+                                                                    </form>
+                                                                </td>
                                                             </tr>
                                                             @if($detail->remarks)
                                                             <tr>
-                                                                <td colspan="5" class="py-1 ps-4 border-0">
-                                                                    <small class="text-muted italic">Note: {{
-                                                                        $detail->remarks }}</small>
+                                                                <td colspan="6" class="py-1 ps-4 border-0">
+                                                                    <small class="text-muted">Note: {{ $detail->remarks
+                                                                        }}</small>
                                                                 </td>
                                                             </tr>
                                                             @endif
                                                             @empty
                                                             <tr>
-                                                                <td colspan="5" class="text-center py-4 text-muted">
+                                                                <td colspan="6" class="text-center py-4 text-muted">
                                                                     No tracking history available yet.
                                                                 </td>
                                                             </tr>
@@ -418,6 +438,83 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                @foreach($tracking->details as $detail)
+                                <div class="modal fade" id="modalEditDetail{{ $detail->id }}" tabindex="-1"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Edit Riwayat</h5>
+                                                <button type="button" class="btn-close"
+                                                    data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <form action="{{ route('tracking_details.update', $detail->id) }}"
+                                                method="POST">
+                                                @csrf
+                                                @method('PUT')
+                                                <div class="modal-body">
+                                                    <div class="row">
+                                                        <div class="col-12 mb-3">
+                                                            <label class="form-label">Status</label>
+                                                            <select name="status" class="form-select" required>
+                                                                <option value="departed" {{ $detail->status ==
+                                                                    'departed' ? 'selected' : '' }}>Departed</option>
+                                                                <option value="discharge" {{ $detail->status ==
+                                                                    'discharge' ? 'selected' : '' }}>Discharge</option>
+                                                                <option value="connecting" {{ $detail->status ==
+                                                                    'connecting' ? 'selected' : '' }}>Connecting
+                                                                </option>
+                                                                <option value="arrival" {{ $detail->status == 'arrival'
+                                                                    ? 'selected' : '' }}>Arrival</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-12 mb-3">
+                                                            <label class="form-label">Place of Activity</label>
+                                                            <input type="text" name="place_of_activity"
+                                                                class="form-control"
+                                                                value="{{ $detail->place_of_activity }}" required>
+                                                        </div>
+                                                        <div class="col-12 mb-3">
+                                                            <label class="form-label">Date</label>
+                                                            <input type="date" name="date" class="form-control"
+                                                                value="{{ $detail->date->format('Y-m-d') }}" required>
+                                                        </div>
+                                                        <div class="col-12 mb-3">
+                                                            <label class="form-label">Vessel Information</label>
+                                                            <input type="text" name="vessel_information"
+                                                                class="form-control"
+                                                                value="{{ $detail->vessel_information }}">
+                                                        </div>
+                                                        <div class="col-12 mb-3">
+                                                            <label class="form-label">Sequence</label>
+                                                            <select name="sequence" class="form-select">
+                                                                <option value="">None</option>
+                                                                <option value="1st" {{ $detail->sequence == '1st' ?
+                                                                    'selected' : '' }}>1st</option>
+                                                                <option value="2nd" {{ $detail->sequence == '2nd' ?
+                                                                    'selected' : '' }}>2nd</option>
+                                                                <option value="3rd" {{ $detail->sequence == '3rd' ?
+                                                                    'selected' : '' }}>3rd</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-12 mb-3">
+                                                            <label class="form-label">Remarks</label>
+                                                            <textarea name="remarks" class="form-control"
+                                                                rows="2">{{ $detail->remarks }}</textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-label-secondary"
+                                                        data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Update</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endforeach
                                 <!-- Modal Edit -->
                                 <div class="modal fade" id="modalEditTracking{{ $tracking->id }}" tabindex="-1"
                                     aria-hidden="true">
