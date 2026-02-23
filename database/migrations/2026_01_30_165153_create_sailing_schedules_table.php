@@ -39,7 +39,7 @@ return new class extends Migration
             $table->string('connecting_voyage')->nullable();
             $table->date('connecting_etd')->nullable();
             $table->date('connecting_eta')->nullable();
-            // $table->string('code_connecting')->nullable();
+            $table->string('code_connecting')->nullable();
 
             $table->text('remarks_field')->nullable();
             $table->timestamps();

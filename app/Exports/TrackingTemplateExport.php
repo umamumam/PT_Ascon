@@ -33,6 +33,12 @@ class TrackingTemplateExport implements FromArray, WithHeadings, WithTitle, With
                 'MV. CONNECTING 456W',
                 '2024-03-21',
                 '2024-03-25',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
                 'Shipment on time'
             ],
             [
@@ -50,6 +56,12 @@ class TrackingTemplateExport implements FromArray, WithHeadings, WithTitle, With
                 'MV. OCEAN STAR 789N',
                 '2024-03-10',
                 '2024-03-18',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
                 '',
                 '',
                 '',
@@ -75,9 +87,15 @@ class TrackingTemplateExport implements FromArray, WithHeadings, WithTitle, With
             'vessel_voyage',
             'etd',
             'eta',
-            'connecting_vessel',
-            'connecting_etd',
-            'connecting_eta',
+            'connecting_vessel1',
+            'connecting_etd1',
+            'connecting_eta1',
+            'connecting_vessel2',
+            'connecting_etd2',
+            'connecting_eta2',
+            'connecting_vessel3',
+            'connecting_etd3',
+            'connecting_eta3',
             'remarks'
         ];
     }
@@ -91,7 +109,7 @@ class TrackingTemplateExport implements FromArray, WithHeadings, WithTitle, With
     {
         return [
             1 => ['font' => ['bold' => true]],
-            'A1:R1' => ['fill' => ['fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, 'color' => ['argb' => 'FFE0E0E0']]],
+            'A1:X1' => ['fill' => ['fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, 'color' => ['argb' => 'FFE0E0E0']]],
         ];
     }
 }

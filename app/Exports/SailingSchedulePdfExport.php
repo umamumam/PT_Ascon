@@ -8,6 +8,7 @@ class SailingSchedulePdfExport
 {
     protected $groupedSchedules;
     protected $columnsPerRoute;
+    protected $routeColumnLabels;
     protected $type;
     protected $service;
     protected $polName;
@@ -18,6 +19,7 @@ class SailingSchedulePdfExport
     public function __construct(
         $groupedSchedules,
         $columnsPerRoute,
+        $routeColumnLabels,
         $type,
         $service,
         $polName = null,
@@ -25,35 +27,35 @@ class SailingSchedulePdfExport
         $polCode = null,
         $podCode = null
     ) {
-        $this->groupedSchedules = $groupedSchedules;
-        $this->columnsPerRoute = $columnsPerRoute;
-        $this->type = $type;
-        $this->service = $service;
-        $this->polName = $polName;
-        $this->podName = $podName;
-        $this->polCode = $polCode;
-        $this->podCode = $podCode;
+        $this->groupedSchedules  = $groupedSchedules;
+        $this->columnsPerRoute   = $columnsPerRoute;
+        $this->routeColumnLabels = $routeColumnLabels;
+        $this->type              = $type;
+        $this->service           = $service;
+        $this->polName           = $polName;
+        $this->podName           = $podName;
+        $this->polCode           = $polCode;
+        $this->podCode           = $podCode;
     }
 
     public function download()
     {
-        $data = [
-            'groupedSchedules' => $this->groupedSchedules,
-            'columnsPerRoute' => $this->columnsPerRoute,
-            'type' => $this->type,
-            'service' => $this->service,
-            'polName' => $this->polName,
-            'podName' => $this->podName,
-            'polCode' => $this->polCode,
-            'podCode' => $this->podCode,
-            'generatedDate' => now()->format('F Y'),
+        $pdf = Pdf::loadView('exports.sailing-schedule-pdf', [
+            'groupedSchedules'  => $this->groupedSchedules,
+            'columnsPerRoute'   => $this->columnsPerRoute,
+            'routeColumnLabels' => $this->routeColumnLabels,
+            'type'              => $this->type,
+            'service'           => $this->service,
+            'polName'           => $this->polName,
+            'podName'           => $this->podName,
+            'polCode'           => $this->polCode,
+            'podCode'           => $this->podCode,
+            'generatedDate'     => now()->format('F Y'),
             'generatedDateFull' => now()->format('d F Y'),
-        ];
+        ]);
 
-        $pdf = Pdf::loadView('exports.sailing-schedule-pdf', $data);
         $pdf->setPaper('a4', 'landscape');
 
-        // Stream untuk preview di browser (bukan download langsung)
         return $pdf->stream($this->generateFilename());
     }
 
@@ -61,9 +63,8 @@ class SailingSchedulePdfExport
     {
         $parts = ['Sailing_Schedule', $this->type, $this->service];
 
-        if ($this->polName) {
+        if ($this->polName)
             $parts[] = str_replace(' ', '_', $this->polName);
-        }
 
         if ($this->podName) {
             $parts[] = 'to';

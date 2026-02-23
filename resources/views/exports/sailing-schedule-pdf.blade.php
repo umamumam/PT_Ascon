@@ -212,39 +212,33 @@
     @forelse($groupedSchedules as $route => $schedules)
     <div class="route-section">
         @php
-        // Extract destination name from route
-        $parts = explode(' - ', $route);
-        $destination = $type == 'Export' ? $parts[1] : $parts[0];
-        $origin = $type == 'Export' ? $parts[0] : $parts[1];
-
-        // Get port codes from first schedule in group
-        $firstSchedule = $schedules->first();
-        $polCode = $firstSchedule->pol->port_code ?? '';
-        $podCode = $firstSchedule->pod->port_code ?? '';
+            $parts         = explode(' - ', $route);
+            $destination   = $type == 'Export' ? $parts[1] : $parts[0];
+            $firstSchedule = $schedules->first();
+            $polCode       = $firstSchedule->pol->port_code ?? '';
+            $podCode       = $firstSchedule->pod->port_code ?? '';
+            $customLabels  = $routeColumnLabels[$route] ?? [];
+            $labelEtd      = $customLabels['etd']             ?? "ETD " . strtoupper($polCode);
+            $labelEta      = $customLabels['eta_destination']  ?? 'ETA';
+            $labelConnEtd  = $customLabels['connecting_etd']   ?? 'ETD';
+            $labelConnEta  = $customLabels['connecting_eta']   ?? "ETA " . strtoupper($podCode);
+            $hasEtaText    = $schedules->contains(fn($s) => !empty($s->eta_text));
         @endphp
 
         <div class="route-header">{{ strtoupper($destination) }}</div>
-
-        @php
-        $hasEtaText = $schedules->contains(fn($s) => !empty($s->eta_text));
-        @endphp
 
         <table>
             <thead>
                 <tr>
                     <th style="width: 20%;">VESSEL</th>
                     <th style="width: 10%;">VOY.</th>
-                    <th style="width: 12%;">ETD {{ strtoupper($polCode) }}</th>
+                    <th style="width: 12%;">{{ strtoupper($labelEtd) }}</th>
+                    <th style="width: 12%;">{{ strtoupper($labelEta) }}</th>
 
-                    <th style="width: 12%;">
-                        ETA {{ $columnsPerRoute[$route]['has_connecting'] ? '' : strtoupper($podCode) }}
-                    </th>
-
-                    @if(count($columnsPerRoute[$route]['eta_destinations']) > 0)
                     @foreach($columnsPerRoute[$route]['eta_destinations'] as $destNum)
-                    <th style="width: 12%;">ETA DEST {{ $destNum }}</th>
+                    @php $etaLabel = $customLabels["eta_destination{$destNum}"] ?? "ETA DEST {$destNum}"; @endphp
+                    <th style="width: 12%;">{{ strtoupper($etaLabel) }}</th>
                     @endforeach
-                    @endif
 
                     @if($hasEtaText)
                     <th style="width: 15%;">ETA TEXT</th>
@@ -253,8 +247,8 @@
                     @if($columnsPerRoute[$route]['has_connecting'])
                     <th style="width: 15%;">CONNECTING</th>
                     <th style="width: 10%;">VOY</th>
-                    <th style="width: 12%;">ETD</th>
-                    <th style="width: 12%;">ETA {{ strtoupper($podCode) }}</th>
+                    <th style="width: 12%;">{{ strtoupper($labelConnEtd) }}</th>
+                    <th style="width: 12%;">{{ strtoupper($labelConnEta) }}</th>
                     @endif
 
                     <th style="width: 15%;">REMARKS</th>
@@ -266,20 +260,16 @@
                     <td class="text-left">{{ strtoupper($schedule->vessel) }}</td>
                     <td>{{ $schedule->voyage }}</td>
                     <td class="text-nowrap">{{ \Carbon\Carbon::parse($schedule->etd)->format('d-M') }}</td>
-
                     <td class="text-nowrap">
-                        {{ $schedule->eta_destination ? \Carbon\Carbon::parse($schedule->eta_destination)->format('d-M')
-                        : '-' }}
+                        {{ $schedule->eta_destination ? \Carbon\Carbon::parse($schedule->eta_destination)->format('d-M') : '-' }}
                     </td>
 
-                    @if(count($columnsPerRoute[$route]['eta_destinations']) > 0)
                     @foreach($columnsPerRoute[$route]['eta_destinations'] as $destNum)
                     @php $etaField = "eta_destination{$destNum}"; @endphp
                     <td class="text-nowrap">
                         {{ $schedule->$etaField ? \Carbon\Carbon::parse($schedule->$etaField)->format('d-M') : '-' }}
                     </td>
                     @endforeach
-                    @endif
 
                     @if($hasEtaText)
                     <td>{{ $schedule->eta_text ?? '-' }}</td>
@@ -289,12 +279,10 @@
                     <td>{{ $schedule->connecting_vessel ?? '-' }}</td>
                     <td>{{ $schedule->connecting_voyage ?? '-' }}</td>
                     <td class="text-nowrap">
-                        {{ $schedule->connecting_etd ? \Carbon\Carbon::parse($schedule->connecting_etd)->format('d-M') :
-                        '-' }}
+                        {{ $schedule->connecting_etd ? \Carbon\Carbon::parse($schedule->connecting_etd)->format('d-M') : '-' }}
                     </td>
                     <td class="text-nowrap">
-                        {{ $schedule->connecting_eta ? \Carbon\Carbon::parse($schedule->connecting_eta)->format('d-M') :
-                        '-' }}
+                        {{ $schedule->connecting_eta ? \Carbon\Carbon::parse($schedule->connecting_eta)->format('d-M') : '-' }}
                     </td>
                     @endif
 

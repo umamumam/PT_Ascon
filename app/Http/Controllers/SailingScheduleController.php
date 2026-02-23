@@ -98,6 +98,7 @@ class SailingScheduleController extends Controller
             'connecting_voyage' => 'nullable|string|max:50',
             'connecting_etd'    => 'nullable|date',
             'connecting_eta'    => 'nullable|date',
+            'code_connecting'   => 'nullable|string|max:20',
             'remarks_field'     => 'nullable|string',
         ]);
 
@@ -131,6 +132,7 @@ class SailingScheduleController extends Controller
             'connecting_voyage' => 'nullable|string|max:50',
             'connecting_etd'    => 'nullable|date',
             'connecting_eta'    => 'nullable|date',
+            'code_connecting'   => 'nullable|string|max:20',
             'remarks_field'     => 'nullable|string',
         ]);
 
@@ -246,7 +248,9 @@ class SailingScheduleController extends Controller
 
                 if (
                     !empty($schedule->connecting_vessel) || !empty($schedule->connecting_voyage) ||
-                    !empty($schedule->connecting_etd)    || !empty($schedule->connecting_eta)
+                    !empty($schedule->connecting_etd)    || !empty($schedule->connecting_eta) ||
+                    !empty($schedule->code_connecting)
+
                 ) {
                     $columns['has_connecting'] = true;
                 }
@@ -277,34 +281,52 @@ class SailingScheduleController extends Controller
         ];
 
         foreach ($groupedSchedules as $route => $routeSchedules) {
-    if (isset($routeColumnLabels[$route])) continue;
+            if (isset($routeColumnLabels[$route])) continue;
 
-    $firstSchedule = $routeSchedules->first();
-    if (!$firstSchedule) continue;
+            $firstSchedule = $routeSchedules->first();
+            if (!$firstSchedule) continue;
 
-    $polCode = strtoupper($firstSchedule->pol->port_code ?? 'POL');
-    $podCode = strtoupper($firstSchedule->pod->port_code ?? 'POD');
+            $polCode = strtoupper($firstSchedule->pol->port_code ?? 'POL');
+            $podCode = strtoupper($firstSchedule->pod->port_code ?? 'POD');
+            $podName = strtoupper($firstSchedule->pod->port_name ?? '');
 
-    $hasConnecting   = $columnsPerRoute[$route]['has_connecting'];
-    $etaDestinations = $columnsPerRoute[$route]['eta_destinations'];
+            $hasConnecting   = $columnsPerRoute[$route]['has_connecting'];
+            $etaDestinations = $columnsPerRoute[$route]['eta_destinations'];
 
-    $labels = ['etd' => "ETD {$polCode}"];
+            $labels = ['etd' => "ETD {$polCode}"];
 
-    if ($hasConnecting) {
-        // Kalau ada connecting: eta_destination tanpa kode, connecting_eta pakai kode POD
-        $labels['eta_destination']  = "ETA";
-        $labels['connecting_eta']   = "ETA {$podCode}";
-    } else {
-        // Kalau tidak ada connecting: eta_destination pakai kode POD
-        $labels['eta_destination'] = "ETA {$podCode}";
-    }
+            if ($hasConnecting) {
+                $withConnecting = $routeSchedules->filter(fn($s) => !empty($s->connecting_vessel));
+                $total = $withConnecting->count();
 
-    foreach ($etaDestinations as $etaNum) {
-        $labels["eta_destination{$etaNum}"] = "ETA {$podCode} {$etaNum}";
-    }
+                $filledFromDb = $withConnecting->filter(fn($s) => !empty($s->code_connecting));
+                $filledCount  = $filledFromDb->count();
+                $emptyCount   = $total - $filledCount;
 
-    $routeColumnLabels[$route] = $labels;
-}
+                if ($total > 0 && $filledCount >= $emptyCount) {
+                    $transitLabel = $filledFromDb
+                        ->groupBy(fn($s) => strtoupper(trim($s->code_connecting)))
+                        ->map->count()
+                        ->sortDesc()
+                        ->keys()
+                        ->first();
+                } else {
+                    $transitLabel = ($podName === 'JEBEL ALI') ? 'TPP' : 'SIN';
+                }
+
+                $labels['eta_destination'] = "ETA {$transitLabel}";
+                $labels['connecting_etd']  = "ETD {$transitLabel}";
+                $labels['connecting_eta']  = "ETA {$podCode}";
+            } else {
+                $labels['eta_destination'] = "ETA {$podCode}";
+            }
+
+            foreach ($etaDestinations as $etaNum) {
+                $labels["eta_destination{$etaNum}"] = "ETA {$podCode} {$etaNum}";
+            }
+
+            $routeColumnLabels[$route] = $labels;
+        }
 
         return view('landing.sailing', compact(
             'schedules',
@@ -322,10 +344,10 @@ class SailingScheduleController extends Controller
 
     public function downloadPdf(Request $request)
     {
-        $type = $request->input('type', 'Export');
+        $type    = $request->input('type', 'Export');
         $service = $request->input('service', 'LCL');
-        $pol_id = $request->input('pol_id');
-        $pod_id = $request->input('pod_id');
+        $pol_id  = $request->input('pol_id');
+        $pod_id  = $request->input('pod_id');
 
         $polName = null;
         $podName = null;
@@ -356,26 +378,14 @@ class SailingScheduleController extends Controller
             $query->whereHas('pol', function ($q) {
                 $q->whereIn('port_name', ['Jakarta', 'Semarang', 'Surabaya']);
             });
-
-            if ($pol_id) {
-                $query->where('pol_id', $pol_id);
-            }
-
-            if ($pod_id) {
-                $query->where('pod_id', $pod_id);
-            }
+            if ($pol_id) $query->where('pol_id', $pol_id);
+            if ($pod_id) $query->where('pod_id', $pod_id);
         } else {
             $query->whereHas('pod', function ($q) {
                 $q->whereIn('port_name', ['Jakarta', 'Semarang', 'Surabaya']);
             });
-
-            if ($pol_id) {
-                $query->where('pol_id', $pol_id);
-            }
-
-            if ($pod_id) {
-                $query->where('pod_id', $pod_id);
-            }
+            if ($pol_id) $query->where('pol_id', $pol_id);
+            if ($pod_id) $query->where('pod_id', $pod_id);
         }
 
         $schedules = $query->orderBy('etd', 'asc')->get();
@@ -387,27 +397,26 @@ class SailingScheduleController extends Controller
         $columnsPerRoute = [];
         foreach ($groupedSchedules as $route => $routeSchedules) {
             $columns = [
-                'has_eta_text' => false,
-                'has_connecting' => false,
-                'has_remarks' => false,
-                'eta_destinations' => []
+                'has_eta_text'     => false,
+                'has_connecting'   => false,
+                'has_remarks'      => false,
+                'eta_destinations' => [],
             ];
 
             foreach ($routeSchedules as $schedule) {
-                if (!empty($schedule->eta_text)) {
+                if (!empty($schedule->eta_text))
                     $columns['has_eta_text'] = true;
-                }
 
                 if (
                     !empty($schedule->connecting_vessel) || !empty($schedule->connecting_voyage) ||
-                    !empty($schedule->connecting_etd) || !empty($schedule->connecting_eta)
+                    !empty($schedule->connecting_etd)    || !empty($schedule->connecting_eta)    ||
+                    !empty($schedule->code_connecting)
                 ) {
                     $columns['has_connecting'] = true;
                 }
 
-                if (!empty($schedule->remarks_field)) {
+                if (!empty($schedule->remarks_field))
                     $columns['has_remarks'] = true;
-                }
 
                 for ($i = 1; $i <= 7; $i++) {
                     $etaField = "eta_destination{$i}";
@@ -421,10 +430,68 @@ class SailingScheduleController extends Controller
             $columnsPerRoute[$route] = $columns;
         }
 
-        // Generate PDF
+        $routeColumnLabels = [
+            'JAKARTA - JAPAN' => [
+                'etd'              => 'ETD JKT',
+                'eta_destination'  => 'ETA TYO',
+                'eta_destination1' => 'ETA YOK (via TYO)',
+                'eta_destination2' => 'ETA NGY',
+                'eta_destination3' => 'ETA KBE',
+                'eta_destination4' => 'ETA OSK (via KBE)',
+            ],
+        ];
+
+        foreach ($groupedSchedules as $route => $routeSchedules) {
+            if (isset($routeColumnLabels[$route])) continue;
+
+            $firstSchedule = $routeSchedules->first();
+            if (!$firstSchedule) continue;
+
+            $routePolCode = strtoupper($firstSchedule->pol->port_code ?? 'POL');
+            $routePodCode = strtoupper($firstSchedule->pod->port_code ?? 'POD');
+            $routePodName = strtoupper($firstSchedule->pod->port_name ?? '');
+
+            $hasConnecting   = $columnsPerRoute[$route]['has_connecting'];
+            $etaDestinations = $columnsPerRoute[$route]['eta_destinations'];
+
+            $labels = ['etd' => "ETD {$routePolCode}"];
+
+            if ($hasConnecting) {
+                $withConnecting = $routeSchedules->filter(fn($s) => !empty($s->connecting_vessel));
+                $total          = $withConnecting->count();
+                $filledFromDb   = $withConnecting->filter(fn($s) => !empty($s->code_connecting));
+                $filledCount    = $filledFromDb->count();
+                $emptyCount     = $total - $filledCount;
+
+                if ($total > 0 && $filledCount >= $emptyCount) {
+                    $transitLabel = $filledFromDb
+                        ->groupBy(fn($s) => strtoupper(trim($s->code_connecting)))
+                        ->map->count()
+                        ->sortDesc()
+                        ->keys()
+                        ->first();
+                } else {
+                    $transitLabel = ($routePodName === 'JEBEL ALI') ? 'TPP' : 'SIN';
+                }
+
+                $labels['eta_destination'] = "ETA {$transitLabel}";
+                $labels['connecting_etd']  = "ETD {$transitLabel}";
+                $labels['connecting_eta']  = "ETA {$routePodCode}";
+            } else {
+                $labels['eta_destination'] = "ETA {$routePodCode}";
+            }
+
+            foreach ($etaDestinations as $etaNum) {
+                $labels["eta_destination{$etaNum}"] = "ETA {$routePodCode} {$etaNum}";
+            }
+
+            $routeColumnLabels[$route] = $labels;
+        }
+
         $export = new \App\Exports\SailingSchedulePdfExport(
             $groupedSchedules,
             $columnsPerRoute,
+            $routeColumnLabels,
             $type,
             $service,
             $polName,

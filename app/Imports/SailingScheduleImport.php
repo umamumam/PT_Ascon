@@ -68,6 +68,7 @@ class SailingScheduleImport implements ToModel, WithHeadingRow, WithValidation
             'connecting_voyage' => trim($row['connecting_voyage'] ?? null),
             'connecting_etd'    => $this->parseDate($row['connecting_etd'] ?? null),
             'connecting_eta'    => $this->parseDate($row['connecting_eta'] ?? null),
+            'code_connecting'   => trim($row['code_connecting'] ?? null),
             'remarks_field'     => trim($row['remarks'] ?? ''),
         ]);
     }

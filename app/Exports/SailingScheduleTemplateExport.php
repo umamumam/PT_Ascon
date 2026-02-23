@@ -37,6 +37,7 @@ class SailingScheduleTemplateExport implements FromArray, WithHeadings, WithTitl
                 '002S',             // connecting_voyage
                 '2026-01-22',       // connecting_etd
                 '2026-01-25',       // connecting_eta
+                'TPP',              // code_connecting
                 'Good condition'    // remarks
             ]
         ];
@@ -65,6 +66,7 @@ class SailingScheduleTemplateExport implements FromArray, WithHeadings, WithTitl
             'connecting_voyage',
             'connecting_etd',
             'connecting_eta',
+            'code_connecting',
             'remarks'
         ];
     }
@@ -97,14 +99,15 @@ class SailingScheduleTemplateExport implements FromArray, WithHeadings, WithTitl
             'R' => 20,  // connecting_voyage
             'S' => 15,  // connecting_etd
             'T' => 15,  // connecting_eta
-            'U' => 25,  // remarks
+            'U' => 25,  // code_connecting
+            'V' => 25,  // remarks
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
 
-        $sheet->getStyle('A1:U1')->applyFromArray([
+        $sheet->getStyle('A1:V1')->applyFromArray([
             'font' => [
                 'bold' => true,
             ],
@@ -121,7 +124,7 @@ class SailingScheduleTemplateExport implements FromArray, WithHeadings, WithTitl
             ],
         ]);
 
-        $sheet->getStyle('A2:U2')->applyFromArray([
+        $sheet->getStyle('A2:v2')->applyFromArray([
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,

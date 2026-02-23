@@ -31,9 +31,17 @@ return new class extends Migration
             $table->date('etd');
             $table->date('eta');
 
-            $table->string('connecting_vessel')->nullable();
-            $table->date('connecting_etd')->nullable();
-            $table->date('connecting_eta')->nullable();
+            $table->string('connecting_vessel1')->nullable();
+            $table->date('connecting_etd1')->nullable();
+            $table->date('connecting_eta1')->nullable();
+
+            $table->string('connecting_vessel2')->nullable();
+            $table->date('connecting_etd2')->nullable();
+            $table->date('connecting_eta2')->nullable();
+
+            $table->string('connecting_vessel3')->nullable();
+            $table->date('connecting_etd3')->nullable();
+            $table->date('connecting_eta3')->nullable();
 
             $table->text('remarks')->nullable();
             $table->timestamps();

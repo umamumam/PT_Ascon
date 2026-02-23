@@ -364,7 +364,7 @@
                             @if($hasConnecting)
                             <th class="text-dark">Connecting</th>
                             <th class="text-dark">Voy</th>
-                            <th class="text-dark">ETD</th>
+                            <th class="text-dark">{{ $customLabels['connecting_etd'] ?? 'ETD' }}</th>
                             <th class="text-dark">{{ $customLabels['connecting_eta'] ?? 'ETA' }}</th>
                             @endif
 

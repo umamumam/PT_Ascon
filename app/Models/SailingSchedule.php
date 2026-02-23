@@ -32,7 +32,7 @@ class SailingSchedule extends Model
         'connecting_voyage',
         'connecting_etd',
         'connecting_eta',
-        // 'code_connecting',
+        'code_connecting',
         'remarks_field',
     ];
 

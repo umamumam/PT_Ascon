@@ -412,6 +412,13 @@
                                                                     class="form-control"
                                                                     value="{{ $item->connecting_eta }}">
                                                             </div>
+                                                            <div class="col-md-6">
+                                                                <label class="form-label">Code Port Connecting</label>
+                                                                <input type="text" name="code_connecting"
+                                                                    class="form-control"
+                                                                    value="{{ $item->code_connecting }}"
+                                                                    placeholder="Ex: TPP">
+                                                            </div>
 
                                                             <div class="col-12">
                                                                 <label class="form-label">Remarks</label>
@@ -542,6 +549,10 @@
                         <div class="col-md-6">
                             <label class="form-label">Connecting ETA</label>
                             <input type="date" name="connecting_eta" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Code Port Connecting</label>
+                            <input type="text" name="code_connecting" class="form-control" placeholder="Ex: SIN">
                         </div>
 
                         <div class="col-12">
