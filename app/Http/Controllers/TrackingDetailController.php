@@ -36,6 +36,10 @@ class TrackingDetailController extends Controller
             $data['sequence'] = ($count) . 'th';
         } else {
             $data['sequence'] = null;
+
+            if (empty($data['vessel_information'])) {
+            $data['vessel_information'] = $tracking->vessel_voyage;
+        }
         }
 
         $tracking->details()->create($data);

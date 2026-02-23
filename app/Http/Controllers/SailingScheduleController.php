@@ -194,10 +194,10 @@ class SailingScheduleController extends Controller
 
     public function publicSchedules(Request $request)
     {
-        $type = $request->input('type', 'Export');
+        $type    = $request->input('type', 'Export');
         $service = $request->input('service', 'LCL');
-        $pol_id = $request->input('pol_id');
-        $pod_id = $request->input('pod_id');
+        $pol_id  = $request->input('pol_id');
+        $pod_id  = $request->input('pod_id');
 
         $localPorts = Port::whereIn('port_name', ['Jakarta', 'Semarang', 'Surabaya'])
             ->orderBy('port_name')
@@ -212,66 +212,48 @@ class SailingScheduleController extends Controller
             ->where('service', $service);
 
         if ($type == 'Export') {
-            $query->whereHas('pol', function($q) {
+            $query->whereHas('pol', function ($q) {
                 $q->whereIn('port_name', ['Jakarta', 'Semarang', 'Surabaya']);
             });
-
-            if ($pol_id) {
-                $query->where('pol_id', $pol_id);
-            }
-
-            if ($pod_id) {
-                $query->where('pod_id', $pod_id);
-            }
-
+            if ($pol_id) $query->where('pol_id', $pol_id);
+            if ($pod_id) $query->where('pod_id', $pod_id);
         } else {
-            $query->whereHas('pod', function($q) {
+            $query->whereHas('pod', function ($q) {
                 $q->whereIn('port_name', ['Jakarta', 'Semarang', 'Surabaya']);
             });
-
-            if ($pol_id) {
-                $query->where('pol_id', $pol_id);
-            }
-
-            if ($pod_id) {
-                $query->where('pod_id', $pod_id);
-            }
+            if ($pol_id) $query->where('pol_id', $pol_id);
+            if ($pod_id) $query->where('pod_id', $pod_id);
         }
 
         $schedules = $query->orderBy('etd', 'asc')->get();
 
-        $groupedSchedules = $schedules->groupBy(function($schedule) {
+        $groupedSchedules = $schedules->groupBy(function ($schedule) {
             return $schedule->pol->port_name . ' - ' . $schedule->pod->port_name;
         });
 
-        // Deteksi kolom yang perlu ditampilkan untuk setiap route
         $columnsPerRoute = [];
         foreach ($groupedSchedules as $route => $routeSchedules) {
             $columns = [
-                'has_eta_text' => false,
-                'has_connecting' => false,
-                'has_remarks' => false,
-                'eta_destinations' => [] // Array untuk menyimpan kolom ETA destination yang terisi
+                'has_eta_text'     => false,
+                'has_connecting'   => false,
+                'has_remarks'      => false,
+                'eta_destinations' => [],
             ];
 
             foreach ($routeSchedules as $schedule) {
-                // Cek ETA Text
-                if (!empty($schedule->eta_text)) {
+                if (!empty($schedule->eta_text))
                     $columns['has_eta_text'] = true;
-                }
 
-                // Cek Connecting vessel
-                if (!empty($schedule->connecting_vessel) || !empty($schedule->connecting_voyage) ||
-                    !empty($schedule->connecting_etd) || !empty($schedule->connecting_eta)) {
+                if (
+                    !empty($schedule->connecting_vessel) || !empty($schedule->connecting_voyage) ||
+                    !empty($schedule->connecting_etd)    || !empty($schedule->connecting_eta)
+                ) {
                     $columns['has_connecting'] = true;
                 }
 
-                // Cek Remarks
-                if (!empty($schedule->remarks_field)) {
+                if (!empty($schedule->remarks_field))
                     $columns['has_remarks'] = true;
-                }
 
-                // Cek kolom ETA destination tambahan (1-7)
                 for ($i = 1; $i <= 7; $i++) {
                     $etaField = "eta_destination{$i}";
                     if (!empty($schedule->$etaField) && !in_array($i, $columns['eta_destinations'])) {
@@ -280,16 +262,55 @@ class SailingScheduleController extends Controller
                 }
             }
 
-            // Urutkan eta_destinations
             sort($columns['eta_destinations']);
-
             $columnsPerRoute[$route] = $columns;
         }
+        $routeColumnLabels = [
+            'JAKARTA - JAPAN' => [
+                'etd'              => 'ETD JKT',
+                'eta_destination'  => 'ETA TYO',
+                'eta_destination1' => 'ETA YOK (via TYO)',
+                'eta_destination2' => 'ETA NGY',
+                'eta_destination3' => 'ETA KBE',
+                'eta_destination4' => 'ETA OSK (via KBE)',
+            ],
+        ];
+
+        foreach ($groupedSchedules as $route => $routeSchedules) {
+    if (isset($routeColumnLabels[$route])) continue;
+
+    $firstSchedule = $routeSchedules->first();
+    if (!$firstSchedule) continue;
+
+    $polCode = strtoupper($firstSchedule->pol->port_code ?? 'POL');
+    $podCode = strtoupper($firstSchedule->pod->port_code ?? 'POD');
+
+    $hasConnecting   = $columnsPerRoute[$route]['has_connecting'];
+    $etaDestinations = $columnsPerRoute[$route]['eta_destinations'];
+
+    $labels = ['etd' => "ETD {$polCode}"];
+
+    if ($hasConnecting) {
+        // Kalau ada connecting: eta_destination tanpa kode, connecting_eta pakai kode POD
+        $labels['eta_destination']  = "ETA";
+        $labels['connecting_eta']   = "ETA {$podCode}";
+    } else {
+        // Kalau tidak ada connecting: eta_destination pakai kode POD
+        $labels['eta_destination'] = "ETA {$podCode}";
+    }
+
+    foreach ($etaDestinations as $etaNum) {
+        $labels["eta_destination{$etaNum}"] = "ETA {$podCode} {$etaNum}";
+    }
+
+    $routeColumnLabels[$route] = $labels;
+}
 
         return view('landing.sailing', compact(
             'schedules',
             'groupedSchedules',
             'columnsPerRoute',
+            'routeColumnLabels',
             'type',
             'service',
             'pol_id',
@@ -332,7 +353,7 @@ class SailingScheduleController extends Controller
             ->where('service', $service);
 
         if ($type == 'Export') {
-            $query->whereHas('pol', function($q) {
+            $query->whereHas('pol', function ($q) {
                 $q->whereIn('port_name', ['Jakarta', 'Semarang', 'Surabaya']);
             });
 
@@ -343,9 +364,8 @@ class SailingScheduleController extends Controller
             if ($pod_id) {
                 $query->where('pod_id', $pod_id);
             }
-
         } else {
-            $query->whereHas('pod', function($q) {
+            $query->whereHas('pod', function ($q) {
                 $q->whereIn('port_name', ['Jakarta', 'Semarang', 'Surabaya']);
             });
 
@@ -360,7 +380,7 @@ class SailingScheduleController extends Controller
 
         $schedules = $query->orderBy('etd', 'asc')->get();
 
-        $groupedSchedules = $schedules->groupBy(function($schedule) {
+        $groupedSchedules = $schedules->groupBy(function ($schedule) {
             return $schedule->pol->port_name . ' - ' . $schedule->pod->port_name;
         });
 
@@ -378,8 +398,10 @@ class SailingScheduleController extends Controller
                     $columns['has_eta_text'] = true;
                 }
 
-                if (!empty($schedule->connecting_vessel) || !empty($schedule->connecting_voyage) ||
-                    !empty($schedule->connecting_etd) || !empty($schedule->connecting_eta)) {
+                if (
+                    !empty($schedule->connecting_vessel) || !empty($schedule->connecting_voyage) ||
+                    !empty($schedule->connecting_etd) || !empty($schedule->connecting_eta)
+                ) {
                     $columns['has_connecting'] = true;
                 }
 
