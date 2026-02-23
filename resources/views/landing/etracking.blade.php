@@ -285,7 +285,7 @@
         </div>
 
         <!-- Vessel Information Section -->
-        {{-- <div class="col-12 mt-4">
+        <div class="col-12 mt-4">
             <div class="shadow-sm border rounded">
                 <div class="update-section">
                     Vessel Information
@@ -315,7 +315,7 @@
                     </table>
                 </div>
             </div>
-        </div> --}}
+        </div>
 
         <!-- Shipment Updates Section -->
         @if($tracking->details && $tracking->details->count() > 0)
