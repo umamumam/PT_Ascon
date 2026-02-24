@@ -26,6 +26,7 @@ return new class extends Migration
             // Jadwal
             $table->date('etd');
             $table->date('eta_destination');
+            $table->string('eta_code_connecting')->nullable();
             $table->date('eta_destination1')->nullable();
             $table->date('eta_destination2')->nullable();
             $table->date('eta_destination3')->nullable();
@@ -38,9 +39,8 @@ return new class extends Migration
             $table->string('connecting_vessel')->nullable();
             $table->string('connecting_voyage')->nullable();
             $table->date('connecting_etd')->nullable();
+            $table->string('etd_code_connecting')->nullable();
             $table->date('connecting_eta')->nullable();
-            $table->string('code_connecting')->nullable();
-
             $table->text('remarks_field')->nullable();
             $table->timestamps();
         });

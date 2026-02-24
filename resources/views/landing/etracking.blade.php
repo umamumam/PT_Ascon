@@ -283,41 +283,8 @@
             </div>
         </div>
 
-        {{--
         <!-- Vessel Information Section -->
-        <div class="col-12 mt-4">
-            <div class="shadow-sm border rounded">
-                <div class="update-section">
-                    Vessel Information
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-bordered mb-0">
-                        <thead class="bg-light">
-                            <tr>
-                                <th class="text-center" style="font-weight: 600; font-size: 0.85rem; padding: 12px;">
-                                    Vessel Voyage</th>
-                                <th class="text-center" style="font-weight: 600; font-size: 0.85rem; padding: 12px;">ETD
-                                    {{ $tracking->origin }}</th>
-                                <th class="text-center" style="font-weight: 600; font-size: 0.85rem; padding: 12px;">ETA
-                                    {{ $tracking->destination }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="text-center" style="padding: 12px; font-size: 0.85rem;">{{
-                                    $tracking->vessel_voyage }}</td>
-                                <td class="text-center" style="padding: 12px; font-size: 0.85rem;">{{
-                                    \Carbon\Carbon::parse($tracking->etd)->format('d/m/Y') }}</td>
-                                <td class="text-center" style="padding: 12px; font-size: 0.85rem;">{{
-                                    \Carbon\Carbon::parse($tracking->eta)->format('d/m/Y') }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div> --}}
-        <!-- Vessel Information Section -->
-        <div class="col-12 mt-4">
+        {{-- <div class="col-12 mt-4">
             <div class="shadow-sm border rounded">
                 <div class="update-section">
                     Vessel Information
@@ -391,10 +358,10 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Vessel Information Section -->
-        {{-- <div class="col-12 mt-4">
+        <div class="col-12 mt-4">
             <div class="shadow-sm border rounded">
                 <div class="update-section">
                     Vessel Information
@@ -420,12 +387,45 @@
                                 <td class="text-center" style="padding: 12px; font-size: 0.85rem;">{{
                                     \Carbon\Carbon::parse($tracking->eta)->format('d/m/Y') }}</td>
                             </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        @if(count($connectingVessels) > 0)
+        <div class="col-12 mt-3">
+            <div class="shadow-sm border rounded">
+                <div class="update-section">
+                    Connecting Vessel Information
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="text-center" style="font-weight: 600; font-size: 0.85rem; padding: 12px;">#
+                                </th>
+                                <th class="text-center" style="font-weight: 600; font-size: 0.85rem; padding: 12px;">
+                                    Connecting Vessel</th>
+                                <th class="text-center" style="font-weight: 600; font-size: 0.85rem; padding: 12px;">ETD
+                                </th>
+                                <th class="text-center" style="font-weight: 600; font-size: 0.85rem; padding: 12px;">ETA
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                            $ordinals = ['1st', '2nd', '3rd'];
+                            @endphp
 
                             @foreach($connectingVessels as $index => $conn)
                             <tr>
                                 <td class="text-center" style="padding: 12px; font-size: 0.85rem;">
-                                    <span class="badge bg-label-secondary me-1">Connecting {{ $index + 1 }}</span>
-                                    {{ $conn['vessel'] }}
+                                    <span class="badge" style="background-color: #FF5722;">
+                                        {{ $ordinals[$index] ?? ($index + 1) . 'th' }}
+                                    </span>
+                                </td>
+                                <td class="text-center" style="padding: 12px; font-size: 0.85rem;">{{ $conn['vessel'] }}
                                 </td>
                                 <td class="text-center" style="padding: 12px; font-size: 0.85rem;">
                                     {{ $conn['etd'] ? \Carbon\Carbon::parse($conn['etd'])->format('d/m/Y') : '-' }}
@@ -439,7 +439,8 @@
                     </table>
                 </div>
             </div>
-        </div> --}}
+        </div>
+        @endif
 
         <!-- Shipment Updates Section -->
         @if($tracking->details && $tracking->details->count() > 0)

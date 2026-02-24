@@ -42,6 +42,8 @@ class TrackingController extends Controller
         $fclPercentage = $totalTrackings > 0 ? ($totalFCL / $totalTrackings) * 100 : 0;
         $lclPercentage = $totalTrackings > 0 ? ($totalLCL / $totalTrackings) * 100 : 0;
 
+        session(['last_tracking_index_url' => $request->fullUrl()]);
+
         return view('trackings.index', compact(
             'trackings',
             'totalTrackings',

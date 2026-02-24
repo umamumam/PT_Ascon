@@ -86,6 +86,7 @@ class SailingScheduleController extends Controller
             'voyage'            => 'required|string|max:50',
             'etd'               => 'required|date',
             'eta_destination'   => 'required|date',
+            'eta_code_connecting' => 'nullable|string|max:20',
             'eta_destination1'  => 'nullable|date',
             'eta_destination2'  => 'nullable|date',
             'eta_destination3'  => 'nullable|date',
@@ -97,8 +98,9 @@ class SailingScheduleController extends Controller
             'connecting_vessel' => 'nullable|string|max:100',
             'connecting_voyage' => 'nullable|string|max:50',
             'connecting_etd'    => 'nullable|date',
+            'etd_code_connecting' => 'nullable|string|max:20',
             'connecting_eta'    => 'nullable|date',
-            'code_connecting'   => 'nullable|string|max:20',
+            // 'code_connecting'   => 'nullable|string|max:20',
             'remarks_field'     => 'nullable|string',
         ]);
 
@@ -120,6 +122,7 @@ class SailingScheduleController extends Controller
             'voyage'            => 'required|string|max:50',
             'etd'               => 'required|date',
             'eta_destination'   => 'required|date',
+            'eta_code_connecting' => 'nullable|string|max:20',
             'eta_destination1'  => 'nullable|date',
             'eta_destination2'  => 'nullable|date',
             'eta_destination3'  => 'nullable|date',
@@ -131,8 +134,9 @@ class SailingScheduleController extends Controller
             'connecting_vessel' => 'nullable|string|max:100',
             'connecting_voyage' => 'nullable|string|max:50',
             'connecting_etd'    => 'nullable|date',
+            'etd_code_connecting' => 'nullable|string|max:20',
             'connecting_eta'    => 'nullable|date',
-            'code_connecting'   => 'nullable|string|max:20',
+            // 'code_connecting'   => 'nullable|string|max:20',
             'remarks_field'     => 'nullable|string',
         ]);
 
@@ -247,10 +251,9 @@ class SailingScheduleController extends Controller
                     $columns['has_eta_text'] = true;
 
                 if (
-                    !empty($schedule->connecting_vessel) || !empty($schedule->connecting_voyage) ||
-                    !empty($schedule->connecting_etd)    || !empty($schedule->connecting_eta) ||
-                    !empty($schedule->code_connecting)
-
+                    !empty($schedule->connecting_vessel)    || !empty($schedule->connecting_voyage) ||
+                    !empty($schedule->connecting_etd)       || !empty($schedule->connecting_eta)    ||
+                    !empty($schedule->eta_code_connecting)  || !empty($schedule->etd_code_connecting)
                 ) {
                     $columns['has_connecting'] = true;
                 }
@@ -269,6 +272,7 @@ class SailingScheduleController extends Controller
             sort($columns['eta_destinations']);
             $columnsPerRoute[$route] = $columns;
         }
+
         $routeColumnLabels = [
             'JAKARTA - JAPAN' => [
                 'etd'              => 'ETD JKT',
@@ -297,25 +301,32 @@ class SailingScheduleController extends Controller
 
             if ($hasConnecting) {
                 $withConnecting = $routeSchedules->filter(fn($s) => !empty($s->connecting_vessel));
-                $total = $withConnecting->count();
+                $total          = $withConnecting->count();
 
-                $filledFromDb = $withConnecting->filter(fn($s) => !empty($s->code_connecting));
-                $filledCount  = $filledFromDb->count();
-                $emptyCount   = $total - $filledCount;
+                // Resolve transit label untuk ETA (eta_code_connecting)
+                $filledEta   = $withConnecting->filter(fn($s) => !empty($s->eta_code_connecting));
+                $etaLabel    = $filledEta->count() > 0
+                    ? $filledEta
+                    ->groupBy(fn($s) => strtoupper(trim($s->eta_code_connecting)))
+                    ->map->count()
+                    ->sortDesc()
+                    ->keys()
+                    ->first()
+                    : (($podName === 'JEBEL ALI') ? 'TPP' : 'SIN');
 
-                if ($total > 0 && $filledCount >= $emptyCount) {
-                    $transitLabel = $filledFromDb
-                        ->groupBy(fn($s) => strtoupper(trim($s->code_connecting)))
-                        ->map->count()
-                        ->sortDesc()
-                        ->keys()
-                        ->first();
-                } else {
-                    $transitLabel = ($podName === 'JEBEL ALI') ? 'TPP' : 'SIN';
-                }
+                // Resolve transit label untuk ETD (etd_code_connecting)
+                $filledEtd   = $withConnecting->filter(fn($s) => !empty($s->etd_code_connecting));
+                $etdLabel    = $filledEtd->count() > 0
+                    ? $filledEtd
+                    ->groupBy(fn($s) => strtoupper(trim($s->etd_code_connecting)))
+                    ->map->count()
+                    ->sortDesc()
+                    ->keys()
+                    ->first()
+                    : (($podName === 'JEBEL ALI') ? 'TPP' : 'SIN');
 
-                $labels['eta_destination'] = "ETA {$transitLabel}";
-                $labels['connecting_etd']  = "ETD {$transitLabel}";
+                $labels['eta_destination'] = "ETA {$etaLabel}";
+                $labels['connecting_etd']  = "ETD {$etdLabel}";
                 $labels['connecting_eta']  = "ETA {$podCode}";
             } else {
                 $labels['eta_destination'] = "ETA {$podCode}";
@@ -408,9 +419,9 @@ class SailingScheduleController extends Controller
                     $columns['has_eta_text'] = true;
 
                 if (
-                    !empty($schedule->connecting_vessel) || !empty($schedule->connecting_voyage) ||
-                    !empty($schedule->connecting_etd)    || !empty($schedule->connecting_eta)    ||
-                    !empty($schedule->code_connecting)
+                    !empty($schedule->connecting_vessel)    || !empty($schedule->connecting_voyage) ||
+                    !empty($schedule->connecting_etd)       || !empty($schedule->connecting_eta)    ||
+                    !empty($schedule->eta_code_connecting)  || !empty($schedule->etd_code_connecting)
                 ) {
                     $columns['has_connecting'] = true;
                 }
@@ -458,24 +469,31 @@ class SailingScheduleController extends Controller
 
             if ($hasConnecting) {
                 $withConnecting = $routeSchedules->filter(fn($s) => !empty($s->connecting_vessel));
-                $total          = $withConnecting->count();
-                $filledFromDb   = $withConnecting->filter(fn($s) => !empty($s->code_connecting));
-                $filledCount    = $filledFromDb->count();
-                $emptyCount     = $total - $filledCount;
 
-                if ($total > 0 && $filledCount >= $emptyCount) {
-                    $transitLabel = $filledFromDb
-                        ->groupBy(fn($s) => strtoupper(trim($s->code_connecting)))
-                        ->map->count()
-                        ->sortDesc()
-                        ->keys()
-                        ->first();
-                } else {
-                    $transitLabel = ($routePodName === 'JEBEL ALI') ? 'TPP' : 'SIN';
-                }
+                // Resolve transit label untuk ETA (eta_code_connecting)
+                $filledEta = $withConnecting->filter(fn($s) => !empty($s->eta_code_connecting));
+                $etaLabel  = $filledEta->count() > 0
+                    ? $filledEta
+                    ->groupBy(fn($s) => strtoupper(trim($s->eta_code_connecting)))
+                    ->map->count()
+                    ->sortDesc()
+                    ->keys()
+                    ->first()
+                    : (($routePodName === 'JEBEL ALI') ? 'TPP' : 'SIN');
 
-                $labels['eta_destination'] = "ETA {$transitLabel}";
-                $labels['connecting_etd']  = "ETD {$transitLabel}";
+                // Resolve transit label untuk ETD (etd_code_connecting)
+                $filledEtd = $withConnecting->filter(fn($s) => !empty($s->etd_code_connecting));
+                $etdLabel  = $filledEtd->count() > 0
+                    ? $filledEtd
+                    ->groupBy(fn($s) => strtoupper(trim($s->etd_code_connecting)))
+                    ->map->count()
+                    ->sortDesc()
+                    ->keys()
+                    ->first()
+                    : (($routePodName === 'JEBEL ALI') ? 'TPP' : 'SIN');
+
+                $labels['eta_destination'] = "ETA {$etaLabel}";
+                $labels['connecting_etd']  = "ETD {$etdLabel}";
                 $labels['connecting_eta']  = "ETA {$routePodCode}";
             } else {
                 $labels['eta_destination'] = "ETA {$routePodCode}";

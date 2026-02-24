@@ -52,7 +52,9 @@ class TrackingDetailController extends Controller
 
         $tracking->details()->create($data);
 
-        return redirect()->back()->with('success', 'Status tracking berhasil diperbarui!');
+        // return redirect()->back()->with('success', 'Status tracking berhasil diperbarui!');
+        $url = session('last_tracking_index_url', route('trackings.index'));
+        return redirect()->to($url)->with('success', 'Status tracking berhasil diperbarui!');
     }
 
     public function update(Request $request, $id)
@@ -77,7 +79,9 @@ class TrackingDetailController extends Controller
             'sequence',
         ]));
 
-        return redirect()->back()->with('success', 'Riwayat berhasil diperbarui!');
+        // return redirect()->back()->with('success', 'Riwayat berhasil diperbarui!');
+        $url = session('last_tracking_index_url', route('trackings.index'));
+        return redirect()->to($url)->with('success', 'Riwayat berhasil diperbarui!');
     }
 
     public function destroy($id)
@@ -85,6 +89,8 @@ class TrackingDetailController extends Controller
         $detail = TrackingDetail::findOrFail($id);
         $detail->delete();
 
-        return redirect()->back()->with('success', 'Riwayat berhasil dihapus!');
+        // return redirect()->back()->with('success', 'Riwayat berhasil dihapus!');
+        $url = session('last_tracking_index_url', route('trackings.index'));
+        return redirect()->to($url)->with('success', 'Riwayat berhasil dihapus!');
     }
 }

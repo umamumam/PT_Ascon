@@ -20,6 +20,7 @@ class SailingSchedule extends Model
         'voyage',
         'etd',
         'eta_destination',
+        'eta_code_connecting',
         'eta_destination1',
         'eta_destination2',
         'eta_destination3',
@@ -31,8 +32,9 @@ class SailingSchedule extends Model
         'connecting_vessel',
         'connecting_voyage',
         'connecting_etd',
+        'etd_code_connecting',
         'connecting_eta',
-        'code_connecting',
+        // 'code_connecting',
         'remarks_field',
     ];
 
