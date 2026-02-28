@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TrackingDetail extends Model
 {
@@ -14,10 +14,10 @@ class TrackingDetail extends Model
 
     protected $fillable = [
         'tracking_id',
+        'vessel_information',
         'status',
         'place_of_activity',
         'date',
-        'vessel_information',
         'remarks',
         'sequence',
     ];

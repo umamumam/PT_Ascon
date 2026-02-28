@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('trackings', function (Blueprint $table) {
             $table->id();
+            $table->enum('type', ['Export', 'Import']);
             $table->string('bl_number')->unique();
             $table->string('shipper');
             $table->string('consignee');
             $table->string('origin');
             $table->string('destination');
-            $table->enum('type', ['Export', 'Import']);
             $table->enum('shipment_type', ['LCL', 'FCL']);
 
             $table->string('total_measurement')->nullable();
@@ -28,22 +28,7 @@ return new class extends Migration
             $table->string('size_type')->nullable();
 
             $table->string('vessel_voyage');
-            $table->date('etd');
-            $table->date('eta');
 
-            $table->string('connecting_vessel1')->nullable();
-            $table->date('connecting_etd1')->nullable();
-            $table->date('connecting_eta1')->nullable();
-
-            $table->string('connecting_vessel2')->nullable();
-            $table->date('connecting_etd2')->nullable();
-            $table->date('connecting_eta2')->nullable();
-
-            $table->string('connecting_vessel3')->nullable();
-            $table->date('connecting_etd3')->nullable();
-            $table->date('connecting_eta3')->nullable();
-
-            $table->text('remarks')->nullable();
             $table->timestamps();
         });
     }

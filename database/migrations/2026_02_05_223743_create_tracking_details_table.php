@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('tracking_details', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tracking_id')->constrained()->onDelete('cascade');
-            $table->enum('status', ['departed', 'discharge', 'connecting', 'arrival'])->nullable();
+            $table->string('vessel_information')->nullable();
+            $table->enum('status', ['departed', 'discharge', 'connecting1', 'discharge1', 'connecting2', 'arrival', 'depature'])->nullable();
             $table->string('place_of_activity')->nullable();
             $table->date('date')->nullable();
-            $table->string('vessel_information')->nullable();
             $table->text('remarks')->nullable();
             $table->enum('sequence', ['1st', '2nd', '3rd'])->nullable();
             $table->timestamps();

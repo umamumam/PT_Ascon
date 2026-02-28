@@ -59,33 +59,34 @@ class TrackingController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'type'              => ['required', 'in:Export,Import'],
             'bl_number'         => ['required', 'string', 'unique:trackings'],
             'shipper'           => ['required', 'string'],
             'consignee'         => ['required', 'string'],
             'origin'            => ['required', 'string'],
             'destination'       => ['required', 'string'],
-            'type'              => ['required', 'in:Export,Import'],
             'shipment_type'     => ['required', 'in:LCL,FCL'],
             'total_measurement' => ['nullable', 'string'],
             'total_packages'    => ['nullable', 'string'],
             'container_number'  => ['nullable', 'string'],
             'size_type'         => ['nullable', 'string'],
             'vessel_voyage'     => ['required', 'string'],
-            'etd'               => ['required', 'date'],
-            'eta'               => ['required', 'date'],
-            'connecting_vessel1' => ['nullable', 'string'],
-            'connecting_etd1'    => ['nullable', 'date'],
-            'connecting_eta1'    => ['nullable', 'date'],
-            'connecting_vessel2' => ['nullable', 'string'],
-            'connecting_etd2'    => ['nullable', 'date'],
-            'connecting_eta2'    => ['nullable', 'date'],
-            'connecting_vessel3' => ['nullable', 'string'],
-            'connecting_etd3'    => ['nullable', 'date'],
-            'connecting_eta3'    => ['nullable', 'date'],
-            'remarks'           => ['nullable', 'string'],
         ]);
 
-        Tracking::create($request->all());
+        Tracking::create($request->only([
+            'type',
+            'bl_number',
+            'shipper',
+            'consignee',
+            'origin',
+            'destination',
+            'shipment_type',
+            'total_measurement',
+            'total_packages',
+            'container_number',
+            'size_type',
+            'vessel_voyage',
+        ]));
 
         return redirect()->route('trackings.index')->with('success', 'Data tracking berhasil ditambahkan.');
     }
@@ -93,33 +94,34 @@ class TrackingController extends Controller
     public function update(Request $request, Tracking $tracking)
     {
         $request->validate([
+            'type'              => ['required', 'in:Export,Import'],
             'bl_number'         => ['required', 'string', 'unique:trackings,bl_number,' . $tracking->id],
             'shipper'           => ['required', 'string'],
             'consignee'         => ['required', 'string'],
             'origin'            => ['required', 'string'],
             'destination'       => ['required', 'string'],
-            'type'              => ['required', 'in:Export,Import'],
             'shipment_type'     => ['required', 'in:LCL,FCL'],
             'total_measurement' => ['nullable', 'string'],
             'total_packages'    => ['nullable', 'string'],
             'container_number'  => ['nullable', 'string'],
             'size_type'         => ['nullable', 'string'],
             'vessel_voyage'     => ['required', 'string'],
-            'etd'               => ['required', 'date'],
-            'eta'               => ['required', 'date'],
-            'connecting_vessel1' => ['nullable', 'string'],
-            'connecting_etd1'    => ['nullable', 'date'],
-            'connecting_eta1'    => ['nullable', 'date'],
-            'connecting_vessel2' => ['nullable', 'string'],
-            'connecting_etd2'    => ['nullable', 'date'],
-            'connecting_eta2'    => ['nullable', 'date'],
-            'connecting_vessel3' => ['nullable', 'string'],
-            'connecting_etd3'    => ['nullable', 'date'],
-            'connecting_eta3'    => ['nullable', 'date'],
-            'remarks' => ['nullable', 'string'],
         ]);
 
-        $tracking->update($request->all());
+        $tracking->update($request->only([
+            'type',
+            'bl_number',
+            'shipper',
+            'consignee',
+            'origin',
+            'destination',
+            'shipment_type',
+            'total_measurement',
+            'total_packages',
+            'container_number',
+            'size_type',
+            'vessel_voyage',
+        ]));
 
         return redirect()->route('trackings.index')->with('success', 'Data tracking berhasil diperbarui.');
     }
@@ -138,63 +140,55 @@ class TrackingController extends Controller
     public function import(Request $request)
     {
         $request->validate([
-            'excel_file' => 'required|file|mimes:xlsx,xls,csv|max:5120',
-            'default_type' => 'nullable|in:Export,Import',
-            'default_shipment_type' => 'nullable|in:LCL,FCL',
+            'excel_file'           => 'required|file|mimes:xlsx,xls,csv|max:5120',
+            'default_type'         => 'nullable|in:Export,Import',
+            'default_shipment_type'=> 'nullable|in:LCL,FCL',
         ]);
 
         try {
             $import = new TrackingImport();
 
-            if ($request->has('default_type') && !empty($request->default_type)) {
+            if ($request->filled('default_type')) {
                 $import->setDefaultType($request->default_type);
             }
 
-            if ($request->has('default_shipment_type') && !empty($request->default_shipment_type)) {
+            if ($request->filled('default_shipment_type')) {
                 $import->setDefaultShipmentType($request->default_shipment_type);
             }
 
             Excel::import($import, $request->file('excel_file'));
 
             $successMessage = "Data tracking berhasil diimport!";
-            $successMessage .= " Total data diproses: {$import->getRowCount()}";
-            $successMessage .= " - Berhasil diimport: {$import->getImportedCount()}";
+            $successMessage .= " Total diproses: {$import->getRowCount()}";
+            $successMessage .= " - Berhasil: {$import->getImportedCount()}";
 
-            // Tampilkan rows yang gagal jika ada
             $failedRows = $import->getFailedRows();
             if (!empty($failedRows)) {
-                $errorDetails = "<br><br><strong>Data yang gagal diimport:</strong><br>";
+                $errorDetails = "<br><br><strong>Data yang gagal:</strong><br>";
                 foreach ($failedRows as $rowNumber => $error) {
                     $errorDetails .= "Baris {$rowNumber}: {$error}<br>";
                 }
-
-                // Gunakan with() tanpa html_entity_decode
                 session()->flash('warning', $successMessage . $errorDetails);
                 return redirect()->route('trackings.index');
             }
 
             session()->flash('success', $successMessage);
             return redirect()->route('trackings.index');
+
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-            $failures = $e->failures();
-
             $errorMessages = [];
-            foreach ($failures as $failure) {
-                $row = $failure->row();
-                $blNumber = $failure->values()['bl_number'] ?? 'N/A';
-                $error = $failure->errors()[0];
-
-                $errorMessages[] = "Baris {$row} (BL: {$blNumber}): {$error}";
+            foreach ($e->failures() as $failure) {
+                $errorMessages[] = "Baris {$failure->row()} (BL: " . ($failure->values()['bl_number'] ?? 'N/A') . "): {$failure->errors()[0]}";
             }
-
-            $errorMessage = 'Terjadi kesalahan validasi:<br>' . implode('<br>', $errorMessages);
-            session()->flash('error', $errorMessage);
+            session()->flash('error', 'Validasi gagal:<br>' . implode('<br>', $errorMessages));
             return redirect()->route('trackings.index');
+
         } catch (\Exception $e) {
             session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
             return redirect()->route('trackings.index');
         }
     }
+
     public function publicTracking(Request $request)
     {
         $tracking     = null;

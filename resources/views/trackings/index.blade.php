@@ -1,6 +1,7 @@
 <x-app-layout>
     <div class="container-xxl flex-grow-1 container-p-y">
 
+        {{-- Stats Cards --}}
         <div class="row g-6 mb-6">
             <div class="col-sm-6 col-xl-3">
                 <div class="card h-100">
@@ -93,6 +94,7 @@
             </div>
         </div>
 
+        {{-- Filter --}}
         <div class="card mb-6">
             <div class="card-header border-bottom">
                 <h5 class="card-title mb-0">Filter Trackings</h5>
@@ -108,7 +110,6 @@
                                 <option value="Import" {{ request('type')=='Import' ? 'selected' : '' }}>Import</option>
                             </select>
                         </div>
-
                         <div class="col-md-3">
                             <label class="form-label">Shipment Type</label>
                             <select name="shipment_type" class="form-select" onchange="this.form.submit()">
@@ -119,17 +120,14 @@
                                     Container Load (LCL)</option>
                             </select>
                         </div>
-
                         <div class="col-md-3">
                             <label class="form-label">From Date</label>
                             <input type="date" name="from_date" class="form-control" value="{{ $fromDate }}">
                         </div>
-
                         <div class="col-md-3">
                             <label class="form-label">To Date</label>
                             <input type="date" name="to_date" class="form-control" value="{{ $toDate }}">
                         </div>
-
                         <div class="col-12 d-flex justify-content-end gap-2">
                             <a href="{{ route('trackings.index') }}" class="btn btn-label-secondary">
                                 <i class="ti ti-refresh me-1"></i> Reset
@@ -143,11 +141,12 @@
             </div>
         </div>
 
+        {{-- Table --}}
         <div class="card">
             <div class="card-header border-bottom d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">List Trackings</h5>
                 <div>
-                    <button class="btn btn-label-success  me-2" data-bs-toggle="modal"
+                    <button class="btn btn-label-success me-2" data-bs-toggle="modal"
                         data-bs-target="#modalImportTracking">
                         <i class="ti ti-file-import me-1"></i> Import Excel
                     </button>
@@ -166,7 +165,8 @@
                             <th>Route (Org - Dest)</th>
                             <th>Type</th>
                             <th>Vessel / Voyage</th>
-                            <th>ETA</th>
+                            <th>Container & Size</th>
+                            <th>Measurement & Packages</th>
                             <th>Status</th>
                             <th width="70">Actions</th>
                         </tr>
@@ -179,8 +179,8 @@
                             </td>
                             <td>
                                 <div class="d-flex flex-column">
-                                    <small class="text-truncate fw-bold">S: {{ $tracking->shipper }}</small>
-                                    <small class="text-truncate text-muted">C: {{ $tracking->consignee }}</small>
+                                    <small class="fw-bold">S: {{ $tracking->shipper }}</small>
+                                    <small class="text-muted">C: {{ $tracking->consignee }}</small>
                                 </div>
                             </td>
                             <td>
@@ -203,19 +203,37 @@
                                 </div>
                             </td>
                             <td>{{ $tracking->vessel_voyage }}</td>
-                            <td>{{ $tracking->eta->format('d M') }}</td>
+                            <td>
+                                @if($tracking->shipment_type == 'FCL')
+                                <div class="d-flex flex-column">
+                                    <small class="fw-bold">{{ $tracking->container_number ?? '-' }}</small>
+                                    <small class="text-muted">{{ $tracking->size_type ?? '-' }}</small>
+                                </div>
+                                @else
+                                -
+                                @endif
+                            </td>
+                            <td>
+                                @if($tracking->shipment_type == 'LCL')
+                                <div class="d-flex flex-column">
+                                    <small class="fw-bold">{{ $tracking->total_measurement ?? '-' }}</small>
+                                    <small class="text-muted">{{ $tracking->total_packages ?? '-' }}</small>
+                                </div>
+                                @else
+                                -
+                                @endif
+                            </td>
                             <td>
                                 @if($tracking->details->count() > 0)
-                                @php
-                                $latestDetail = $tracking->details->sortByDesc('id')->first();
-                                @endphp
+                                @php $latestDetail = $tracking->details->sortByDesc('id')->first(); @endphp
                                 <div class="d-flex flex-column gap-1">
                                     <span class="badge bg-label-success">
                                         <i class="ti ti-check me-1"></i> Updated
                                     </span>
-                                    <small class="text-muted">
-                                        Last: {{ ucfirst($latestDetail->status) }}
-                                    </small>
+                                    <small class="text-muted">Last: {{
+                                        ucfirst(str_replace(['connecting1','connecting2','discharge1','depature'],
+                                        ['Connecting 1','Connecting 2','Discharge 1','Departure'],
+                                        $latestDetail->status)) }}</small>
                                 </div>
                                 @else
                                 <span class="badge bg-label-secondary">
@@ -229,23 +247,18 @@
                                         <i class="ti ti-dots-vertical"></i>
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <!-- Add Status -->
                                         <li>
                                             <button type="button" class="dropdown-item text-success"
                                                 data-bs-toggle="modal" data-bs-target="#modalStatus{{ $tracking->id }}">
                                                 <i class="ti ti-circle-plus me-2"></i> Add Status
                                             </button>
                                         </li>
-
-                                        <!-- View Details -->
                                         <li>
                                             <button type="button" class="dropdown-item text-info" data-bs-toggle="modal"
                                                 data-bs-target="#modalShow{{ $tracking->id }}">
                                                 <i class="ti ti-eye me-2"></i> View Details
                                             </button>
                                         </li>
-
-                                        <!-- Edit -->
                                         <li>
                                             <button type="button" class="dropdown-item text-primary"
                                                 data-bs-toggle="modal"
@@ -253,8 +266,6 @@
                                                 <i class="ti ti-edit me-2"></i> Edit
                                             </button>
                                         </li>
-
-                                        <!-- Delete -->
                                         <li>
                                             <hr class="dropdown-divider">
                                         </li>
@@ -267,7 +278,7 @@
                                     </ul>
                                 </div>
 
-                                <!-- Form Delete (tetap tersembunyi) -->
+                                {{-- Form Delete --}}
                                 <form id="delete-form-{{ $tracking->id }}"
                                     action="{{ route('trackings.destroy', $tracking->id) }}" method="POST"
                                     class="d-none">
@@ -275,14 +286,17 @@
                                     @method('DELETE')
                                 </form>
 
+                                {{-- ==================== --}}
+                                {{-- Modal: Add Status --}}
+                                {{-- ==================== --}}
                                 <div class="modal fade" id="modalStatus{{ $tracking->id }}" tabindex="-1"
                                     aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Update Status: {{ $tracking->bl_number }}</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
+                                                <h5 class="modal-title">Add Status: {{ $tracking->bl_number }}</h5>
+                                                <button type="button" class="btn-close"
+                                                    data-bs-dismiss="modal"></button>
                                             </div>
                                             <form action="{{ route('tracking_details.store', $tracking->id) }}"
                                                 method="POST">
@@ -294,8 +308,11 @@
                                                             <select name="status" class="form-select" required>
                                                                 <option value="departed">Departed</option>
                                                                 <option value="discharge">Discharge</option>
-                                                                <option value="connecting">Connecting</option>
+                                                                <option value="connecting1">Connecting 1</option>
+                                                                <option value="discharge1">Discharge 1</option>
+                                                                <option value="connecting2">Connecting 2</option>
                                                                 <option value="arrival">Arrival</option>
+                                                                <option value="depature">Departure</option>
                                                             </select>
                                                         </div>
                                                         <div class="col-12 mb-3">
@@ -310,8 +327,8 @@
                                                                 value="{{ date('Y-m-d') }}" required>
                                                         </div>
                                                         <div class="col-12 mb-3">
-                                                            <label class="form-label">Vessel Information
-                                                                (Optional)</label>
+                                                            <label class="form-label">Vessel Information <span
+                                                                    class="text-muted">(Optional)</span></label>
                                                             <input type="text" name="vessel_information"
                                                                 class="form-control"
                                                                 placeholder="e.g. MV. Ocean Star V.12">
@@ -332,6 +349,10 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                {{-- ==================== --}}
+                                {{-- Modal: View Details --}}
+                                {{-- ==================== --}}
                                 <div class="modal fade" id="modalShow{{ $tracking->id }}" tabindex="-1"
                                     aria-hidden="true">
                                     <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -339,23 +360,36 @@
                                             <div class="modal-header bg-label-info">
                                                 <h5 class="modal-title">Shipment History: {{ $tracking->bl_number }}
                                                 </h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
+                                                <button type="button" class="btn-close"
+                                                    data-bs-dismiss="modal"></button>
                                             </div>
                                             <div class="modal-body">
+                                                {{-- Info Header --}}
                                                 <div class="row mb-4">
-                                                    <div class="col-md-6">
-                                                        <small class="text-muted d-block">Origin - Destination</small>
+                                                    <div class="col-md-4">
+                                                        <small class="text-muted d-block">Route</small>
                                                         <strong>{{ $tracking->origin }} <i
                                                                 class="ti ti-arrow-right"></i> {{ $tracking->destination
                                                             }}</strong>
                                                     </div>
-                                                    <div class="col-md-6 text-md-end">
+                                                    <div class="col-md-4">
                                                         <small class="text-muted d-block">Vessel</small>
                                                         <strong>{{ $tracking->vessel_voyage }}</strong>
                                                     </div>
+                                                    <div class="col-md-4">
+                                                        @if($tracking->shipment_type == 'FCL')
+                                                        <small class="text-muted d-block">Container & Size</small>
+                                                        <strong>{{ $tracking->container_number ?? '-' }} / {{
+                                                            $tracking->size_type ?? '-' }}</strong>
+                                                        @else
+                                                        <small class="text-muted d-block">Total Measurement & Packages</small>
+                                                        <strong>{{ $tracking->total_measurement ?? '-' }} / {{
+                                                            $tracking->total_packages ?? '-' }}</strong>
+                                                        @endif
+                                                    </div>
                                                 </div>
 
+                                                {{-- Detail Table --}}
                                                 <div class="table-responsive border rounded">
                                                     <table class="table mb-0">
                                                         <thead class="table-light">
@@ -372,11 +406,29 @@
                                                             @forelse($tracking->details->sortBy('id') as $detail)
                                                             <tr class="border-top">
                                                                 <td>
-                                                                    <span class="badge bg-label-{{
-                                        $detail->status == 'arrival'  ? 'success' :
-                                        ($detail->status == 'departed' ? 'primary' : 'warning')
-                                    }}">
-                                                                        {{ strtoupper($detail->status) }}
+                                                                    @php
+                                                                    $statusLabel = match($detail->status) {
+                                                                    'departed' => ['label' => 'Departed', 'color' =>
+                                                                    'primary'],
+                                                                    'discharge' => ['label' => 'Discharge', 'color' =>
+                                                                    'warning'],
+                                                                    'connecting1' => ['label' => 'Connecting 1','color'
+                                                                    => 'info'],
+                                                                    'discharge1' => ['label' => 'Discharge 1', 'color'
+                                                                    => 'warning'],
+                                                                    'connecting2' => ['label' => 'Connecting 2','color'
+                                                                    => 'info'],
+                                                                    'arrival' => ['label' => 'Arrival', 'color' =>
+                                                                    'success'],
+                                                                    'depature' => ['label' => 'Departure', 'color' =>
+                                                                    'secondary'],
+                                                                    default => ['label' => ucfirst($detail->status),
+                                                                    'color' => 'secondary'],
+                                                                    };
+                                                                    @endphp
+                                                                    <span
+                                                                        class="badge bg-label-{{ $statusLabel['color'] }}">
+                                                                        {{ $statusLabel['label'] }}
                                                                     </span>
                                                                 </td>
                                                                 <td>{{ $detail->place_of_activity }}</td>
@@ -385,9 +437,8 @@
                                                                 <td class="text-center">
                                                                     @if($detail->sequence)
                                                                     <span
-                                                                        class="badge badge-center rounded-pill bg-label-secondary">
-                                                                        {{ $detail->sequence }}
-                                                                    </span>
+                                                                        class="badge badge-center rounded-pill bg-label-secondary">{{
+                                                                        $detail->sequence }}</span>
                                                                     @else
                                                                     -
                                                                     @endif
@@ -439,6 +490,9 @@
                                     </div>
                                 </div>
 
+                                {{-- ======================== --}}
+                                {{-- Modal: Edit Each Detail --}}
+                                {{-- ======================== --}}
                                 @foreach($tracking->details as $detail)
                                 <div class="modal fade" id="modalEditDetail{{ $detail->id }}" tabindex="-1"
                                     aria-hidden="true">
@@ -462,11 +516,19 @@
                                                                     'departed' ? 'selected' : '' }}>Departed</option>
                                                                 <option value="discharge" {{ $detail->status ==
                                                                     'discharge' ? 'selected' : '' }}>Discharge</option>
-                                                                <option value="connecting" {{ $detail->status ==
-                                                                    'connecting' ? 'selected' : '' }}>Connecting
+                                                                <option value="connecting1" {{ $detail->status ==
+                                                                    'connecting1' ? 'selected' : '' }}>Connecting 1
+                                                                </option>
+                                                                <option value="discharge1" {{ $detail->status ==
+                                                                    'discharge1' ? 'selected' : '' }}>Discharge 1
+                                                                </option>
+                                                                <option value="connecting2" {{ $detail->status ==
+                                                                    'connecting2' ? 'selected' : '' }}>Connecting 2
                                                                 </option>
                                                                 <option value="arrival" {{ $detail->status == 'arrival'
                                                                     ? 'selected' : '' }}>Arrival</option>
+                                                                <option value="depature" {{ $detail->status ==
+                                                                    'depature' ? 'selected' : '' }}>Departure</option>
                                                             </select>
                                                         </div>
                                                         <div class="col-12 mb-3">
@@ -487,7 +549,9 @@
                                                                 value="{{ $detail->vessel_information }}">
                                                         </div>
                                                         <div class="col-12 mb-3">
-                                                            <label class="form-label">Sequence</label>
+                                                            <label class="form-label">Sequence <span
+                                                                    class="text-muted">(Auto, override jika
+                                                                    perlu)</span></label>
                                                             <select name="sequence" class="form-select">
                                                                 <option value="">None</option>
                                                                 <option value="1st" {{ $detail->sequence == '1st' ?
@@ -515,15 +579,18 @@
                                     </div>
                                 </div>
                                 @endforeach
-                                <!-- Modal Edit -->
+
+                                {{-- ==================== --}}
+                                {{-- Modal: Edit Tracking --}}
+                                {{-- ==================== --}}
                                 <div class="modal fade" id="modalEditTracking{{ $tracking->id }}" tabindex="-1"
                                     aria-hidden="true">
                                     <div class="modal-dialog modal-lg modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title">Edit Tracking: {{ $tracking->bl_number }}</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
+                                                <button type="button" class="btn-close"
+                                                    data-bs-dismiss="modal"></button>
                                             </div>
                                             <form action="{{ route('trackings.update', $tracking->id) }}" method="POST">
                                                 @csrf
@@ -575,27 +642,17 @@
                                                             <input type="text" class="form-control" name="destination"
                                                                 value="{{ $tracking->destination }}" required />
                                                         </div>
-                                                        <div class="col-md-6 mb-3">
+                                                        <div class="col-md-12 mb-3">
                                                             <label class="form-label">Vessel / Voyage</label>
                                                             <input type="text" class="form-control" name="vessel_voyage"
                                                                 value="{{ $tracking->vessel_voyage }}" required />
                                                         </div>
-                                                        <div class="col-md-3 mb-3">
-                                                            <label class="form-label">ETD</label>
-                                                            <input type="date" class="form-control" name="etd"
-                                                                value="{{ $tracking->etd->format('Y-m-d') }}"
-                                                                required />
-                                                        </div>
-                                                        <div class="col-md-3 mb-3">
-                                                            <label class="form-label">ETA</label>
-                                                            <input type="date" class="form-control" name="eta"
-                                                                value="{{ $tracking->eta->format('Y-m-d') }}"
-                                                                required />
+
+                                                        <div class="col-12">
+                                                            <hr>
                                                         </div>
 
-                                                        <hr>
-
-                                                        <!-- FCL Fields (Container) -->
+                                                        {{-- FCL Fields --}}
                                                         <div id="fclFields{{ $tracking->id }}" class="row"
                                                             style="display: {{ $tracking->shipment_type == 'FCL' ? 'flex' : 'none' }}">
                                                             <div class="col-md-6 mb-3">
@@ -611,7 +668,7 @@
                                                             </div>
                                                         </div>
 
-                                                        <!-- LCL Fields (Measurement & Packages) -->
+                                                        {{-- LCL Fields --}}
                                                         <div id="lclFields{{ $tracking->id }}" class="row"
                                                             style="display: {{ $tracking->shipment_type == 'LCL' ? 'flex' : 'none' }}">
                                                             <div class="col-md-6 mb-3">
@@ -627,83 +684,6 @@
                                                                     value="{{ $tracking->total_packages }}" />
                                                             </div>
                                                         </div>
-
-                                                        <hr>
-
-                                                        <div class="col-12 mb-2">
-                                                            <small class="fw-bold text-muted">Connecting Vessel
-                                                                1</small>
-                                                        </div>
-                                                        <div class="col-md-4 mb-3">
-                                                            <label class="form-label">Connecting Vessel 1</label>
-                                                            <input type="text" class="form-control"
-                                                                name="connecting_vessel1"
-                                                                value="{{ $tracking->connecting_vessel1 }}" />
-                                                        </div>
-                                                        <div class="col-md-4 mb-3">
-                                                            <label class="form-label">Conn. ETD 1</label>
-                                                            <input type="date" class="form-control"
-                                                                name="connecting_etd1"
-                                                                value="{{ $tracking->connecting_etd1 ? $tracking->connecting_etd1->format('Y-m-d') : '' }}" />
-                                                        </div>
-                                                        <div class="col-md-4 mb-3">
-                                                            <label class="form-label">Conn. ETA 1</label>
-                                                            <input type="date" class="form-control"
-                                                                name="connecting_eta1"
-                                                                value="{{ $tracking->connecting_eta1 ? $tracking->connecting_eta1->format('Y-m-d') : '' }}" />
-                                                        </div>
-
-                                                        <div class="col-12 mb-2">
-                                                            <small class="fw-bold text-muted">Connecting Vessel
-                                                                2</small>
-                                                        </div>
-                                                        <div class="col-md-4 mb-3">
-                                                            <label class="form-label">Connecting Vessel 2</label>
-                                                            <input type="text" class="form-control"
-                                                                name="connecting_vessel2"
-                                                                value="{{ $tracking->connecting_vessel2 }}" />
-                                                        </div>
-                                                        <div class="col-md-4 mb-3">
-                                                            <label class="form-label">Conn. ETD 2</label>
-                                                            <input type="date" class="form-control"
-                                                                name="connecting_etd2"
-                                                                value="{{ $tracking->connecting_etd2 ? $tracking->connecting_etd2->format('Y-m-d') : '' }}" />
-                                                        </div>
-                                                        <div class="col-md-4 mb-3">
-                                                            <label class="form-label">Conn. ETA 2</label>
-                                                            <input type="date" class="form-control"
-                                                                name="connecting_eta2"
-                                                                value="{{ $tracking->connecting_eta2 ? $tracking->connecting_eta2->format('Y-m-d') : '' }}" />
-                                                        </div>
-
-                                                        <div class="col-12 mb-2">
-                                                            <small class="fw-bold text-muted">Connecting Vessel
-                                                                3</small>
-                                                        </div>
-                                                        <div class="col-md-4 mb-3">
-                                                            <label class="form-label">Connecting Vessel 3</label>
-                                                            <input type="text" class="form-control"
-                                                                name="connecting_vessel3"
-                                                                value="{{ $tracking->connecting_vessel3 }}" />
-                                                        </div>
-                                                        <div class="col-md-4 mb-3">
-                                                            <label class="form-label">Conn. ETD 3</label>
-                                                            <input type="date" class="form-control"
-                                                                name="connecting_etd3"
-                                                                value="{{ $tracking->connecting_etd3 ? $tracking->connecting_etd3->format('Y-m-d') : '' }}" />
-                                                        </div>
-                                                        <div class="col-md-4 mb-3">
-                                                            <label class="form-label">Conn. ETA 3</label>
-                                                            <input type="date" class="form-control"
-                                                                name="connecting_eta3"
-                                                                value="{{ $tracking->connecting_eta3 ? $tracking->connecting_eta3->format('Y-m-d') : '' }}" />
-                                                        </div>
-
-                                                        <div class="col-12 mb-3">
-                                                            <label class="form-label">Remarks</label>
-                                                            <textarea class="form-control" name="remarks"
-                                                                rows="2">{{ $tracking->remarks }}</textarea>
-                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -715,6 +695,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                             </td>
                         </tr>
                         @endforeach
@@ -724,13 +705,15 @@
         </div>
     </div>
 
-    <!-- Modal Add New -->
+    {{-- ==================== --}}
+    {{-- Modal: Add Tracking --}}
+    {{-- ==================== --}}
     <div class="modal fade" id="modalAddTracking" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Add New Tracking</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form action="{{ route('trackings.store') }}" method="POST">
                     @csrf
@@ -776,23 +759,17 @@
                                 <input type="text" class="form-control" name="destination"
                                     placeholder="Destination Port" required />
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-12 mb-3">
                                 <label class="form-label">Vessel / Voyage</label>
                                 <input type="text" class="form-control" name="vessel_voyage"
                                     placeholder="Ex: MV. EVERGREEN V.123" required />
                             </div>
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label">ETD</label>
-                                <input type="date" class="form-control" name="etd" required />
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label">ETA</label>
-                                <input type="date" class="form-control" name="eta" required />
+
+                            <div class="col-12">
+                                <hr>
                             </div>
 
-                            <hr>
-
-                            <!-- FCL Fields (Container) -->
+                            {{-- FCL Fields --}}
                             <div id="fclFieldsAdd" class="row" style="display: none;">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Container Number</label>
@@ -805,7 +782,7 @@
                                 </div>
                             </div>
 
-                            <!-- LCL Fields (Measurement & Packages) -->
+                            {{-- LCL Fields --}}
                             <div id="lclFieldsAdd" class="row" style="display: flex;">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Total Measurement</label>
@@ -818,62 +795,6 @@
                                         placeholder="100 Cartons" />
                                 </div>
                             </div>
-
-                            <hr>
-
-                            <div class="col-12 mb-2">
-                                <small class="fw-bold text-muted">Connecting Vessel 1</small>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Connecting Vessel 1</label>
-                                <input type="text" class="form-control" name="connecting_vessel1" />
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Conn. ETD 1</label>
-                                <input type="date" class="form-control" name="connecting_etd1" />
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Conn. ETA 1</label>
-                                <input type="date" class="form-control" name="connecting_eta1" />
-                            </div>
-
-                            <div class="col-12 mb-2">
-                                <small class="fw-bold text-muted">Connecting Vessel 2</small>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Connecting Vessel 2</label>
-                                <input type="text" class="form-control" name="connecting_vessel2" />
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Conn. ETD 2</label>
-                                <input type="date" class="form-control" name="connecting_etd2" />
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Conn. ETA 2</label>
-                                <input type="date" class="form-control" name="connecting_eta2" />
-                            </div>
-
-                            <div class="col-12 mb-2">
-                                <small class="fw-bold text-muted">Connecting Vessel 3</small>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Connecting Vessel 3</label>
-                                <input type="text" class="form-control" name="connecting_vessel3" />
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Conn. ETD 3</label>
-                                <input type="date" class="form-control" name="connecting_etd3" />
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Conn. ETA 3</label>
-                                <input type="date" class="form-control" name="connecting_eta3" />
-                            </div>
-
-                            <div class="col-12 mb-3">
-                                <label class="form-label">Remarks</label>
-                                <textarea class="form-control" name="remarks" rows="2"
-                                    placeholder="Notes..."></textarea>
-                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -884,18 +805,20 @@
             </div>
         </div>
     </div>
-    <!-- Modal Import Excel -->
+
+    {{-- ====================== --}}
+    {{-- Modal: Import Excel --}}
+    {{-- ====================== --}}
     <div class="modal fade" id="modalImportTracking" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Import Tracking Data</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form action="{{ route('trackings.import') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
-                        <!-- Bagian Template -->
                         <div class="mb-4">
                             <h6>Template Format Excel</h6>
                             <p class="text-muted">Download template untuk memastikan format data sesuai:</p>
@@ -903,166 +826,42 @@
                                 <i class="ti ti-download me-1"></i> Download Template
                             </a>
                         </div>
-
                         <hr class="my-4">
-
-                        <!-- Input File -->
                         <div class="mb-4">
                             <label class="form-label fw-semibold">Pilih File Excel *</label>
                             <input type="file" class="form-control" name="excel_file" accept=".xlsx,.xls,.csv" required>
-                            <small class="text-muted">Format file: .xlsx, .xls, .csv (maksimal 5MB)</small>
+                            <small class="text-muted">Format: .xlsx, .xls, .csv (maks. 5MB)</small>
                         </div>
-
-                        <!-- Dropdown Pilihan Default -->
                         <div class="row">
-                            <!-- Default Type -->
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold">Pilih Default Type</label>
+                                <label class="form-label fw-semibold">Default Type</label>
                                 <select class="form-select" name="default_type">
                                     <option value="">-- Kosongkan --</option>
                                     <option value="Export" selected>Export</option>
                                     <option value="Import">Import</option>
                                 </select>
-                                <small class="text-muted">Jika kolom "type" kosong di Excel, akan menggunakan nilai
-                                    ini</small>
+                                <small class="text-muted">Dipakai jika kolom "type" kosong di Excel</small>
                             </div>
-
-                            <!-- Default Shipment Type -->
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold">Pilih Default Shipment Type</label>
+                                <label class="form-label fw-semibold">Default Shipment Type</label>
                                 <select class="form-select" name="default_shipment_type">
                                     <option value="">-- Kosongkan --</option>
                                     <option value="LCL" selected>LCL</option>
                                     <option value="FCL">FCL</option>
                                 </select>
-                                <small class="text-muted">Jika kolom "shipment_type" kosong di Excel, akan menggunakan
-                                    nilai ini</small>
+                                <small class="text-muted">Dipakai jika kolom "shipment_type" kosong di Excel</small>
                             </div>
                         </div>
-
-                        <!-- Informasi Format -->
-                        <div class="alert alert-info mt-4">
-                            <h6 class="alert-heading mb-2">Format Data yang Diperlukan:</h6>
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-sm mb-0">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th width="15%">Kolom</th>
-                                            <th width="20%">Contoh</th>
-                                            <th width="65%">Keterangan</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>bl_number</td>
-                                            <td>TRK-001</td>
-                                            <td>Nomor BL (Wajib diisi, harus unik)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>type</td>
-                                            <td>Export</td>
-                                            <td>
-                                                <span class="text-primary">Export / Import</span><br>
-                                                <small class="text-muted">(Opsional - gunakan default di atas jika
-                                                    kosong)</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>shipment_type</td>
-                                            <td>FCL</td>
-                                            <td>
-                                                <span class="text-primary">LCL / FCL</span><br>
-                                                <small class="text-muted">(Opsional - gunakan default di atas jika
-                                                    kosong)</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>shipper</td>
-                                            <td>PT. Supplier Indonesia</td>
-                                            <td>Nama Shipper (Wajib diisi)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>consignee</td>
-                                            <td>PT. Buyer Singapore</td>
-                                            <td>Nama Consignee (Wajib diisi)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>origin</td>
-                                            <td>Jakarta</td>
-                                            <td>Port of Origin (Wajib diisi)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>destination</td>
-                                            <td>Singapore</td>
-                                            <td>Port of Destination (Wajib diisi)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>total_measurement</td>
-                                            <td>15.5 CBM</td>
-                                            <td>Total Measurement (Opsional, khusus LCL)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>total_packages</td>
-                                            <td>100 Cartons</td>
-                                            <td>Total Packages (Opsional, khusus LCL)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>container_number</td>
-                                            <td>CMAU1234567</td>
-                                            <td>Container Number (Opsional, khusus FCL)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>size_type</td>
-                                            <td>40HC</td>
-                                            <td>Container Size/Type (Opsional, khusus FCL)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>vessel_voyage</td>
-                                            <td>MV. EVERGREEN 123E</td>
-                                            <td>Vessel dan Voyage (Wajib diisi)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>etd</td>
-                                            <td>2024-03-15</td>
-                                            <td>Format: YYYY-MM-DD (Wajib diisi)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>eta</td>
-                                            <td>2024-03-20</td>
-                                            <td>Format: YYYY-MM-DD (Wajib diisi)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>connecting_vessel</td>
-                                            <td>MV. CONNECTING 456W</td>
-                                            <td>Connecting Vessel (Opsional)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>connecting_etd</td>
-                                            <td>2024-03-21</td>
-                                            <td>Format: YYYY-MM-DD (Opsional)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>connecting_eta</td>
-                                            <td>2024-03-25</td>
-                                            <td>Format: YYYY-MM-DD (Opsional)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>remarks</td>
-                                            <td>Shipment on time</td>
-                                            <td>Catatan tambahan (Opsional)</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <p class="mt-2 mb-0">
-                                <small>
-                                    <strong>Note:</strong><br>
-                                    1. Untuk LCL: isi total_measurement dan total_packages<br>
-                                    2. Untuk FCL: isi container_number dan size_type<br>
-                                    3. Kolom dengan format tanggal harus menggunakan format YYYY-MM-DD<br>
-                                    4. BL Number harus unik, tidak boleh duplikat
-                                </small>
-                            </p>
+                        <div class="alert alert-info mt-3">
+                            <h6 class="alert-heading mb-2">Kolom yang Diperlukan (Sheet 1 - Data Tracking):</h6>
+                            <small>
+                                <strong>Wajib:</strong> bl_number, shipper, consignee, origin, destination,
+                                vessel_voyage<br>
+                                <strong>Opsional:</strong> type, shipment_type, container_number, size_type,
+                                total_measurement, total_packages<br><br>
+                                <strong>Sheet 2 - Detail Tracking:</strong> bl_number, status, place_of_activity, date,
+                                vessel_information, remarks
+                            </small>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -1075,29 +874,20 @@
     </div>
 
     <script>
-        // Fungsi untuk toggle fields berdasarkan shipment type
         function toggleShipmentFields(id) {
             const shipmentType = document.getElementById('shipmentType' + id).value;
             const fclFields = document.getElementById('fclFields' + id);
             const lclFields = document.getElementById('lclFields' + id);
-
-            if (shipmentType === 'FCL') {
-                fclFields.style.display = 'flex';
-                lclFields.style.display = 'none';
-            } else {
-                fclFields.style.display = 'none';
-                lclFields.style.display = 'flex';
-            }
+            fclFields.style.display = shipmentType === 'FCL' ? 'flex' : 'none';
+            lclFields.style.display = shipmentType === 'LCL' ? 'flex' : 'none';
         }
 
-        // Inisialisasi untuk modal edit yang sudah ada data
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             @foreach($trackings as $tracking)
                 toggleShipmentFields({{ $tracking->id }});
             @endforeach
         });
 
-        // Fungsi konfirmasi delete dengan SweetAlert
         function confirmDelete(id) {
             Swal.fire({
                 title: 'Are you sure?',

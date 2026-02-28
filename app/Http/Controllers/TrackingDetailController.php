@@ -11,7 +11,7 @@ class TrackingDetailController extends Controller
     public function store(Request $request, $trackingId)
     {
         $request->validate([
-            'status'             => 'required|in:departed,discharge,connecting,arrival',
+            'status'             => 'required|in:departed,discharge,connecting1,discharge1,connecting2,arrival,depature',
             'place_of_activity'  => 'required|string',
             'date'               => 'required|date',
             'vessel_information' => 'nullable|string',
@@ -20,47 +20,49 @@ class TrackingDetailController extends Controller
 
         $tracking = Tracking::findOrFail($trackingId);
 
-        $count = TrackingDetail::where('tracking_id', $trackingId)
-            ->where('status', $request->status)
-            ->count();
+        $data = $request->only([
+            'status',
+            'place_of_activity',
+            'date',
+            'vessel_information',
+            'remarks',
+        ]);
 
-        $data = $request->all();
+        $data['tracking_id'] = $trackingId;
 
-        if ($count == 1) {
-            $data['sequence'] = '1st';
-        } elseif ($count == 2) {
-            $data['sequence'] = '2nd';
-        } elseif ($count == 3) {
-            $data['sequence'] = '3rd';
-        } elseif ($count > 3) {
-            $data['sequence'] = ($count) . 'th';
+        if ($request->status === 'departed' && !$request->filled('vessel_information')) {
+            $data['vessel_information'] = $tracking->vessel_voyage;
         } else {
-            $data['sequence'] = null;
+            $data['vessel_information'] = $request->filled('vessel_information')
+                ? $request->vessel_information
+                : null;
         }
 
-        if (empty($data['vessel_information'])) {
-            if ($data['sequence'] === '1st') {
-                $data['vessel_information'] = $tracking->connecting_vessel1 ?? $tracking->vessel_voyage;
-            } elseif ($data['sequence'] === '2nd') {
-                $data['vessel_information'] = $tracking->connecting_vessel2 ?? $tracking->vessel_voyage;
-            } elseif ($data['sequence'] === '3rd') {
-                $data['vessel_information'] = $tracking->connecting_vessel3 ?? $tracking->vessel_voyage;
-            } else {
-                $data['vessel_information'] = $tracking->vessel_voyage;
-            }
+        if ($request->status === 'depature') {
+            $countDepature = TrackingDetail::where('tracking_id', $trackingId)
+                ->where('status', 'depature')
+                ->count();
+
+            $data['sequence'] = match($countDepature) {
+                0       => '1st',
+                1       => '2nd',
+                2       => '3rd',
+                default => '1st',
+            };
+        } else {
+            $data['sequence'] = $this->sequenceMap[$request->status] ?? null;
         }
 
         $tracking->details()->create($data);
 
-        // return redirect()->back()->with('success', 'Status tracking berhasil diperbarui!');
         $url = session('last_tracking_index_url', route('trackings.index'));
-        return redirect()->to($url)->with('success', 'Status tracking berhasil diperbarui!');
+        return redirect()->to($url)->with('success', 'Status tracking berhasil ditambahkan!');
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'status'             => 'required|in:departed,discharge,connecting,arrival',
+            'status'             => 'required|in:departed,discharge,connecting1,discharge1,connecting2,arrival,depature',
             'place_of_activity'  => 'required|string',
             'date'               => 'required|date',
             'vessel_information' => 'nullable|string',
@@ -70,26 +72,42 @@ class TrackingDetailController extends Controller
 
         $detail = TrackingDetail::findOrFail($id);
 
-        $detail->update($request->only([
-            'status',
-            'place_of_activity',
-            'date',
-            'vessel_information',
-            'remarks',
-            'sequence',
-        ]));
 
-        // return redirect()->back()->with('success', 'Riwayat berhasil diperbarui!');
+        if ($request->filled('sequence')) {
+            $sequence = $request->sequence;
+        } elseif ($request->status === 'depature') {
+            $countDepature = TrackingDetail::where('tracking_id', $detail->tracking_id)
+                ->where('status', 'depature')
+                ->where('id', '!=', $id)
+                ->count();
+
+            $sequence = match($countDepature) {
+                0       => '1st',
+                1       => '2nd',
+                2       => '3rd',
+                default => '1st',
+            };
+        } else {
+            $sequence = $this->sequenceMap[$request->status] ?? null;
+        }
+
+        $detail->update([
+            'status'             => $request->status,
+            'place_of_activity'  => $request->place_of_activity,
+            'date'               => $request->date,
+            'vessel_information' => $request->vessel_information,
+            'remarks'            => $request->remarks,
+            'sequence'           => $sequence,
+        ]);
+
         $url = session('last_tracking_index_url', route('trackings.index'));
         return redirect()->to($url)->with('success', 'Riwayat berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        $detail = TrackingDetail::findOrFail($id);
-        $detail->delete();
+        TrackingDetail::findOrFail($id)->delete();
 
-        // return redirect()->back()->with('success', 'Riwayat berhasil dihapus!');
         $url = session('last_tracking_index_url', route('trackings.index'));
         return redirect()->to($url)->with('success', 'Riwayat berhasil dihapus!');
     }
