@@ -333,6 +333,15 @@
                                                                 class="form-control"
                                                                 placeholder="e.g. MV. Ocean Star V.12">
                                                         </div>
+                                                        <div class="col-12 mb-3">
+                                                            <label class="form-label">Indirect <span class="text-muted">(Optional)</span></label>
+                                                            <select name="sequence" class="form-select">
+                                                                <option value="">None</option>
+                                                                <option value="1st">1st</option>
+                                                                <option value="2nd">2nd</option>
+                                                                <option value="3rd">3rd</option>
+                                                            </select>
+                                                        </div>
                                                         <div class="col-12">
                                                             <label class="form-label">Remarks</label>
                                                             <textarea name="remarks" class="form-control" rows="2"
