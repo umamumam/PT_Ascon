@@ -60,6 +60,33 @@
         </li>
 
         <li class="menu-header small">
+            <span class="menu-header-text" data-i18n="CMS Management">CMS Management</span>
+        </li>
+        <li class="menu-item {{ request()->is('cms*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-layout-grid"></i>
+                <div data-i18n="CMS Panel">CMS Panel</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ request()->routeIs('cms.settings.index') ? 'active' : '' }}">
+                    <a href="{{ route('cms.settings.index') }}" class="menu-link">
+                        <div data-i18n="Landing Settings">Landing Settings</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->routeIs('cms.news.index') ? 'active' : '' }}">
+                    <a href="{{ route('cms.news.index') }}" class="menu-link">
+                        <div data-i18n="News Update">News Update</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->routeIs('cms.careers.index') ? 'active' : '' }}">
+                    <a href="{{ route('cms.careers.index') }}" class="menu-link">
+                        <div data-i18n="Job Vacancies">Job Vacancies</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="menu-header small">
             <span class="menu-header-text" data-i18n="Account">Account</span>
         </li>
         <li class="menu-item {{ request()->is('users*') ? 'active open' : '' }}">

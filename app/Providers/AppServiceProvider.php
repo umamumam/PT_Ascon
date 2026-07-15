@@ -27,5 +27,13 @@ class AppServiceProvider extends ServiceProvider
                 ->numbers()
                 ->symbols();
         });
+
+        // Share settings globally with all views
+        view()->composer('*', function ($view) {
+            if (\Illuminate\Support\Facades\Schema::hasTable('settings')) {
+                $settings = \App\Models\Setting::pluck('value', 'key')->all();
+                $view->with('settings', $settings);
+            }
+        });
     }
 }

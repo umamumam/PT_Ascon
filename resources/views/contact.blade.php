@@ -48,8 +48,7 @@
 
     .contact-image {
         width: 100%;
-        height: auto;
-        min-height: 550px;
+        height: 480px;
         object-fit: cover;
     }
 
@@ -63,7 +62,7 @@
     .contact-title {
         color: #FF5722;
         font-weight: 700;
-        font-size: 2.5rem; /* Ukuran seimbang, tidak sebesar display-5 */
+        font-size: 2rem; /* Ukuran seimbang, tidak terlalu besar */
         line-height: 1.2;
     }
 </style>
@@ -72,7 +71,7 @@
     <div class="container">
         <div class="row align-items-center">
 
-            <div class="col-lg-5 mb-5 mt-10 mb-lg-0 reveal-on-scroll">
+            <div class="col-lg-6 mb-5 mt-10 mb-lg-0 reveal-on-scroll">
                 <div class="contact-header mb-5">
                     <h6 class="text-dark fw-bold mb-2">Contact Us</h6>
                     <h2 class="contact-title mb-4">For Inquiries or Questions</h2>
@@ -115,8 +114,9 @@
                 </form>
             </div>
 
-            <div class="col-lg-7 reveal-on-scroll delay-400">
-                <div class="ps-lg-5"> <div class="contact-image-wrapper shadow-lg">
+            <div class="col-lg-6 reveal-on-scroll delay-400">
+                <div class="ps-lg-4">
+                    <div class="contact-image-wrapper shadow-lg">
                         <img src="https://static.wixstatic.com/media/11062b_4c3a67aca05a44d3966c17c369745435~mv2.jpeg"
                             alt="Contact PT Asia Connexindo" class="contact-image">
                     </div>

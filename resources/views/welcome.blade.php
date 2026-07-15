@@ -6,6 +6,13 @@
             class="position-absolute top-0 start-50 translate-middle-x object-fit-cover w-100 h-100"
             style="filter: brightness(0.8);" />
 
+        <!-- Hero Wave Divider -->
+        <div class="hero-wave-divider">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M0,90 Q300,120 600,100 T1200,60 L1200,120 L0,120 Z" fill="#F8F8F8"></path>
+            </svg>
+        </div>
+
         <div class="container position-relative">
             <div class="row">
                 <div class="col-lg-6 text-start text-white py-12">
@@ -15,9 +22,7 @@
 
                     <div class="animate-fade-up" style="animation-delay: 0.3s;">
                         <h1 class="text-white hero-title display-4 fw-bold mb-4">
-                            Partnership <br>
-                            Through Trust, <br>
-                            Since 1999
+                            {!! nl2br(e($settings['hero_title'] ?? "Partnership\nThrough Trust,\nSince 1999")) !!}
                         </h1>
                     </div>
 
@@ -25,11 +30,10 @@
                         <div class="mb-6" style="max-width: 500px;">
                             <hr class="w-25 border-2 border-primary mb-4 opacity-100">
                             <p class="hero-sub-title lh-lg">
-                                Established in 1999, to facilitate the needs of a trustworthy freight forwarding
-                                agent
-                                in Jakarta. Now with over two decades of experience backed by a dedicated and
-                                knowledgeable team, we have gained partnership globally by being a trustworthy and
-                                reliable freight forwarding company
+                                {{ $settings['hero_subtitle'] ?? 'Established in 1999, to facilitate the needs of a
+                                trustworthy freight forwarding agent in Jakarta. Now with over two decades of experience
+                                backed by a dedicated and knowledgeable team, we have gained partnership globally by
+                                being a trustworthy and reliable freight forwarding company.' }}
                             </p>
                         </div>
                     </div>
@@ -51,7 +55,7 @@
 </section>
 
 {{-- about --}}
-<section id="landingAbout" class="section-py landing-about bg-white">
+<section id="landingAbout" class="section-py landing-about" style="background-color: #F8F8F8 !important;">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 mb-5 mb-lg-0 reveal-on-scroll">
@@ -221,7 +225,7 @@
             <div class="col-md-4 col-lg-2-4" data-aos="zoom-in" data-aos-delay="1000"
                 data-aos-anchor="#trigger-services">
                 <div class="service-card h-100 d-flex align-items-center justify-content-center">
-                    <a href="#" class="btn btn-danger btn-lg px-5">
+                    <a href="/services" class="btn btn-danger btn-lg px-5">
                         Read More
                     </a>
                 </div>
@@ -384,13 +388,16 @@
                 </p>
 
                 <div class="d-flex gap-3">
-                    <a href="javascript:void(0)" class="btn btn-icon btn-outline-primary rounded-circle">
+                    <a href="{{ $settings['facebook_link'] ?? '#' }}" target="_blank"
+                        class="btn btn-icon btn-outline-primary rounded-circle">
                         <i class="ti ti-brand-facebook ti-md"></i>
                     </a>
-                    <a href="javascript:void(0)" class="btn btn-icon btn-outline-danger rounded-circle">
+                    <a href="{{ $settings['instagram_link'] ?? '#' }}" target="_blank"
+                        class="btn btn-icon btn-outline-danger rounded-circle">
                         <i class="ti ti-brand-instagram ti-md"></i>
                     </a>
-                    <a href="javascript:void(0)" class="btn btn-icon btn-outline-info rounded-circle">
+                    <a href="{{ $settings['linkedin_link'] ?? '#' }}" target="_blank"
+                        class="btn btn-icon btn-outline-info rounded-circle">
                         <i class="ti ti-brand-linkedin ti-md"></i>
                     </a>
                 </div>
@@ -398,57 +405,29 @@
 
             <div class="col-lg-5" data-aos="fade-left">
                 <div class="row g-3">
+                    @php
+                    $badgeColors = ['primary', 'success', 'warning text-dark', 'danger', 'info', 'secondary'];
+                    @endphp
+                    @forelse($feeds as $feed)
                     <div class="col-6">
                         <div class="card border-0 shadow-sm overflow-hidden h-100">
-                            <div class="position-relative h-100">
-                                <img src="https://scontent-atl3-1.cdninstagram.com/v/t51.82787-15/616124465_18031271036782443_6884874875448236783_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=103&ccb=7-5&_nc_sid=18de74&efg=eyJlZmdfdGFnIjoiRkVFRC5iZXN0X2ltYWdlX3VybGdlbi5DMyJ9&_nc_ohc=gPflKDmeZKMQ7kNvwF__3we&_nc_oc=Adm2MyI_HnEkh14aCt9vJYoCqxz47S2ORPq7TLg02CXfzzHhITIxGtGi5c1QIcxGgdY&_nc_zt=23&_nc_ht=scontent-atl3-1.cdninstagram.com&edm=ANo9K5cEAAAA&_nc_gid=kNH0PN9fVOxgBxSd8U4h_Q&oh=00_AfrUelIuA59_DZhngiwERxx8ZX5-7zr_kO9eS5fdrIMGOQ&oe=69795B7C"
-                                    class="d-block w-100 h-100" alt="Top 10 Commodities"
+                            <a href="{{ $feed->link ?? 'javascript:void(0)' }}"
+                                target="{{ $feed->link ? '_blank' : '_self' }}"
+                                class="position-relative h-100 d-block text-decoration-none">
+                                <img src="{{ str_starts_with($feed->image_path, 'http') ? $feed->image_path : asset($feed->image_path) }}"
+                                    class="d-block w-100 h-100" alt="{{ $feed->title }}"
                                     style="object-fit: cover; height: 180px;">
-                                <div class="card-img-overlay d-flex align-items-end p-2 bg-dark-gradient-overlay">
-                                    <span class="badge bg-primary">Top Commodities</span>
+                                <div class="card-img-overlay d-flex align-items-end p-2 bg-dark-gradient-overlay"
+                                    style="background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);">
+                                    <span class="badge bg-{{ $badgeColors[$loop->index % count($badgeColors)] }}">{{
+                                        $feed->tag }}</span>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     </div>
-
-                    <div class="col-6">
-                        <div class="card border-0 shadow-sm overflow-hidden h-100">
-                            <div class="position-relative h-100">
-                                <img src="https://scontent-atl3-1.cdninstagram.com/v/t51.82787-15/616136818_18031270979782443_8696210326250664352_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=103&ccb=7-5&_nc_sid=18de74&efg=eyJlZmdfdGFnIjoiRkVFRC5iZXN0X2ltYWdlX3VybGdlbi5DMyJ9&_nc_ohc=ZBligGZ8VLgQ7kNvwHQiCzg&_nc_oc=AdkQ2PGGqXa--DvtOzRA7rLdNiyN6gdK-Q5ieIKj_rIi10g2NATdDRv75-ClJ0o4ObY&_nc_zt=23&_nc_ht=scontent-atl3-1.cdninstagram.com&edm=ANo9K5cEAAAA&_nc_gid=kNH0PN9fVOxgBxSd8U4h_Q&oh=00_AfqA1PfIa_eYObxPvDCu8jQh_rOqY9SS72UKbsbBQtfTFA&oe=697964C9"
-                                    class="d-block w-100 h-100" alt="Isra Miraj"
-                                    style="object-fit: cover; height: 180px;">
-                                <div class="card-img-overlay d-flex align-items-end p-2">
-                                    <span class="badge bg-success">Event</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-6">
-                        <div class="card border-0 shadow-sm overflow-hidden h-100">
-                            <div class="position-relative h-100">
-                                <img src="https://scontent-atl3-2.cdninstagram.com/v/t51.82787-15/590409379_18028844819782443_474781670542964814_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=102&ccb=7-5&_nc_sid=18de74&efg=eyJlZmdfdGFnIjoiRkVFRC5iZXN0X2ltYWdlX3VybGdlbi5DMyJ9&_nc_ohc=AFOyg6bC9d4Q7kNvwHlKstB&_nc_oc=AdkRMI3EpHuYOr5O-NgrkatXNZ9yWelxtdSen90JCqWAljH8lrtk6ITrT1jsyK-V86M&_nc_zt=23&_nc_ht=scontent-atl3-2.cdninstagram.com&edm=ANo9K5cEAAAA&_nc_gid=kNH0PN9fVOxgBxSd8U4h_Q&oh=00_AfpUbXMP2DWMI_Hx2D2c6wY-BgDg_dJGN05mmfsEPGh0Jw&oe=69796AE1"
-                                    class="d-block w-100 h-100" alt="Merry Christmas"
-                                    style="object-fit: cover; height: 180px;">
-                                <div class="card-img-overlay d-flex align-items-end p-2">
-                                    <span class="badge bg-warning text-dark">Merry Christmas</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-6">
-                        <div class="card border-0 shadow-sm overflow-hidden h-100">
-                            <div class="position-relative h-100">
-                                <img src="https://scontent-atl3-1.cdninstagram.com/v/t51.82787-15/610102657_18029621696782443_5039307604737192100_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=103&ccb=7-5&_nc_sid=18de74&efg=eyJlZmdfdGFnIjoiRkVFRC5iZXN0X2ltYWdlX3VybGdlbi5DMyJ9&_nc_ohc=_Vehs5ectvAQ7kNvwH1YL5d&_nc_oc=AdmLi14rwgIjs76BT4wvWaOnsbqStJvrMrO0hdMC70NOsWhDwiI5R7zw5TrrX5zc_io&_nc_zt=23&_nc_ht=scontent-atl3-1.cdninstagram.com&edm=ANo9K5cEAAAA&_nc_gid=kNH0PN9fVOxgBxSd8U4h_Q&oh=00_AfqjU46Obw8blj2mXeXfbe6YA8hLEj7OCKkvMEf2Py6Hzw&oe=697947F9"
-                                    class="d-block w-100 h-100" alt="Happy New Year"
-                                    style="object-fit: cover; height: 180px;">
-                                <div class="card-img-overlay d-flex align-items-end p-2">
-                                    <span class="badge bg-danger">New Year</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    @empty
+                    <div class="col-12 text-center text-muted py-4">No feeds available.</div>
+                    @endforelse
                 </div>
             </div>
         </div>

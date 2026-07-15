@@ -10,21 +10,22 @@ use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\TrackingDetailController;
 use App\Http\Controllers\SailingScheduleController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+use App\Http\Controllers\PublicCmsController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\CareerController;
+use App\Http\Controllers\SocialFeedController;
+use App\Http\Controllers\LandingSettingController;
+
+Route::get('/', [PublicCmsController::class, 'welcome']);
 Route::get('/about', function () {
     return view('about');
 });
 Route::get('/services', function () {
     return view('services');
 });
-Route::get('/news', function () {
-    return view('news');
-});
-Route::get('/careers', function () {
-    return view('careers');
-});
+Route::get('/news', [PublicCmsController::class, 'news'])->name('public.news.index');
+Route::get('/news/{slug}', [PublicCmsController::class, 'showNews'])->name('public.news.show');
+Route::get('/careers', [PublicCmsController::class, 'careers'])->name('public.careers.index');
 Route::get('/contact', function () {
     return view('contact');
 });
@@ -64,6 +65,30 @@ Route::middleware('auth')->group(function () {
     Route::delete('tracking-details/{id}', [TrackingDetailController::class, 'destroy'])->name('tracking_details.destroy');
 
     Route::resource('trackings', TrackingController::class);
+
+    // CMS Administration routes
+    Route::resource('cms/news', NewsController::class)->names([
+        'index' => 'cms.news.index',
+        'store' => 'cms.news.store',
+        'update' => 'cms.news.update',
+        'destroy' => 'cms.news.destroy',
+    ])->except(['create', 'show', 'edit']);
+
+    Route::resource('cms/careers', CareerController::class)->names([
+        'index' => 'cms.careers.index',
+        'store' => 'cms.careers.store',
+        'update' => 'cms.careers.update',
+        'destroy' => 'cms.careers.destroy',
+    ])->except(['create', 'show', 'edit']);
+
+    Route::resource('cms/feeds', SocialFeedController::class)->names([
+        'store' => 'cms.feeds.store',
+        'update' => 'cms.feeds.update',
+        'destroy' => 'cms.feeds.destroy',
+    ])->only(['store', 'update', 'destroy']);
+
+    Route::get('cms/settings', [LandingSettingController::class, 'index'])->name('cms.settings.index');
+    Route::post('cms/settings', [LandingSettingController::class, 'update'])->name('cms.settings.update');
 });
 
 require __DIR__ . '/auth.php';
