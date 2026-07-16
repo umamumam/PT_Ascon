@@ -21,8 +21,8 @@ class SocialFeedController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/feeds'), $filename);
-            $imagePath = 'uploads/feeds/' . $filename;
+            $file->storeAs('feeds', $filename, 'public');
+            $imagePath = 'storage/feeds/' . $filename;
         }
 
         SocialFeed::create([
@@ -52,8 +52,8 @@ class SocialFeedController extends Controller
             }
             $file = $request->file('image');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/feeds'), $filename);
-            $imagePath = 'uploads/feeds/' . $filename;
+            $file->storeAs('feeds', $filename, 'public');
+            $imagePath = 'storage/feeds/' . $filename;
         }
 
         $feed->update([

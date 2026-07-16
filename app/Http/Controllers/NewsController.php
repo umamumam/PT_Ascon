@@ -35,8 +35,8 @@ class NewsController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/news'), $filename);
-            $imagePath = 'uploads/news/' . $filename;
+            $file->storeAs('news', $filename, 'public');
+            $imagePath = 'storage/news/' . $filename;
         }
 
         News::create([
@@ -69,8 +69,8 @@ class NewsController extends Controller
             }
             $file = $request->file('image');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/news'), $filename);
-            $imagePath = 'uploads/news/' . $filename;
+            $file->storeAs('news', $filename, 'public');
+            $imagePath = 'storage/news/' . $filename;
         }
 
         $slug = $news->slug;

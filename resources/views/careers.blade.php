@@ -38,36 +38,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Job Detail Modal -->
-                <div class="modal fade" id="modalJobDetail{{ $job->id }}" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <div>
-                                    <h4 class="modal-title fw-bold text-dark">{{ $job->title }}</h4>
-                                    <small class="text-muted">{{ $job->location }} • {{ $job->type }}</small>
-                                </div>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body text-muted" style="line-height: 1.8;">
-                                @if($job->description)
-                                    <h5 class="fw-bold text-dark mb-2">Job Description</h5>
-                                    <p class="mb-4" style="white-space: pre-line;">{{ $job->description }}</p>
-                                @endif
-
-                                @if($job->requirements)
-                                    <h5 class="fw-bold text-dark mb-2">Requirements</h5>
-                                    <p style="white-space: pre-line;">{{ $job->requirements }}</p>
-                                @endif
-                            </div>
-                            <div class="modal-footer">
-                                <a href="/contact" class="btn btn-primary">Apply Now</a>
-                                <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             @empty
                 <div class="col-lg-4 col-md-6">
                     <div class="card h-100 border-0 shadow-sm p-5" style="background-color: #ffffff; border-radius: 4px; min-height: 400px;">
@@ -88,6 +58,38 @@
                 </div>
             @endforelse
         </div>
+
+        <!-- Job Detail Modals (Rendered outside the transform container to prevent rendering/blur issues) -->
+        @foreach($jobs as $job)
+            <div class="modal fade" id="modalJobDetail{{ $job->id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div>
+                                <h4 class="modal-title fw-bold text-dark">{{ $job->title }}</h4>
+                                <small class="text-muted">{{ $job->location }} • {{ $job->type }}</small>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-muted" style="line-height: 1.8;">
+                            @if($job->description)
+                                <h5 class="fw-bold text-dark mb-2">Job Description</h5>
+                                <p class="mb-4" style="white-space: pre-line;">{{ $job->description }}</p>
+                            @endif
+
+                            @if($job->requirements)
+                                <h5 class="fw-bold text-dark mb-2">Requirements</h5>
+                                <p style="white-space: pre-line;">{{ $job->requirements }}</p>
+                            @endif
+                        </div>
+                        <div class="modal-footer">
+                            <a href="/contact" class="btn btn-primary">Apply Now</a>
+                            <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
     </div>
 </section>
 
