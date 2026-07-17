@@ -374,9 +374,9 @@
                         <li class="nav-item">
                             <a class="nav-link fw-medium" aria-current="page" href="/about">About Us</a>
                         </li>
-                        {{-- <li class="nav-item">
-                            <a class="nav-link fw-medium" href="/business">Business</a>
-                        </li> --}}
+                        <li class="nav-item">
+                            <a class="nav-link fw-medium" href="/services">Services</a>
+                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle fw-medium" href="#" id="navbarDropdown" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
