@@ -150,6 +150,12 @@
             border-bottom: none !important;
         }
 
+        /* Hide the app brand text under logo */
+        .navbar .app-brand-text,
+        .landing-navbar .app-brand-text {
+            display: none !important;
+        }
+
         /* Disable layout-page:before header blur/background element to fix the scroll line */
         .layout-navbar-fixed .layout-page:before,
         .layout-navbar-fixed .layout-wrapper .layout-page:before,
@@ -335,6 +341,18 @@
         .dark-style footer.custom-landing-footer a.footer-link:hover {
             color: #7367f0 !important;
         }
+
+        .landing-nav-logo {
+            height: auto;
+            width: 100px;
+            object-fit: contain;
+        }
+
+        @media (max-width: 768px) {
+            .landing-nav-logo {
+                height: 70px;
+            }
+        }
     </style>
 </head>
 
@@ -356,8 +374,7 @@
                     <!-- Mobile menu toggle: End-->
                     <a href="/" class="app-brand-link">
                         <span class="app-brand-logo">
-                            <img src="{{ asset('LogoLanding.png') }}" alt="Logo"
-                                style="height: 50px; width: auto; object-fit: contain;">
+                            <img src="{{ asset('LogoLanding.png') }}" alt="Logo" class="landing-nav-logo">
                         </span>
                         {{-- <span class="app-brand-text demo menu-text fw-bold ms-2 ps-1">Vuexy</span> --}}
                     </a>
@@ -377,7 +394,7 @@
                         <li class="nav-item">
                             <a class="nav-link fw-medium" href="/services">Services</a>
                         </li>
-                        <li class="nav-item dropdown">
+                        {{-- <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle fw-medium" href="#" id="navbarDropdown" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 eServices
@@ -386,7 +403,7 @@
                                 <li><a class="dropdown-item" href="/sailing">Sailing Schedule</a></li>
                                 <li><a class="dropdown-item" href="/etracking">Tracking</a></li>
                             </ul>
-                        </li>
+                        </li> --}}
                         {{-- <li class="nav-item">
                             <a class="nav-link fw-medium" href="/quote">eQuote</a>
                         </li> --}}
@@ -456,7 +473,7 @@
                 <div class="col-lg-3 col-md-12 mb-5 mb-lg-0 text-center text-lg-start">
                     <a href="/" class="d-inline-block mb-3">
                         <img src="{{ asset('LogoLanding.png') }}" alt="PT Asia Connexindo Internasional"
-                            style="max-width: 120px; height: auto;">
+                            style="max-width: 130px; height: auto;">
                     </a>
                 </div>
 

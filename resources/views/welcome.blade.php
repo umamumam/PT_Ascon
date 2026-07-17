@@ -21,7 +21,8 @@
                     </div>
 
                     <div class="animate-fade-up" style="animation-delay: 0.3s;">
-                        <h1 class="text-white hero-title display-4 fw-bold mb-4">
+                        <h1 class="text-white hero-title fw-bold mb-4"
+                            style="font-size: clamp(1.8rem, 5vw, 3rem); line-height: 1.2;">
                             {!! nl2br(e($settings['hero_title'] ?? "Partnership\nThrough Trust,\nSince 1999")) !!}
                         </h1>
                     </div>
@@ -320,7 +321,7 @@
             <div class="col-lg-7 text-white">
                 <p class="mb-2 fw-medium">Worldwide Freight Forwarder</p>
 
-                <h2 class="fw-bold mb-4" style="color: #FF5722; line-height: 1.2; font-size: 2.8rem;">
+                <h2 class="fw-bold mb-4" style="color: #FF5722; line-height: 1.2; font-size: clamp(1.5rem, 3.5vw, 2.4rem);">
                     Experienced Sea & Air Forwarder,<br>
                     from Freight to Warehousing.
                 </h2>
@@ -377,7 +378,7 @@
                     <h3 class="text-dark fw-bold mb-2">Follow us</h3>
                 </div>
 
-                <h2 class="mb-4 fw-bold" style="color: #FF5722; line-height: 1.2; font-size: 2.8rem;">
+                <h2 class="mb-4 fw-bold" style="color: #FF5722; line-height: 1.2; font-size: clamp(1.5rem, 3.5vw, 2.4rem);">
                     Stay Updated &<br />
                     Connect with Us
                 </h2>
