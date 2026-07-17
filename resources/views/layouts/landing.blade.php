@@ -374,9 +374,9 @@
                         <li class="nav-item">
                             <a class="nav-link fw-medium" aria-current="page" href="/about">About Us</a>
                         </li>
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a class="nav-link fw-medium" href="/business">Business</a>
-                        </li>
+                        </li> --}}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle fw-medium" href="#" id="navbarDropdown" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -387,9 +387,9 @@
                                 <li><a class="dropdown-item" href="/etracking">Tracking</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a class="nav-link fw-medium" href="/quote">eQuote</a>
-                        </li>
+                        </li> --}}
                         <li class="nav-item">
                             <a class="nav-link fw-medium" href="/news">News</a>
                         </li>
@@ -746,15 +746,18 @@
             <div
                 style="background-color: #ffffff; border-top: 1px solid #eaeaea; padding: 10px 12px; display: flex; flex-direction: column;">
                 <!-- Emoji Picker Panel -->
-                <div id="chat-emoji-picker" style="display: none; flex-wrap: wrap; gap: 4px; padding: 8px 4px 4px; border-top: 1px solid #f1f1f1; max-height: 110px; overflow-y: auto; margin-bottom: 4px;">
+                <div id="chat-emoji-picker"
+                    style="display: none; flex-wrap: wrap; gap: 4px; padding: 8px 4px 4px; border-top: 1px solid #f1f1f1; max-height: 110px; overflow-y: auto; margin-bottom: 4px;">
                     <!-- Emoji list injected by JS -->
                 </div>
 
                 <!-- Image Preview Area -->
                 <div id="chat-image-preview-wrap" style="display:none; margin-bottom: 6px;">
                     <div style="position:relative; display:inline-block;">
-                        <img id="chat-image-preview" src="" style="max-height:80px; max-width:100%; border-radius:8px; border:1px solid #eaeaea;" />
-                        <button onclick="removeChatImage()" style="position:absolute; top:-6px; right:-6px; background:#FF5722; color:#fff; border:none; border-radius:50%; width:18px; height:18px; font-size:0.65rem; cursor:pointer; line-height:18px; padding:0;">✕</button>
+                        <img id="chat-image-preview" src=""
+                            style="max-height:80px; max-width:100%; border-radius:8px; border:1px solid #eaeaea;" />
+                        <button onclick="removeChatImage()"
+                            style="position:absolute; top:-6px; right:-6px; background:#FF5722; color:#fff; border:none; border-radius:50%; width:18px; height:18px; font-size:0.65rem; cursor:pointer; line-height:18px; padding:0;">✕</button>
                     </div>
                 </div>
 
@@ -770,20 +773,25 @@
                         <!-- Photo Upload -->
                         <button onclick="document.getElementById('chat-file-input').click()" title="Attach photo"
                             style="background:none; border:none; cursor:pointer; padding:2px; display:flex; align-items:center;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#aaaaaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="3" y="3" width="18" height="18" rx="2"/>
-                                <circle cx="8.5" cy="8.5" r="1.5"/>
-                                <polyline points="21 15 16 10 5 21"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="#aaaaaa" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2" />
+                                <circle cx="8.5" cy="8.5" r="1.5" />
+                                <polyline points="21 15 16 10 5 21" />
                             </svg>
                         </button>
-                        <input type="file" id="chat-file-input" accept="image/*" style="display:none;" onchange="handleChatImageUpload(event)">
+                        <input type="file" id="chat-file-input" accept="image/*" style="display:none;"
+                            onchange="handleChatImageUpload(event)">
                         <!-- Send Button -->
                         <button onclick="sendChatMessage()" title="Send"
                             style="background:#FF5722; border:none; cursor:pointer; padding:5px 7px; border-radius:6px; display:flex; align-items:center; transition: background 0.2s;"
                             onmouseover="this.style.background='#e64a19'" onmouseout="this.style.background='#FF5722'">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="22" y1="2" x2="11" y2="13"/>
-                                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <line x1="22" y1="2" x2="11" y2="13" />
+                                <polygon points="22 2 15 22 11 13 2 9 22 2" />
                             </svg>
                         </button>
                     </div>
