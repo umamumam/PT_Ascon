@@ -310,13 +310,17 @@
 <!-- Real customers reviews: End -->
 
 <!-- CTA: Start -->
-<section id="landingCTA" class="section-py landing-cta position-relative p-0 overflow-hidden"
-    style="min-height: 700px; display: flex; align-items: center;">
+<section id="landingCTA" class="position-relative overflow-hidden py-5 py-md-10 d-flex align-items-center"
+    style="min-height: 650px;">
+    <!-- Background Image -->
     <img src="{{ asset('assets/img/front-pages/backgrounds/Worldwide.jpg') }}"
-        class="position-absolute top-0 start-0 w-100 h-150 z-n1" alt="cta image"
-        style="object-fit: cover; object-position: center;" />
+        class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover" alt="cta image"
+        style="z-index: 1; object-position: center;" />
+    
+    <!-- Dark Overlay for Readability -->
+    <div class="position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0, 0, 0, 0.55); z-index: 2;"></div>
 
-    <div class="container">
+    <div class="container position-relative" style="z-index: 3;">
         <div class="row">
             <div class="col-lg-7 text-white">
                 <p class="mb-2 fw-medium">Worldwide Freight Forwarder</p>
