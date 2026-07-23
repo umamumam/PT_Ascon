@@ -7,54 +7,104 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>PT Asia Connexindo Internasional</title>
+    <title>PT Asia Connexindo Internasional - Freight Forwarder Expert</title>
 
-    <meta name="description" content="Freight Forwarding Expert with Trusted Global Network" />
+    <meta name="description" content="PT Asia Connexindo Internasional (Ascon) - Freight Forwarding Expert with Trusted Global Network. Offering Sea Groupage, Airfreight, FCL, LCL, Customs Brokerage, Inland Transport, and Warehousing." />
+    <meta name="keywords" content="freight forwarder, logistics, sea freight, air freight, FCL, LCL, customs brokerage, warehousing, Jakarta, Indonesia, Ascon" />
+    <meta name="theme-color" content="#FF5722" />
     <link rel="canonical" href="{{ url()->current() }}" />
 
     <!-- Open Graph / Social Meta Tags -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://asiaconnex.net/" />
+    <meta property="og:url" content="{{ url()->current() }}" />
     <meta property="og:title" content="PT Asia Connexindo Internasional - Freight Forwarder Expert" />
     <meta property="og:description"
         content="Freight Forwarding Expert with Trusted Global Network. Offering Sea Groupage, Airfreight, FCL, LCL, Customs Brokerage, Inland Transport, and Warehousing." />
     <meta property="og:image" content="{{ asset('assets/img/front-pages/backgrounds/Landing.webp') }}" />
 
-    <!-- Preload Critical Hero Image -->
-    <link rel="preload" as="image" href="{{ asset('assets/img/front-pages/backgrounds/Landing.webp') }}"
-        fetchpriority="high" />
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PT Asia Connexindo Internasional - Freight Forwarder Expert" />
+    <meta name="twitter:description" content="Freight Forwarding Expert with Trusted Global Network." />
+    <meta name="twitter:image" content="{{ asset('assets/img/front-pages/backgrounds/Landing.webp') }}" />
 
-    <link rel="icon" type="image/png" href="{{ asset('Logo.png') }}" />
+    <!-- Schema.org JSON-LD Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "LogisticsService",
+      "name": "PT Asia Connexindo Internasional",
+      "url": "{{ url('/') }}",
+      "logo": "{{ asset('Logo.png') }}",
+      "image": "{{ asset('assets/img/front-pages/backgrounds/Landing.webp') }}",
+      "description": "Freight Forwarding Expert with Trusted Global Network. Offering Sea Groupage, Airfreight, FCL, LCL, Customs Brokerage, Inland Transport, and Warehousing.",
+      "telephone": "+62 21 8379 1179",
+      "email": "admin@asiaconnex.net",
+      "address": {
+        "@@type": "PostalAddress",
+        "streetAddress": "Soepomo Office Park, Blok O, Jl. Prof. Dr. Supomo No. 143, Tebet",
+        "addressLocality": "Jakarta Selatan",
+        "addressRegion": "DKI Jakarta",
+        "postalCode": "12870",
+        "addressCountry": "ID"
+      },
+      "sameAs": [
+        "https://www.linkedin.com/",
+        "https://www.instagram.com/",
+        "https://www.facebook.com/"
+      ]
+    }
+    </script>
+
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://static.wixstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://static.wixstatic.com" />
+
+    @if(request()->is('/'))
+    <!-- Preload Critical Hero Image for Homepage -->
+    <link rel="preload" as="image" href="{{ asset('assets/img/front-pages/backgrounds/Landing.jpg') }}" fetchpriority="high" />
+    @endif
+
+    <link rel="icon" type="image/png" href="{{ asset('Logo.png') }}" />
+
     <link
         href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-        rel="stylesheet" />
+        rel="stylesheet" media="print" onload="this.media='all'" />
 
-    <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/fontawesome.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/tabler-icons.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/flag-icons.css') }}" />
 
+    <!-- Core Stylesheet -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/core.css') }}" class="template-customizer-core-css" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/theme-default.css') }}"
         class="template-customizer-theme-css" />
     <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
-
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/pages/front-page.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/pages/front-page-landing.css') }}" />
 
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/node-waves/node-waves.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/nouislider/nouislider.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/swiper/swiper.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/animate-css/animate.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }}" />
+    <!-- Non-Critical Icons & Vendor Stylesheets (Non-blocking) -->
+    <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/fontawesome.css') }}" media="print"
+        onload="this.media='all'" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/tabler-icons.css') }}" media="print"
+        onload="this.media='all'" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/flag-icons.css') }}" media="print"
+        onload="this.media='all'" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/node-waves/node-waves.css') }}" media="print"
+        onload="this.media='all'" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/nouislider/nouislider.css') }}" media="print"
+        onload="this.media='all'" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/swiper/swiper.css') }}" media="print"
+        onload="this.media='all'" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/animate-css/animate.css') }}" media="print"
+        onload="this.media='all'" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }}" media="print"
+        onload="this.media='all'" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" media="print" onload="this.media='all'">
 
     <script src="{{ asset('assets/vendor/js/helpers.js') }}"></script>
-
-    {{-- <script src="{{ asset('assets/vendor/js/template-customizer.js') }}"></script> --}}
     <script src="{{ asset('assets/js/front-config.js') }}"></script>
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+
     <style>
         @media (min-width: 992px) {
             .col-lg-2-4 {
@@ -616,7 +666,8 @@
                 <div class="col-lg-3 col-md-12 mb-5 mb-lg-0 text-center text-lg-start">
                     <a href="/" class="d-inline-block mb-3">
                         <img src="{{ asset('LogoLanding.png') }}" alt="PT Asia Connexindo Internasional"
-                            style="max-width: 130px; height: auto;">
+                            width="130" height="45" loading="lazy" style="max-width: 130px; height: auto;">
+
                     </a>
                 </div>
 
@@ -701,23 +752,20 @@
     <!-- Footer: End -->
 
     <!-- Core JS -->
-    <!-- build:js assets/vendor/js/core.js -->
-    <script src="{{ asset('assets/vendor/libs/jquery/jquery.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/popper/popper.js') }}"></script>
-    <script src="{{ asset('assets/vendor/js/bootstrap.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/node-waves/node-waves.js') }}"></script>
-
-    <!-- endbuild -->
+    <script src="{{ asset('assets/vendor/libs/jquery/jquery.js') }}" defer></script>
+    <script src="{{ asset('assets/vendor/libs/popper/popper.js') }}" defer></script>
+    <script src="{{ asset('assets/vendor/js/bootstrap.js') }}" defer></script>
+    <script src="{{ asset('assets/vendor/libs/node-waves/node-waves.js') }}" defer></script>
 
     <!-- Vendors JS -->
-    <script src="{{ asset('assets/vendor/libs/nouislider/nouislider.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/swiper/swiper.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/nouislider/nouislider.js') }}" defer></script>
+    <script src="{{ asset('assets/vendor/libs/swiper/swiper.js') }}" defer></script>
+    <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}" defer></script>
 
     <!-- Main JS -->
-    <script src="{{ asset('assets/js/front-main.js') }}"></script>
+    <script src="{{ asset('assets/js/front-main.js') }}" defer></script>
     <!-- Page JS -->
-    <script src="{{ asset('assets/js/front-page-landing.js') }}"></script>
+    <script src="{{ asset('assets/js/front-page-landing.js') }}" defer></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const observerOptions = {
@@ -736,12 +784,16 @@
             targets.forEach(target => observer.observe(target));
         });
     </script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
     <script>
-        AOS.init({
-            duration: 800,
-            once: true,
-            offset: 0
+        document.addEventListener("DOMContentLoaded", function() {
+            if (typeof AOS !== 'undefined') {
+                AOS.init({
+                    duration: 800,
+                    once: true,
+                    offset: 0
+                });
+            }
         });
     </script>
     <script>
@@ -791,7 +843,7 @@
     <!-- Custom Chat Widget -->
     <div id="custom-chat-widget" style="font-family: 'Public Sans', sans-serif;">
         <!-- Floating Chat Button -->
-        <button id="chat-widget-trigger" class="btn p-0"
+        <button id="chat-widget-trigger" class="btn p-0" aria-label="Open Live Chat"
             style="position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background-color: #FF5722; box-shadow: 0 4px 16px rgba(255, 87, 34, 0.4); border: none; z-index: 99999; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; cursor: pointer;">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-message-circle" width="24"
                 height="24" viewBox="0 0 24 24" stroke-width="2" stroke="#ffffff" fill="none" stroke-linecap="round"
@@ -809,7 +861,7 @@
                 style="background-color: #FF5722; padding: 12px 14px; display: flex; align-items: center; position: relative;">
                 <div
                     style="position: relative; width: 36px; height: 36px; border-radius: 50%; background-color: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-right: 10px; border: 1px solid #eaeaea;">
-                    <img src="{{ asset('Logo.png') }}" alt="Logo" style="width: 22px; height: auto;">
+                    <img src="{{ asset('Logo.png') }}" alt="Asia Connexindo Logo" style="width: 22px; height: auto;">
                     <span
                         style="position: absolute; bottom: 0px; right: 0px; width: 8px; height: 8px; border-radius: 50%; background-color: #4caf50; border: 1px solid #ffffff;"></span>
                 </div>
@@ -819,7 +871,7 @@
                     <span style="color: rgba(255, 255, 255, 0.85); font-size: 0.7rem;">We'll reply as soon as we
                         can</span>
                 </div>
-                <button id="chat-widget-close"
+                <button id="chat-widget-close" aria-label="Close Live Chat"
                     style="position: absolute; top: 12px; right: 14px; background: none; border: none; color: #ffffff; font-size: 1.15rem; cursor: pointer; line-height: 1; padding: 0;">&times;</button>
             </div>
 
@@ -928,10 +980,12 @@
                         onkeypress="handleChatInputKeyPress(event)">
                     <div style="display: flex; gap: 6px; align-items: center; margin-left: 6px;">
                         <!-- Emoji Toggle -->
-                        <button id="chat-emoji-btn" onclick="toggleEmojiPicker()" title="Emoji"
+                        <button id="chat-emoji-btn" type="button" onclick="toggleEmojiPicker()" title="Emoji"
+                            aria-label="Toggle Emoji Picker"
                             style="background:none; border:none; cursor:pointer; padding:2px; font-size:1.1rem; line-height:1; display:flex; align-items:center;">😊</button>
                         <!-- Photo Upload -->
-                        <button onclick="document.getElementById('chat-file-input').click()" title="Attach photo"
+                        <button type="button" onclick="document.getElementById('chat-file-input').click()"
+                            title="Attach photo" aria-label="Attach Photo"
                             style="background:none; border:none; cursor:pointer; padding:2px; display:flex; align-items:center;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
                                 fill="none" stroke="#aaaaaa" stroke-width="2" stroke-linecap="round"
@@ -944,7 +998,7 @@
                         <input type="file" id="chat-file-input" accept="image/*" style="display:none;"
                             onchange="handleChatImageUpload(event)">
                         <!-- Send Button -->
-                        <button onclick="sendChatMessage()" title="Send"
+                        <button type="button" onclick="sendChatMessage()" title="Send" aria-label="Send Message"
                             style="background:#FF5722; border:none; cursor:pointer; padding:5px 7px; border-radius:6px; display:flex; align-items:center; transition: background 0.2s;"
                             onmouseover="this.style.background='#e64a19'" onmouseout="this.style.background='#FF5722'">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
@@ -961,7 +1015,7 @@
                 <div id="chat-channels-area"
                     style="display: flex; border-top: 1px solid #f1f1f1; padding-top: 8px; gap: 8px;">
                     <!-- Live Chat Tab -->
-                    <button id="chat-tab-live"
+                    <button id="chat-tab-live" type="button" aria-label="Live Chat Channel"
                         style="flex: 1; background-color: #ffffff; border: 1px solid #eaeaea; padding: 5px 0; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;"
                         onclick="toggleChatTab('live')">
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-message" width="16"
@@ -972,7 +1026,7 @@
                         </svg>
                     </button>
                     <!-- WhatsApp Tab -->
-                    <button id="chat-tab-wa"
+                    <button id="chat-tab-wa" type="button" aria-label="WhatsApp Channel"
                         style="flex: 1; background-color: #f7f7f7; border: 1px solid #eaeaea; padding: 5px 0; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;"
                         onclick="toggleChatTab('wa')">
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-whatsapp"

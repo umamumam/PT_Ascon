@@ -40,6 +40,12 @@ Route::get('/etracking', [TrackingController::class, 'publicTracking'])->name('p
 Route::get('/sailing-schedule/search-ports', [SailingScheduleController::class, 'searchPorts'])->name('sailing-schedule.search-ports');
 Route::get('/sailing-schedule/download-pdf', [SailingScheduleController::class, 'downloadPdf'])->name('sailing-schedule.download-pdf');
 
+Route::get('/sitemap.xml', function () {
+    $news = \App\Models\News::all();
+    return response()->view('sitemap', compact('news'))->header('Content-Type', 'text/xml');
+});
+
+
 // ─── /dashboard: redirect sesuai role ─────────────────────────────────────────
 Route::get('/dashboard', function () {
     if (auth()->check() && auth()->user()->isUser()) {
