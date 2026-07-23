@@ -412,19 +412,20 @@
                 </p>
 
                 <div class="d-flex gap-3">
-                    <a href="{{ $settings['facebook_link'] ?? '#' }}" target="_blank" aria-label="Facebook"
+                    <a href="{{ $settings['facebook_link'] ?? 'https://www.facebook.com' }}" target="_blank" rel="noopener" aria-label="PT Asia Connexindo Facebook"
                         class="btn btn-icon btn-outline-primary rounded-circle">
                         <i class="ti ti-brand-facebook ti-md"></i>
                     </a>
-                    <a href="{{ $settings['instagram_link'] ?? '#' }}" target="_blank" aria-label="Instagram"
+                    <a href="{{ $settings['instagram_link'] ?? 'https://www.instagram.com' }}" target="_blank" rel="noopener" aria-label="PT Asia Connexindo Instagram"
                         class="btn btn-icon btn-outline-danger rounded-circle">
                         <i class="ti ti-brand-instagram ti-md"></i>
                     </a>
-                    <a href="{{ $settings['linkedin_link'] ?? '#' }}" target="_blank" aria-label="LinkedIn"
+                    <a href="{{ $settings['linkedin_link'] ?? 'https://www.linkedin.com' }}" target="_blank" rel="noopener" aria-label="PT Asia Connexindo LinkedIn"
                         class="btn btn-icon btn-outline-info rounded-circle">
                         <i class="ti ti-brand-linkedin ti-md"></i>
                     </a>
                 </div>
+
             </div>
 
             <div class="col-lg-5" data-aos="fade-left">

@@ -575,7 +575,7 @@
                             <a class="nav-link fw-medium" href="/services">Services</a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle fw-medium" href="#" id="navbarDropdown" role="button"
+                            <a class="nav-link dropdown-toggle fw-medium" href="javascript:void(0)" id="navbarDropdown" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 Sailing Schedule
                             </a>
@@ -625,9 +625,10 @@
                     <!-- Style Switcher -->
                     <li class="nav-item dropdown-style-switcher dropdown me-2 me-xl-1">
                         <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);"
-                            data-bs-toggle="dropdown">
+                            data-bs-toggle="dropdown" aria-label="Toggle Theme Switcher">
                             <i class="ti ti-lg"></i>
                         </a>
+
                         <ul class="dropdown-menu dropdown-menu-end dropdown-styles">
                             <li>
                                 <a class="dropdown-item" href="javascript:void(0);" data-theme="light">
@@ -735,13 +736,14 @@
                     <div class="mt-5">
                         <h5 class="fw-bold text-dark mb-3" style="font-size: 1.1rem;">Socials</h5>
                         <ul class="list-unstyled mb-0">
-                            <li class="mb-2"><a href="{{ $settings['linkedin_link'] ?? '#' }}" target="_blank"
-                                    class="footer-link">Linkedin</a></li>
-                            <li class="mb-2"><a href="{{ $settings['instagram_link'] ?? '#' }}" target="_blank"
-                                    class="footer-link">Instagram</a></li>
-                            <li class="mb-2"><a href="{{ $settings['facebook_link'] ?? '#' }}" target="_blank"
-                                    class="footer-link">Facebook</a></li>
+                            <li class="mb-2"><a href="{{ $settings['linkedin_link'] ?? 'https://www.linkedin.com' }}" target="_blank" rel="noopener"
+                                    class="footer-link" aria-label="PT Asia Connexindo LinkedIn">Linkedin</a></li>
+                            <li class="mb-2"><a href="{{ $settings['instagram_link'] ?? 'https://www.instagram.com' }}" target="_blank" rel="noopener"
+                                    class="footer-link" aria-label="PT Asia Connexindo Instagram">Instagram</a></li>
+                            <li class="mb-2"><a href="{{ $settings['facebook_link'] ?? 'https://www.facebook.com' }}" target="_blank" rel="noopener"
+                                    class="footer-link" aria-label="PT Asia Connexindo Facebook">Facebook</a></li>
                         </ul>
+
                     </div>
                 </div>
             </div>
