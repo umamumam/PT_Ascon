@@ -50,31 +50,43 @@ class DatabaseSeeder extends Seeder
             );
         }
 
-        // Seed Social Feeds
+        // Seed Social Feeds (Top 6 real Instagram posts from asiaconnexindo)
         $feeds = [
             [
-                'title' => 'Top 10 Commodities',
-                'tag' => 'Top Commodities',
-                'image_path' => 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=400&q=80',
-                'link' => 'https://instagram.com',
+                'title' => 'Air Cargo Regulations & Safety',
+                'tag' => 'Air Cargo',
+                'image_path' => 'assets/img/instagram/post1.jpg',
+                'link' => 'https://www.instagram.com/asiaconnexindo/',
             ],
             [
-                'title' => 'Isra Miraj',
-                'tag' => 'Event',
-                'image_path' => 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=400&q=80',
-                'link' => 'https://instagram.com',
+                'title' => 'Reliable Logistics Solutions',
+                'tag' => 'Sea, Air & Land',
+                'image_path' => 'assets/img/instagram/post2.jpg',
+                'link' => 'https://www.instagram.com/p/DaCkxjsiW91/',
             ],
             [
-                'title' => 'Merry Christmas',
-                'tag' => 'Merry Christmas',
-                'image_path' => 'https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=400&q=80',
-                'link' => 'https://instagram.com',
+                'title' => 'Happy Islamic New Year 1448 H',
+                'tag' => 'Greetings',
+                'image_path' => 'assets/img/instagram/post3.jpg',
+                'link' => 'https://www.instagram.com/asiaconnexindo/',
             ],
             [
-                'title' => 'Happy New Year',
-                'tag' => 'New Year',
-                'image_path' => 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=400&q=80',
-                'link' => 'https://instagram.com',
+                'title' => 'Ready to Take Your Business Global',
+                'tag' => 'Global Business',
+                'image_path' => 'assets/img/instagram/post4.jpg',
+                'link' => 'https://www.instagram.com/p/DZeDEuAibpS/',
+            ],
+            [
+                'title' => 'Your Cargo Matters, and So Does Your Time',
+                'tag' => 'Logistics Expert',
+                'image_path' => 'assets/img/instagram/post5.jpg',
+                'link' => 'https://www.instagram.com/asiaconnexindo/',
+            ],
+            [
+                'title' => 'Blessed Eid Al Adha Greetings',
+                'tag' => 'Greetings',
+                'image_path' => 'assets/img/instagram/post6.jpg',
+                'link' => 'https://www.instagram.com/asiaconnexindo/',
             ]
         ];
 

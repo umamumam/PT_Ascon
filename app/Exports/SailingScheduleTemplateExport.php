@@ -20,25 +20,27 @@ class SailingScheduleTemplateExport implements FromArray, WithHeadings, WithTitl
                 'Export',           // type
                 'FCL',              // service
                 'Jakarta',          // pol
-                'Singapore',        // pod
-                'HAPPY LUCKY',      // vessel
-                '001N',             // voyage
-                '2026-01-15',       // etd
-                '2026-01-20',       // eta_destination
+                'Jebel Ali',        // pod
+                'MTT SENARI',       // vessel
+                '039W',             // voyage
+                '2026-07-07',       // etd
+                '2026-07-09',       // eta_destination
                 'TPP',              // eta_code_connecting
-                '2026-01-18',       // eta_destination1
-                '2026-01-19',       // eta_destination2
+                '',                 // eta_destination1
+                '',                 // eta_destination2
                 '',                 // eta_destination3
                 '',                 // eta_destination4
                 '',                 // eta_destination5
                 '',                 // eta_destination6
                 '',                 // eta_destination7
-                '+/- BY BARGE 2DAYS',      // eta_text
-                'LUCKY STAR',       // connecting_vessel
-                '002S',             // connecting_voyage
-                '2026-01-22',       // connecting_etd
-                'TPP',              // etd_code_connecting
-                '2026-01-25',       // connecting_eta
+                '',                 // eta_text
+                'KMTC MUMBAI',      // connecting_vessel
+                '2605W',            // connecting_voyage
+                '2026-07-23',       // connecting_etd
+                'PKG',              // etd_code_connecting
+                '2026-08-08',       // eta_klf
+                'By Truck',         // connecting_klf
+                '2026-08-09',       // connecting_eta
                 'Good condition'    // remarks
             ]
         ];
@@ -68,6 +70,8 @@ class SailingScheduleTemplateExport implements FromArray, WithHeadings, WithTitl
             'connecting_voyage',
             'connecting_etd',
             'etd_code_connecting',
+            'eta_klf',
+            'connecting_klf',
             'connecting_eta',
             // 'code_connecting',
             'remarks'
@@ -103,16 +107,17 @@ class SailingScheduleTemplateExport implements FromArray, WithHeadings, WithTitl
             'S' => 20,  // connecting_voyage
             'T' => 15,  // connecting_etd
             'U' => 15,  // etd_code_connecting
-            'V' => 15,  // connecting_eta
-            // 'W' => 25,  // code_connecting
-            'W' => 25,  // remarks
+            'V' => 15,  // eta_klf
+            'W' => 15,  // connecting_klf
+            'X' => 15,  // connecting_eta
+            'Y' => 25,  // remarks
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
 
-        $sheet->getStyle('A1:W1')->applyFromArray([
+        $sheet->getStyle('A1:Y1')->applyFromArray([
             'font' => [
                 'bold' => true,
             ],
@@ -129,7 +134,7 @@ class SailingScheduleTemplateExport implements FromArray, WithHeadings, WithTitl
             ],
         ]);
 
-        $sheet->getStyle('A2:W2')->applyFromArray([
+        $sheet->getStyle('A2:Y2')->applyFromArray([
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,

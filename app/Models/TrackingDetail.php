@@ -15,15 +15,17 @@ class TrackingDetail extends Model
     protected $fillable = [
         'tracking_id',
         'vessel_information',
-        'status',
         'place_of_activity',
-        'date',
+        'date_of_departure',
+        'port_of_arrival',
+        'date_of_arrival',
         'remarks',
         'sequence',
     ];
 
     protected $casts = [
-        'date' => 'date',
+        'date_of_departure' => 'date',
+        'date_of_arrival'   => 'date',
     ];
 
     public function tracking(): BelongsTo

@@ -405,6 +405,20 @@
                                                             <small class="text-muted">Kode port transit setelah Connecting ETD</small>
                                                         </div>
                                                         <div class="col-md-4">
+                                                            <label class="form-label">ETA KLF</label>
+                                                            <input type="date" name="eta_klf"
+                                                                class="form-control"
+                                                                value="{{ $item->eta_klf }}">
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <label class="form-label">Connecting (KLF)</label>
+                                                            <input type="text" name="connecting_klf"
+                                                                class="form-control"
+                                                                value="{{ $item->connecting_klf }}"
+                                                                placeholder="Ex: By Truck">
+                                                            <small class="text-muted">Otomatis 'By Truck' jika ETA KLF terisi</small>
+                                                        </div>
+                                                        <div class="col-md-4">
                                                             <label class="form-label">Connecting ETA</label>
                                                             <input type="date" name="connecting_eta"
                                                                 class="form-control"
@@ -555,6 +569,16 @@
                                 <small class="text-muted">Kode port transit setelah Connecting ETD</small>
                             </div>
                             <div class="col-md-4">
+                                <label class="form-label">ETA KLF</label>
+                                <input type="date" name="eta_klf" class="form-control">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Connecting (KLF)</label>
+                                <input type="text" name="connecting_klf" class="form-control"
+                                    placeholder="Ex: By Truck">
+                                <small class="text-muted">Otomatis 'By Truck' jika ETA KLF terisi</small>
+                            </div>
+                            <div class="col-md-4">
                                 <label class="form-label">Connecting ETA</label>
                                 <input type="date" name="connecting_eta" class="form-control">
                             </div>
@@ -701,4 +725,17 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('change', function(e) {
+            if (e.target && e.target.matches('input[name="eta_klf"]')) {
+                const form = e.target.closest('form');
+                if (form) {
+                    const connectingInput = form.querySelector('input[name="connecting_klf"]');
+                    if (connectingInput && !connectingInput.value.trim() && e.target.value) {
+                        connectingInput.value = 'By Truck';
+                    }
+                }
+            }
+        });
+    </script>
 </x-app-layout>

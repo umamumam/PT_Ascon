@@ -124,7 +124,13 @@
                                 </div>
                             </td>
                             <td>{{ $user->email }}</td>
-                            <td><span class="badge bg-label-secondary">User</span></td>
+                            <td>
+                                @if($user->role === 'admin')
+                                    <span class="badge bg-label-primary">Admin</span>
+                                @else
+                                    <span class="badge bg-label-info">Client</span>
+                                @endif
+                            </td>
                             <td><span class="badge bg-label-success">Active</span></td>
                             <td>
                                 <div class="d-flex align-items-center">
@@ -166,6 +172,13 @@
                                                         <label class="form-label">Email</label>
                                                         <input type="email" class="form-control" name="email"
                                                             value="{{ $user->email }}" required />
+                                                    </div>
+                                                    <div class="mb-4">
+                                                        <label class="form-label">Role</label>
+                                                        <select class="form-select" name="role" required>
+                                                            <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Admin</option>
+                                                            <option value="user" {{ $user->role === 'user' ? 'selected' : '' }}>Client (User)</option>
+                                                        </select>
                                                     </div>
                                                     <hr>
                                                     <small class="text-muted d-block mb-3">Kosongkan password jika tidak
@@ -216,6 +229,13 @@
                             <label class="form-label">Email</label>
                             <input type="email" class="form-control" name="email" placeholder="john@example.com"
                                 required />
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Role</label>
+                            <select class="form-select" name="role" required>
+                                <option value="admin">Admin</option>
+                                <option value="user">Client (User)</option>
+                            </select>
                         </div>
                         <div class="mb-4">
                             <label class="form-label">Password</label>

@@ -64,7 +64,7 @@
         <!-- Logo -->
         <a href="{{ url('/register') }}" class="app-brand auth-cover-brand d-flex align-items-center gap-2">
             <span class="app-brand-logo">
-                <img src="{{ asset('Logo.png') }}" alt="Logo" style="height: 80px; width: auto; object-fit: contain;">
+                <img src="{{ asset('Logo.png') }}" alt="Logo" style="height: 100px; width: auto; object-fit: contain;">
             </span>
             {{-- <span class="app-brand-text demo text-heading fw-bold ms-1">Vuexy</span> --}}
         </a>
@@ -72,15 +72,9 @@
         <div class="authentication-inner row m-0">
             <!-- /Left Text -->
             <div class="d-none d-lg-flex col-lg-8 p-0">
-                <div class="auth-cover-bg auth-cover-bg-color d-flex justify-content-center align-items-center">
-                    <img src="../../assets/img/illustrations/auth-register-illustration-light.png"
-                        alt="auth-register-cover" class="my-5 auth-illustration"
-                        data-app-light-img="illustrations/auth-register-illustration-light.png"
-                        data-app-dark-img="illustrations/auth-register-illustration-dark.png" />
-
-                    <img src="../../assets/img/illustrations/bg-shape-image-light.png" alt="auth-register-cover"
-                        class="platform-bg" data-app-light-img="illustrations/bg-shape-image-light.png"
-                        data-app-dark-img="illustrations/bg-shape-image-dark.png" />
+                <div class="auth-cover-bg w-100 h-100 position-relative">
+                    <img src="{{ asset('assets/img/front-pages/backgrounds/register.png') }}" alt="auth-register-cover"
+                        class="w-100 h-100" style="object-fit: cover;" />
                 </div>
             </div>
             <!-- /Left Text -->

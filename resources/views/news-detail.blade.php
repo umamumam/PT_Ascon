@@ -123,8 +123,8 @@
     }
 </style>
 
-<section id="landingNewsDetail" class="section-py" style="background-color: #f8f9fa;">
-    <div class="container mt-10">
+<section id="landingNewsDetail" class="section-py" style="background-color: #f8f9fa; padding-top: 180px !important;">
+    <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-12 news-detail-container">
                 <!-- Back Link -->

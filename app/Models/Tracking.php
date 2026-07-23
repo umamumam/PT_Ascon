@@ -29,6 +29,35 @@ class Tracking extends Model
 
     public function details(): HasMany
     {
-        return $this->hasMany(TrackingDetail::class, 'tracking_id')->orderBy('date', 'asc');
+        return $this->hasMany(TrackingDetail::class, 'tracking_id')->orderBy('id', 'asc');
+    }
+
+    public function getSortedDetailsAttribute()
+    {
+        $seqWeights = [
+            'main' => 1,
+            ''     => 1,
+            '1st'  => 2,
+            '2nd'  => 3,
+            '3rd'  => 4,
+        ];
+
+        return $this->details->sortBy(function ($item) use ($seqWeights) {
+            $w = $seqWeights[strtolower($item->sequence ?? '')] ?? 1;
+            return sprintf('%02d_%010d', $w, $item->id);
+        })->values();
+    }
+
+    public function getEtdAttribute()
+    {
+        $firstDetail = $this->details->first();
+        return $firstDetail ? $firstDetail->date_of_departure : null;
+    }
+
+    public function getEtaAttribute()
+    {
+        $lastDetail = $this->details->last();
+        return $lastDetail ? ($lastDetail->date_of_arrival ?? $lastDetail->date_of_departure) : null;
     }
 }
+

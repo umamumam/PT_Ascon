@@ -50,6 +50,8 @@ class TrackingDataSheet implements FromArray, WithHeadings, WithTitle, WithStyle
             'fillType' => Fill::FILL_SOLID,
             'startColor' => ['argb' => 'FFE0E0E0']
         ]);
-        foreach (range('A', 'L') as $col) { $sheet->getColumnDimension($col)->setAutoSize(true); }
+        foreach (range('A', 'L') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
     }
 }

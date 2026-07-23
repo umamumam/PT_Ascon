@@ -294,7 +294,7 @@
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Add Status: {{ $tracking->bl_number }}</h5>
+                                                <h5 class="modal-title">Add Shipment Update: {{ $tracking->bl_number }}</h5>
                                                 <button type="button" class="btn-close"
                                                     data-bs-dismiss="modal"></button>
                                             </div>
@@ -304,42 +304,39 @@
                                                 <div class="modal-body">
                                                     <div class="row">
                                                         <div class="col-12 mb-3">
-                                                            <label class="form-label">Status Update</label>
-                                                            <select name="status" class="form-select" required>
-                                                                <option value="departed">Departed</option>
-                                                                <option value="discharge">Discharge</option>
-                                                                <option value="connecting1">Connecting 1</option>
-                                                                <option value="discharge1">Discharge 1</option>
-                                                                <option value="connecting2">Connecting 2</option>
-                                                                <option value="arrival">Arrival</option>
-                                                                <option value="depature">Departure</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-12 mb-3">
-                                                            <label class="form-label">Place of Activity</label>
-                                                            <input type="text" name="place_of_activity"
-                                                                class="form-control" placeholder="Enter location..."
-                                                                required>
-                                                        </div>
-                                                        <div class="col-12 mb-3">
-                                                            <label class="form-label">Date</label>
-                                                            <input type="date" name="date" class="form-control"
-                                                                value="{{ date('Y-m-d') }}" required>
-                                                        </div>
-                                                        <div class="col-12 mb-3">
-                                                            <label class="form-label">Vessel Information <span
-                                                                    class="text-muted">(Optional)</span></label>
+                                                            <label class="form-label">Vessel Information</label>
                                                             <input type="text" name="vessel_information"
                                                                 class="form-control"
-                                                                placeholder="e.g. MV. Ocean Star V.12">
+                                                                placeholder="e.g. SINAR SANUR V.1234">
+                                                        </div>
+                                                        <div class="col-6 mb-3">
+                                                            <label class="form-label">Place of Activity</label>
+                                                            <input type="text" name="place_of_activity"
+                                                                class="form-control" placeholder="e.g. Tj. Priok">
+                                                        </div>
+                                                        <div class="col-6 mb-3">
+                                                            <label class="form-label">Date of Departure</label>
+                                                            <input type="date" name="date_of_departure"
+                                                                class="form-control" value="{{ date('Y-m-d') }}">
+                                                        </div>
+                                                        <div class="col-6 mb-3">
+                                                            <label class="form-label">Port of Arrival</label>
+                                                            <input type="text" name="port_of_arrival"
+                                                                class="form-control" placeholder="e.g. Singapore">
+                                                        </div>
+                                                        <div class="col-6 mb-3">
+                                                            <label class="form-label">Date of Arrival</label>
+                                                            <input type="date" name="date_of_arrival"
+                                                                class="form-control">
                                                         </div>
                                                         <div class="col-12 mb-3">
-                                                            <label class="form-label">Indirect <span class="text-muted">(Optional)</span></label>
+                                                            <label class="form-label">Sequence / Update <span
+                                                                    class="text-muted">(kosongkan untuk Main Leg)</span></label>
                                                             <select name="sequence" class="form-select">
-                                                                <option value="">None</option>
-                                                                <option value="1st">1st</option>
-                                                                <option value="2nd">2nd</option>
-                                                                <option value="3rd">3rd</option>
+                                                                <option value="">Main Leg (Initial)</option>
+                                                                <option value="1st">1st Update</option>
+                                                                <option value="2nd">2nd Update</option>
+                                                                <option value="3rd">3rd Update</option>
                                                             </select>
                                                         </div>
                                                         <div class="col-12">
@@ -352,7 +349,7 @@
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-label-secondary"
                                                         data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-success">Save Status</button>
+                                                    <button type="submit" class="btn btn-success">Save Update</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -391,7 +388,8 @@
                                                         <strong>{{ $tracking->container_number ?? '-' }} / {{
                                                             $tracking->size_type ?? '-' }}</strong>
                                                         @else
-                                                        <small class="text-muted d-block">Total Measurement & Packages</small>
+                                                        <small class="text-muted d-block">Total Measurement &
+                                                            Packages</small>
                                                         <strong>{{ $tracking->total_measurement ?? '-' }} / {{
                                                             $tracking->total_packages ?? '-' }}</strong>
                                                         @endif
@@ -400,56 +398,31 @@
 
                                                 {{-- Detail Table --}}
                                                 <div class="table-responsive border rounded">
-                                                    <table class="table mb-0">
+                                                    <table class="table mb-0 align-middle">
                                                         <thead class="table-light">
                                                             <tr>
-                                                                <th>Status</th>
-                                                                <th>Place of Activity</th>
-                                                                <th>Date</th>
                                                                 <th>Vessel Info</th>
-                                                                <th class="text-center">Indirect</th>
+                                                                <th>Place of Activity</th>
+                                                                <th>Date of Dep.</th>
+                                                                <th>Port of Arrival</th>
+                                                                <th>Date of Arr.</th>
+                                                                <th class="text-center">Sequence</th>
                                                                 <th class="text-center" width="80">Actions</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             @forelse($tracking->details->sortBy('id') as $detail)
                                                             <tr class="border-top">
-                                                                <td>
-                                                                    @php
-                                                                    $statusLabel = match($detail->status) {
-                                                                    'departed' => ['label' => 'Departed', 'color' =>
-                                                                    'primary'],
-                                                                    'discharge' => ['label' => 'Discharge', 'color' =>
-                                                                    'warning'],
-                                                                    'connecting1' => ['label' => 'Connecting 1','color'
-                                                                    => 'info'],
-                                                                    'discharge1' => ['label' => 'Discharge 1', 'color'
-                                                                    => 'warning'],
-                                                                    'connecting2' => ['label' => 'Connecting 2','color'
-                                                                    => 'info'],
-                                                                    'arrival' => ['label' => 'Arrival', 'color' =>
-                                                                    'success'],
-                                                                    'depature' => ['label' => 'Departure', 'color' =>
-                                                                    'secondary'],
-                                                                    default => ['label' => ucfirst($detail->status),
-                                                                    'color' => 'secondary'],
-                                                                    };
-                                                                    @endphp
-                                                                    <span
-                                                                        class="badge bg-label-{{ $statusLabel['color'] }}">
-                                                                        {{ $statusLabel['label'] }}
-                                                                    </span>
-                                                                </td>
-                                                                <td>{{ $detail->place_of_activity }}</td>
-                                                                <td>{{ $detail->date->format('d M Y') }}</td>
-                                                                <td>{{ $detail->vessel_information ?? '-' }}</td>
+                                                                <td class="fw-bold">{{ $detail->vessel_information ?? '-' }}</td>
+                                                                <td>{{ $detail->place_of_activity ?? '-' }}</td>
+                                                                <td>{{ $detail->date_of_departure ? $detail->date_of_departure->format('d M Y') : '-' }}</td>
+                                                                <td>{{ $detail->port_of_arrival ?? '-' }}</td>
+                                                                <td>{{ $detail->date_of_arrival ? $detail->date_of_arrival->format('d M Y') : '-' }}</td>
                                                                 <td class="text-center">
                                                                     @if($detail->sequence)
-                                                                    <span
-                                                                        class="badge badge-center rounded-pill bg-label-secondary">{{
-                                                                        $detail->sequence }}</span>
+                                                                    <span class="badge bg-label-primary">{{ $detail->sequence }} Update</span>
                                                                     @else
-                                                                    -
+                                                                    <span class="badge bg-label-secondary">Main Leg</span>
                                                                     @endif
                                                                 </td>
                                                                 <td class="text-center">
@@ -462,7 +435,7 @@
                                                                     <form
                                                                         action="{{ route('tracking_details.destroy', $detail->id) }}"
                                                                         method="POST" class="d-inline"
-                                                                        onsubmit="return confirm('Hapus riwayat ini?')">
+                                                                        onsubmit="return confirm('Hapus detail ini?')">
                                                                         @csrf
                                                                         @method('DELETE')
                                                                         <button type="submit"
@@ -474,16 +447,15 @@
                                                             </tr>
                                                             @if($detail->remarks)
                                                             <tr>
-                                                                <td colspan="6" class="py-1 ps-4 border-0">
-                                                                    <small class="text-muted">Note: {{ $detail->remarks
-                                                                        }}</small>
+                                                                <td colspan="7" class="py-1 ps-4 border-0">
+                                                                    <small class="text-muted">Note: {{ $detail->remarks }}</small>
                                                                 </td>
                                                             </tr>
                                                             @endif
                                                             @empty
                                                             <tr>
-                                                                <td colspan="6" class="text-center py-4 text-muted">
-                                                                    No tracking history available yet.
+                                                                <td colspan="7" class="text-center py-4 text-muted">
+                                                                    No tracking updates available yet.
                                                                 </td>
                                                             </tr>
                                                             @endforelse
@@ -508,7 +480,7 @@
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Edit Riwayat</h5>
+                                                <h5 class="modal-title">Edit Shipment Update</h5>
                                                 <button type="button" class="btn-close"
                                                     data-bs-dismiss="modal"></button>
                                             </div>
@@ -519,56 +491,42 @@
                                                 <div class="modal-body">
                                                     <div class="row">
                                                         <div class="col-12 mb-3">
-                                                            <label class="form-label">Status</label>
-                                                            <select name="status" class="form-select" required>
-                                                                <option value="departed" {{ $detail->status ==
-                                                                    'departed' ? 'selected' : '' }}>Departed</option>
-                                                                <option value="discharge" {{ $detail->status ==
-                                                                    'discharge' ? 'selected' : '' }}>Discharge</option>
-                                                                <option value="connecting1" {{ $detail->status ==
-                                                                    'connecting1' ? 'selected' : '' }}>Connecting 1
-                                                                </option>
-                                                                <option value="discharge1" {{ $detail->status ==
-                                                                    'discharge1' ? 'selected' : '' }}>Discharge 1
-                                                                </option>
-                                                                <option value="connecting2" {{ $detail->status ==
-                                                                    'connecting2' ? 'selected' : '' }}>Connecting 2
-                                                                </option>
-                                                                <option value="arrival" {{ $detail->status == 'arrival'
-                                                                    ? 'selected' : '' }}>Arrival</option>
-                                                                <option value="depature" {{ $detail->status ==
-                                                                    'depature' ? 'selected' : '' }}>Departure</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-12 mb-3">
-                                                            <label class="form-label">Place of Activity</label>
-                                                            <input type="text" name="place_of_activity"
-                                                                class="form-control"
-                                                                value="{{ $detail->place_of_activity }}" required>
-                                                        </div>
-                                                        <div class="col-12 mb-3">
-                                                            <label class="form-label">Date</label>
-                                                            <input type="date" name="date" class="form-control"
-                                                                value="{{ $detail->date->format('Y-m-d') }}" required>
-                                                        </div>
-                                                        <div class="col-12 mb-3">
                                                             <label class="form-label">Vessel Information</label>
                                                             <input type="text" name="vessel_information"
                                                                 class="form-control"
                                                                 value="{{ $detail->vessel_information }}">
                                                         </div>
+                                                        <div class="col-6 mb-3">
+                                                            <label class="form-label">Place of Activity</label>
+                                                            <input type="text" name="place_of_activity"
+                                                                class="form-control"
+                                                                value="{{ $detail->place_of_activity }}">
+                                                        </div>
+                                                        <div class="col-6 mb-3">
+                                                            <label class="form-label">Date of Departure</label>
+                                                            <input type="date" name="date_of_departure"
+                                                                class="form-control"
+                                                                value="{{ $detail->date_of_departure ? $detail->date_of_departure->format('Y-m-d') : '' }}">
+                                                        </div>
+                                                        <div class="col-6 mb-3">
+                                                            <label class="form-label">Port of Arrival</label>
+                                                            <input type="text" name="port_of_arrival"
+                                                                class="form-control"
+                                                                value="{{ $detail->port_of_arrival }}">
+                                                        </div>
+                                                        <div class="col-6 mb-3">
+                                                            <label class="form-label">Date of Arrival</label>
+                                                            <input type="date" name="date_of_arrival"
+                                                                class="form-control"
+                                                                value="{{ $detail->date_of_arrival ? $detail->date_of_arrival->format('Y-m-d') : '' }}">
+                                                        </div>
                                                         <div class="col-12 mb-3">
-                                                            <label class="form-label">Sequence <span
-                                                                    class="text-muted">(Auto, override jika
-                                                                    perlu)</span></label>
+                                                            <label class="form-label">Sequence / Update</label>
                                                             <select name="sequence" class="form-select">
-                                                                <option value="">None</option>
-                                                                <option value="1st" {{ $detail->sequence == '1st' ?
-                                                                    'selected' : '' }}>1st</option>
-                                                                <option value="2nd" {{ $detail->sequence == '2nd' ?
-                                                                    'selected' : '' }}>2nd</option>
-                                                                <option value="3rd" {{ $detail->sequence == '3rd' ?
-                                                                    'selected' : '' }}>3rd</option>
+                                                                <option value="" {{ empty($detail->sequence) ? 'selected' : '' }}>Main Leg (Initial)</option>
+                                                                <option value="1st" {{ $detail->sequence == '1st' ? 'selected' : '' }}>1st Update</option>
+                                                                <option value="2nd" {{ $detail->sequence == '2nd' ? 'selected' : '' }}>2nd Update</option>
+                                                                <option value="3rd" {{ $detail->sequence == '3rd' ? 'selected' : '' }}>3rd Update</option>
                                                             </select>
                                                         </div>
                                                         <div class="col-12 mb-3">

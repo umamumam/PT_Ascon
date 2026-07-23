@@ -198,7 +198,7 @@ class TrackingController extends Controller
 
         if ($blNumber) {
             $tracking = Tracking::with(['details' => function ($query) {
-                $query->orderBy('date', 'asc')->orderBy('id', 'asc');
+                $query->orderBy('id', 'asc');
             }])
                 ->where('bl_number', $blNumber)
                 ->where('type', $type)
@@ -207,8 +207,8 @@ class TrackingController extends Controller
         }
 
         $groupedDetails = [];
-        if ($tracking && $tracking->details) {
-            foreach ($tracking->details as $detail) {
+        if ($tracking && $tracking->sorted_details) {
+            foreach ($tracking->sorted_details as $detail) {
                 if ($detail->sequence) {
                     $groupedDetails[$detail->sequence][] = $detail;
                 }

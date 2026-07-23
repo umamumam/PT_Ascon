@@ -1,2 +1,4 @@
 User-agent: *
 Disallow:
+
+Sitemap: https://asiaconnex.net/sitemap.xml

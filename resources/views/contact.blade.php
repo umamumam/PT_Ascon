@@ -29,7 +29,8 @@
         color: white;
         border: none;
         padding: 12px 60px;
-        border-radius: 0; /* Kotak tajam sesuai desain Wix */
+        border-radius: 0;
+        /* Kotak tajam sesuai desain Wix */
         font-weight: 500;
         transition: 0.3s ease;
     }
@@ -62,54 +63,58 @@
     .contact-title {
         color: #FF5722;
         font-weight: 700;
-        font-size: 2rem; /* Ukuran seimbang, tidak terlalu besar */
+        font-size: 2rem;
+        /* Ukuran seimbang, tidak terlalu besar */
         line-height: 1.2;
     }
 </style>
 
-<section id="contactSection" class="section-py bg-white">
+<section id="contactSection" class="section-py bg-white" style="padding-top: 180px !important;">
     <div class="container">
         <div class="row align-items-center">
 
-            <div class="col-lg-6 mb-5 mt-10 mb-lg-0 reveal-on-scroll">
+            <div class="col-lg-6 mb-5 mb-lg-0 reveal-on-scroll">
                 <div class="contact-header mb-5">
                     <h6 class="text-dark fw-bold mb-2">Contact Us</h6>
                     <h2 class="contact-title mb-4">For Inquiries or Questions</h2>
-                    <p class="text-muted" style="font-size: 0.95rem; line-height: 1.6;">
-                        Please use the form or call us on <strong>+62 21 83791179</strong> or Whatsapp <strong>+62 819 1000 1999</strong>
+                    <p class="text-dark" style="font-size: 0.95rem; line-height: 1.6;">
+                        Please use the form or call us on <strong>+62 21 83791179</strong> or Whatsapp <strong>+62 819
+                            1000 1999</strong>
                     </p>
                 </div>
 
-                <form action="#" class="contact-form">
+                <form id="contactForm" action="{{ route('public.contact.store') }}" method="POST" class="contact-form">
+                    @csrf
                     <div class="row mb-4">
                         <div class="col-md-6 mb-3 mb-md-0">
                             <label>First Name</label>
-                            <input type="text" class="form-control" placeholder="">
+                            <input type="text" name="first_name" class="form-control" placeholder="" required>
                         </div>
                         <div class="col-md-6">
                             <label>Last Name</label>
-                            <input type="text" class="form-control" placeholder="">
+                            <input type="text" name="last_name" class="form-control" placeholder="">
                         </div>
                     </div>
 
                     <div class="row mb-4">
                         <div class="col-md-6 mb-3 mb-md-0">
                             <label>Email *</label>
-                            <input type="email" class="form-control" required>
+                            <input type="email" name="email" class="form-control" required>
                         </div>
                         <div class="col-md-6">
                             <label>Subject</label>
-                            <input type="text" class="form-control">
+                            <input type="text" name="subject" class="form-control" placeholder="">
                         </div>
                     </div>
 
                     <div class="mb-5">
                         <label>Leave us a message...</label>
-                        <textarea class="form-control" rows="4"></textarea>
+                        <textarea name="message" class="form-control" rows="4" required></textarea>
                     </div>
 
                     <div class="reveal-on-scroll delay-200">
-                        <button type="submit" class="btn btn-submit">Submit</button>
+                        <button type="submit"
+                            class="btn btn-submit d-inline-flex align-items-center gap-2">Submit</button>
                     </div>
                 </form>
             </div>
@@ -126,5 +131,78 @@
         </div>
     </div>
 </section>
+
+<!-- SweetAlert2 Resources & Script -->
+<link rel="stylesheet" href="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.css') }}" />
+<script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('contactForm');
+    if (form) {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            
+            const btn = form.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            
+            // Ubah tombol ke status loading
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Sending...';
+            btn.disabled = true;
+            
+            const formData = new FormData(form);
+            
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Message Sent!',
+                        text: 'Your message has been sent successfully. We will contact you soon.',
+                        confirmButtonColor: '#FF5722',
+                        customClass: {
+                            confirmButton: 'btn btn-primary px-5'
+                        }
+                    });
+                    form.reset();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Something went wrong. Please try again.',
+                        confirmButtonColor: '#FF5722'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'An error occurred. Please check your connection and try again.',
+                    confirmButtonColor: '#FF5722'
+                });
+            })
+            .finally(() => {
+                // Kembalikan tombol ke keadaan semula
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
+        });
+    }
+});
+</script>
 
 @endsection

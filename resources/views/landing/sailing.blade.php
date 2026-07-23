@@ -169,7 +169,7 @@
     }
 </style>
 
-<div class="container py-5 mb-5" style="margin-top: 7em">
+<div class="container py-5 mb-5" style="margin-top: 140px;">
     <div class="row">
         <div class="col-12 mb-4">
             <nav aria-label="breadcrumb">
@@ -365,6 +365,10 @@
                             <th class="text-dark">Connecting</th>
                             <th class="text-dark">Voy</th>
                             <th class="text-dark">{{ $customLabels['connecting_etd'] ?? 'ETD' }}</th>
+                            @if($routeSchedules->contains(fn($s) => !empty($s->eta_klf)))
+                            <th class="text-dark">ETA KLF</th>
+                            <th class="text-dark">Connecting</th>
+                            @endif
                             <th class="text-dark">{{ $customLabels['connecting_eta'] ?? 'ETA' }}</th>
                             @endif
 
@@ -405,6 +409,15 @@
                                 @else -
                                 @endif
                             </td>
+                            @if($routeSchedules->contains(fn($s) => !empty($s->eta_klf)))
+                            <td>
+                                @if($schedule->eta_klf)
+                                    {{ \Carbon\Carbon::parse($schedule->eta_klf)->format('d - M') }}
+                                @else -
+                                @endif
+                            </td>
+                            <td>{{ $schedule->connecting_klf ?? ($schedule->eta_klf ? 'By Truck' : '-') }}</td>
+                            @endif
                             <td>
                                 @if($schedule->connecting_eta)
                                     {{ \Carbon\Carbon::parse($schedule->connecting_eta)->format('d - M') }}

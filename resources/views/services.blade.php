@@ -1,7 +1,8 @@
 @extends('layouts.landing')
 @section('content')
 
-<section id="landingServicesHero" class="section-py landing-hero position-relative">
+<section id="landingServicesHero" class="section-py landing-hero position-relative"
+    style="padding-top: 180px !important;">
     <div class="container">
         <div class="row">
             <div class="col-lg-12 mb-4 reveal-on-scroll">
@@ -9,7 +10,7 @@
                 <h1 class="display-5 fw-bold mb-4" style="color: #FF5722; line-height: 1.2;">
                     We Offer a Range of Services<br>to Meet Your Needs
                 </h1>
-                <p class="text-muted col-lg-6 mb-0">
+                <p class="text-dark col-lg-6 mb-0">
                     We are committed to transporting your goods safely, economically in timely manner of any volume,
                     destination and mode of transport.
                 </p>
@@ -25,7 +26,7 @@
                 <img src="https://static.wixstatic.com/media/36e2c8_d50fcfe6910643f5a524838333a4bd76~mv2.png/v1/fill/w_92,h_70,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/sea%20groupage%20service.png"
                     alt="Sea Icon" style="width: 60px;" class="mb-3">
                 <h2 class="display-6 fw-bold mb-4" style="color: #FF5722;">Sea Groupage Service</h2>
-                <div class="text-muted" style="line-height: 1.8; text-align: justify;">
+                <div class="text-dark" style="line-height: 1.8; text-align: justify;">
                     <p>It's a group of LCL cargo from different shippers or consignors that are consolidated and sent to
                         various customers or consignees as a full container load in a single freight container. This
                         method of transporting multiple LCL shipments also goes by the name of Cargo Consolidation or
@@ -48,7 +49,7 @@
                     <img src="https://static.wixstatic.com/media/36e2c8_3138493585894ac1a79b0d3fea789dad~mv2.png/v1/fill/w_103,h_57,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/airfreight%20worldwide.png"
                         alt="Air Icon" style="width: 60px;" class="mb-3">
                     <h2 class="display-6 fw-bold mb-4" style="color: #FF5722;">Airfreight Worldwide</h2>
-                    <div class="text-muted" style="line-height: 1.8; text-align: justify;">
+                    <div class="text-dark" style="line-height: 1.8; text-align: justify;">
                         <p>Export or import airfreight service with many destinations worldwide. Contact us for more
                             detailed information.</p>
                     </div>
@@ -69,7 +70,7 @@
                 <img src="https://static.wixstatic.com/media/36e2c8_81ed5f5ff26f49c590bba6aeba34d564~mv2.png/v1/fill/w_90,h_56,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/FCL%20service.png"
                     alt="FCL Icon" style="width: 60px;" class="mb-3">
                 <h2 class="display-6 fw-bold mb-4" style="color: #FF5722;">Worldwide FCL Service</h2>
-                <div class="text-muted" style="line-height: 1.8; text-align: justify;">
+                <div class="text-dark" style="line-height: 1.8; text-align: justify;">
                     <p>Export or import of Full Container Load or full container shipment by sea freight. Contact us for
                         more detailed information.</p>
                 </div>
@@ -90,7 +91,7 @@
                     <img src="https://static.wixstatic.com/media/36e2c8_4599e9bb0dd04831ab4cf1eb0111a412~mv2.png/v1/fill/w_94,h_56,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/LCL%20service.png"
                         alt="Air Icon" style="width: 60px;" class="mb-3">
                     <h2 class="display-6 fw-bold mb-4" style="color: #FF5722;">Worldwide LCL Service</h2>
-                    <div class="text-muted" style="line-height: 1.8; text-align: justify;">
+                    <div class="text-dark" style="line-height: 1.8; text-align: justify;">
                         <p>Export or Import of Less than Container Load or known as group shipment / consolidation /
                             consolidated shipping by sea freight. Contact us for more detailed information.</p>
                     </div>
@@ -111,7 +112,7 @@
                 <img src="https://static.wixstatic.com/media/36e2c8_4cb19f9318fa49828bd88046099c97e6~mv2.png/v1/fill/w_49,h_59,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Customs%20Brokerage.png"
                     alt="Customs Icon" style="width: 60px;" class="mb-3">
                 <h2 class="display-6 fw-bold mb-4" style="color: #FF5722;">Customs Brokerage</h2>
-                <div class="text-muted" style="line-height: 1.8; text-align: justify;">
+                <div class="text-dark" style="line-height: 1.8; text-align: justify;">
                     <p>Arranging the customs clearance process for you during a shipment. Contact us for more detailed
                         information.</p>
                 </div>
@@ -132,7 +133,7 @@
                     <img src="https://static.wixstatic.com/media/36e2c8_f1a94b61c8d64ea7b91affae3f19345c~mv2.png/v1/fill/w_78,h_59,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Buyers%20Consolidation.png"
                         alt="Trucking Icon" style="width: 60px;" class="mb-3">
                     <h2 class="display-6 fw-bold mb-4" style="color: #FF5722;">Buyer's Consolidation</h2>
-                    <div class="text-muted" style="line-height: 1.8; text-align: justify;">
+                    <div class="text-dark" style="line-height: 1.8; text-align: justify;">
                         <p>provides a solution for customers who use multiple suppliers or have multiple manufacturers
                             to ship to a singular destination while reducing freight costs and streamlining the process.
                             Contact us for more detailed information.</p>
@@ -154,7 +155,7 @@
                 <img src="https://static.wixstatic.com/media/36e2c8_5295d86af3dc46129d0613313e7d43c4~mv2.png/v1/fill/w_111,h_59,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Inland%20Transport.png"
                     alt="Inland Transport Icon" style="width: 60px;" class="mb-3">
                 <h2 class="display-6 fw-bold mb-4" style="color: #FF5722;">Inland Transport</h2>
-                <div class="text-muted" style="line-height: 1.8; text-align: justify;">
+                <div class="text-dark" style="line-height: 1.8; text-align: justify;">
                     <p>Trucking services for your goods. Contact us for more detailed information.</p>
                 </div>
             </div>
@@ -175,7 +176,7 @@
                         alt="Customs Icon" style="width: 60px;" class="mb-3">
                     <h2 class="display-6 fw-bold mb-4" style="color: #FF5722;">Combined Sea
                         and Land Transport</h2>
-                    <div class="text-muted" style="line-height: 1.8; text-align: justify;">
+                    <div class="text-dark" style="line-height: 1.8; text-align: justify;">
                         <p>Via Dubai or other countries as required. Contact us for more detailed information.</p>
                     </div>
                 </div>
@@ -195,7 +196,7 @@
                 <img src="https://static.wixstatic.com/media/36e2c8_fbcc9ceef4694a3c86e4c6ba86dc526a~mv2.png/v1/fill/w_59,h_59,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Warehousing.png"
                     alt="Customs Icon" style="width: 60px;" class="mb-3">
                 <h2 class="display-6 fw-bold mb-4" style="color: #FF5722;">Warehousing</h2>
-                <div class="text-muted" style="line-height: 1.8; text-align: justify;">
+                <div class="text-dark" style="line-height: 1.8; text-align: justify;">
                     <p>Provide safe and secure storage and also allows you to have your goods stored in one central
                         place, which makes planning and organizing your logistics that much easier.</p>
                 </div>

@@ -5,19 +5,31 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>PT Asia Connexindo Internasional</title>
 
     <meta name="description" content="Freight Forwarding Expert with Trusted Global Network" />
+    <link rel="canonical" href="{{ url()->current() }}" />
+
+    <!-- Open Graph / Social Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://asiaconnex.net/" />
+    <meta property="og:title" content="PT Asia Connexindo Internasional - Freight Forwarder Expert" />
+    <meta property="og:description"
+        content="Freight Forwarding Expert with Trusted Global Network. Offering Sea Groupage, Airfreight, FCL, LCL, Customs Brokerage, Inland Transport, and Warehousing." />
+    <meta property="og:image" content="{{ asset('assets/img/front-pages/backgrounds/Landing.webp') }}" />
+
+    <!-- Preload Critical Hero Image -->
+    <link rel="preload" as="image" href="{{ asset('assets/img/front-pages/backgrounds/Landing.webp') }}"
+        fetchpriority="high" />
 
     <link rel="icon" type="image/png" href="{{ asset('Logo.png') }}" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-        href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&ampdisplay=swap"
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
         rel="stylesheet" />
 
     <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/fontawesome.css') }}" />
@@ -348,19 +360,129 @@
             object-fit: contain;
         }
 
-        @media (max-width: 768px) {
+        /* Mobile: sejajarkan logo dan tombol Call Now */
+        @media (max-width: 991.98px) {
             .landing-nav-logo {
-                height: 60px;
+                height: 48px;
+                width: auto;
             }
+
+            .navbar.landing-navbar {
+                display: flex;
+                flex-wrap: nowrap;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            /* Sembunyikan style-switcher di mobile agar tidak memakan ruang */
+            .dropdown-style-switcher {
+                display: none !important;
+            }
+
+            /* Pastikan navbar-brand dan toolbar sejajar di satu baris */
+            .navbar-brand.app-brand {
+                flex: 1 1 auto;
+            }
+
+            .navbar-nav.flex-row.align-items-center.ms-auto {
+                flex: 0 0 auto;
+            }
+
+            /* Fix dropdown mobile: tampil inline di bawah menu induk, bukan melayang */
+            .landing-nav-menu .dropdown-menu {
+                position: static !important;
+                float: none !important;
+                box-shadow: none !important;
+                border: none !important;
+                background-color: transparent !important;
+                padding-left: 1rem;
+                margin-top: 0 !important;
+            }
+
+            .landing-nav-menu .dropdown-menu .dropdown-item {
+                color: inherit;
+                padding: 0.4rem 0.5rem;
+                font-size: 0.9rem;
+            }
+
+            .landing-nav-menu .dropdown-menu .dropdown-item:hover {
+                background-color: rgba(0, 0, 0, 0.05);
+                border-radius: 4px;
+            }
+        }
+
+        /* ── Top Bar Menu ── */
+        .top-bar-menu {
+            background-color: #f1f5f9 !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            padding: 6px 0;
+            font-size: 0.8rem;
+            transition: max-height 0.25s ease-out, padding 0.25s ease-out, opacity 0.2s ease-out, border-color 0.25s ease-out;
+            overflow: hidden;
+            max-height: 45px;
+            opacity: 1;
+            position: relative !important;
+            z-index: 9999 !important;
+            pointer-events: auto !important;
+        }
+
+        .top-bar-menu.top-bar-hidden {
+            max-height: 0 !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            border-bottom-color: transparent !important;
+            opacity: 0 !important;
+        }
+
+        .top-bar-link {
+            color: #475569 !important;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            text-decoration: none !important;
+            transition: color 0.15s ease-in-out;
+            position: relative !important;
+            z-index: 10000 !important;
+            pointer-events: auto !important;
+            cursor: pointer !important;
+        }
+
+        .top-bar-link:hover {
+            color: #FF5722 !important;
         }
     </style>
 </head>
 
 <body>
-    <script src="{{ asset('assets/vendor/js/dropdown-hover.js') }}"></script>
+    {{-- dropdown-hover.js dihapus karena mengganggu klik dropdown di mobile (touch device) --}}
     <script src="{{ asset('assets/vendor/js/mega-dropdown.js') }}"></script>
     <!-- Navbar: Start -->
     <nav class="layout-navbar shadow-none py-0">
+        <!-- Top Bar Menu: Start -->
+        <div class="top-bar-menu d-none d-lg-block">
+            <div class="container d-flex justify-content-between align-items-center py-1 px-3 px-md-8">
+                <!-- Left: Links -->
+                <div class="d-flex align-items-center gap-4" style="margin-left: 1.25rem;">
+                    <a href="/login" class="top-bar-link">
+                        <i class="ti ti-user-check" style="font-size: 0.95rem;"></i> Customer Portal
+                    </a>
+                    <a href="/rates" class="top-bar-link">
+                        <i class="ti ti-calculator" style="font-size: 0.95rem;"></i> Rates/Tarif
+                    </a>
+                    <a href="/user/tracking" class="top-bar-link">
+                        <i class="ti ti-search" style="font-size: 0.95rem;"></i> Tracking
+                    </a>
+                </div>
+                <!-- Right: Email -->
+                <div class="d-flex align-items-center" style="margin-right: 0.75rem;">
+                    <a href="mailto:admin@asiaconnex.net" class="top-bar-link">
+                        <i class="ti ti-mail" style="font-size: 0.95rem;"></i> admin@asiaconnex.net
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- Top Bar Menu: End -->
         <div class="container">
             <div class="navbar navbar-expand-lg landing-navbar px-3 px-md-8">
                 <!-- Menu logo wrapper: Start -->
@@ -374,7 +496,8 @@
                     <!-- Mobile menu toggle: End-->
                     <a href="/" class="app-brand-link">
                         <span class="app-brand-logo">
-                            <img src="{{ asset('LogoLanding.png') }}" alt="Logo" class="landing-nav-logo">
+                            <img src="{{ asset('LogoLanding.png') }}" alt="PT Asia Connexindo Internasional Logo"
+                                class="landing-nav-logo" width="100" height="35">
                         </span>
                         {{-- <span class="app-brand-text demo menu-text fw-bold ms-2 ps-1">Vuexy</span> --}}
                     </a>
@@ -394,15 +517,20 @@
                         <li class="nav-item">
                             <a class="nav-link fw-medium" href="/services">Services</a>
                         </li>
-                        {{-- <li class="nav-item dropdown">
+                        <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle fw-medium" href="#" id="navbarDropdown" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 Sailing Schedule
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="/sailing">Sailing Schedule Export</a></li>
-                                <li><a class="dropdown-item" href="/etracking">Sailing Schedule Import</a></li>
+                                <li><a class="dropdown-item" href="/sailing?type=Export">Export LCL</a>
+                                </li>
+                                <li><a class="dropdown-item" href="/sailing?type=Import">Import LCL</a>
+                                </li>
                             </ul>
+                        </li>
+                        {{-- <li class="nav-item">
+                            <a class="nav-link fw-medium" href="/etracking">Tracking</a>
                         </li> --}}
                         {{-- <li class="nav-item">
                             <a class="nav-link fw-medium" href="/quote">eQuote</a>
@@ -415,6 +543,21 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link fw-medium" href="/contact">Contact</a>
+                        </li>
+                        <li class="nav-item d-lg-none border-top mt-2 pt-2">
+                            <a class="nav-link fw-medium" href="/login">
+                                <i class="ti ti-user-check me-2"></i>Customer Portal
+                            </a>
+                        </li>
+                        <li class="nav-item d-lg-none">
+                            <a class="nav-link fw-medium" href="/rates">
+                                <i class="ti ti-calculator me-2"></i>Rates/Tarif
+                            </a>
+                        </li>
+                        <li class="nav-item d-lg-none">
+                            <a class="nav-link fw-medium" href="/user/tracking">
+                                <i class="ti ti-search me-2"></i>Tracking
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -450,9 +593,9 @@
                     <!-- / Style Switcher-->
 
                     <!-- navbar button: Start -->
-                    <li>
+                    {{-- <li>
                         <a href="tel:+622183791179" class="btn btn-login-orange">Call Now!</a>
-                    </li>
+                    </li> --}}
                     <!-- navbar button: End -->
                 </ul>
                 <!-- Toolbar: End -->
@@ -481,12 +624,12 @@
                 <div class="col-lg-5 col-md-6 mb-5 mb-md-0">
                     <div class="mb-5">
                         <h5 class="fw-bold text-dark mb-3" style="font-size: 1.1rem;">Head Office</h5>
-                        <p class="text-muted mb-3" style="font-size: 0.9rem; line-height: 1.6;">
+                        <p class="text-dark mb-3" style="font-size: 0.9rem; line-height: 1.6;">
                             {!! nl2br(e($settings['head_office_address'] ?? "Soepomo Office Park, Blok O\nJl. Prof. Dr.
                             Supomo No. 143\nTebet Jakarta Selatan 12870\nIndonesia")) !!}
                         </p>
                         <h6 class="fw-bold text-dark mb-1" style="font-size: 0.9rem;">Phone :</h6>
-                        <p class="text-muted mb-0" style="font-size: 0.9rem; line-height: 1.5;">
+                        <p class="text-dark mb-0" style="font-size: 0.9rem; line-height: 1.5;">
                             {{ $settings['phone'] ?? '+62 21 8379 1179' }}
                             @if(isset($settings['phone_2']) && $settings['phone_2'])
                             <br>{{ $settings['phone_2'] }}
@@ -496,12 +639,12 @@
 
                     <div>
                         <h5 class="fw-bold text-dark mb-3" style="font-size: 1.1rem;">Semarang Office</h5>
-                        <p class="text-muted mb-3" style="font-size: 0.9rem; line-height: 1.6;">
+                        <p class="text-dark mb-3" style="font-size: 0.9rem; line-height: 1.6;">
                             {!! nl2br(e($settings['semarang_office_address'] ?? "SETOS CO WORK\nMG Setos, Jl. Inspeksi
                             Lt 3,\nKembangsari, Semarang Tengah,\nJawa Tengah, Indonesia 50133")) !!}
                         </p>
                         <h6 class="fw-bold text-dark mb-1" style="font-size: 0.9rem;">Phone :</h6>
-                        <p class="text-muted mb-0" style="font-size: 0.9rem; line-height: 1.5;">
+                        <p class="text-dark mb-0" style="font-size: 0.9rem; line-height: 1.5;">
                             {{ $settings['phone_semarang'] ?? '+62 24 8604 1230 Ext. 105' }}
                             @if(isset($settings['phone_semarang_2']) && $settings['phone_semarang_2'])
                             <br>{{ $settings['phone_semarang_2'] }}
@@ -515,10 +658,10 @@
                     <div class="d-flex justify-content-between align-items-start mb-4">
                         <div>
                             <h5 class="fw-bold text-dark mb-3" style="font-size: 1.1rem;">Inquiries</h5>
-                            <p class="text-muted mb-3" style="font-size: 0.9rem; line-height: 1.6; max-width: 250px;">
+                            <p class="text-dark mb-3" style="font-size: 0.9rem; line-height: 1.6; max-width: 250px;">
                                 For any inquiries, questions or commendations, please contact us
                             </p>
-                            <p class="text-muted mb-0" style="font-size: 0.9rem; line-height: 1.6;">
+                            <p class="text-dark mb-0" style="font-size: 0.9rem; line-height: 1.6;">
                                 Phone: {{ $settings['phone'] ?? '+62 21 8379 1179' }}<br>
                                 WA: {{ $settings['whatsapp'] ?? '+62 819 1000 1999' }}<br>
                                 Email: {{ $settings['email'] ?? 'admin@asiaconnex.net' }}
@@ -547,7 +690,7 @@
 
             <!-- Footer Bottom -->
             <div class="footer-bottom mt-5 pt-4 border-top border-light">
-                <p class="text-muted mb-0" style="font-size: 0.85rem;">
+                <p class="text-dark mb-0" style="font-size: 0.85rem;">
                     © <script>
                         document.write(new Date().getFullYear());
                     </script> by PT Asia Connexindo Internasional
@@ -559,6 +702,7 @@
 
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
+    <script src="{{ asset('assets/vendor/libs/jquery/jquery.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/popper/popper.js') }}"></script>
     <script src="{{ asset('assets/vendor/js/bootstrap.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/node-waves/node-waves.js') }}"></script>
@@ -574,7 +718,6 @@
     <script src="{{ asset('assets/js/front-main.js') }}"></script>
     <!-- Page JS -->
     <script src="{{ asset('assets/js/front-page-landing.js') }}"></script>
-    <script src="{{ asset('assets/js/modal-add-new-address.js') }}"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const observerOptions = {
@@ -1034,6 +1177,18 @@
         function handleChatInputKeyPress(event) {
             if (event.key === 'Enter') sendChatMessage();
         }
+
+        // Hide top-bar menu on scroll
+        window.addEventListener('scroll', function() {
+            const topBar = document.querySelector('.top-bar-menu');
+            if (topBar) {
+                if (window.scrollY > 40) {
+                    topBar.classList.add('top-bar-hidden');
+                } else {
+                    topBar.classList.remove('top-bar-hidden');
+                }
+            }
+        });
     </script>
 </body>
 

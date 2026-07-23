@@ -3,8 +3,11 @@
 namespace App\Imports;
 
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\BeforeImport;
+use PhpOffice\PhpSpreadsheet\Calculation\Calculation;
 
-class TrackingImport implements WithMultipleSheets
+class TrackingImport implements WithMultipleSheets, WithEvents
 {
     private $defaultType;
     private $defaultShipmentType;
@@ -13,13 +16,24 @@ class TrackingImport implements WithMultipleSheets
 
     public function __construct() {
         $this->dataSheet = new TrackingDataSheetImport();
-        $this->detailSheet = new TrackingDetailSheetImport();
+        $this->detailSheet = new TrackingDetailSheetImport($this->dataSheet);
     }
 
     public function sheets(): array {
         return [
             'Data Tracking'   => $this->dataSheet,
             'Detail Tracking' => $this->detailSheet,
+        ];
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            BeforeImport::class => function (BeforeImport $event) {
+                $reader = $event->reader;
+                $spreadsheet = $reader->getDelegate();
+                Calculation::getInstance($spreadsheet)->setSuppressFormulaErrors(true);
+            },
         ];
     }
 

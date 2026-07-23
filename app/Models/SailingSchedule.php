@@ -33,10 +33,21 @@ class SailingSchedule extends Model
         'connecting_voyage',
         'connecting_etd',
         'etd_code_connecting',
+        'eta_klf',
+        'connecting_klf',
         'connecting_eta',
         // 'code_connecting',
         'remarks_field',
     ];
+
+    protected static function booted(): void
+    {
+        static::saving(function ($schedule) {
+            if (!empty($schedule->eta_klf) && empty($schedule->connecting_klf)) {
+                $schedule->connecting_klf = 'By Truck';
+            }
+        });
+    }
 
     public function pol()
     {

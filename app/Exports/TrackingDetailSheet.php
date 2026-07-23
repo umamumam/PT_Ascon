@@ -22,23 +22,52 @@ class TrackingDetailSheet implements FromArray, WithHeadings, WithTitle, WithSty
 
     public function __construct()
     {
-        $this->rows = [
-            // BL: JEA-2035217590 (Export - FCL)
-            ['JEA-2035217590', 'MV. EVERGREEN 123E',       'departed',    'Jakarta',          '2026-02-24', null, null],
-            ['JEA-2035217590', null,                        'discharge',   'Tanjung Pelepas',  '2026-02-28', null, null],
-            ['JEA-2035217590', 'LISBON EXPRESS V.0416W',    'connecting1', 'Tanjung Pelepas',  '2026-03-04', null, null],
-            ['JEA-2035217590', null,                        'discharge1',  'Jebel Ali',        '2026-03-08', null, null],
-            ['JEA-2035217590', 'HUI FA V.607W',             'connecting2', 'Jebel Ali',        '2026-03-12', null, null],
-            ['JEA-2035217590', null,                        'arrival',     'Suwaikh',          '2026-03-16', null, null],
+        $this->rows = [];
+        $currentRow = 2;
 
-            // BL: 2035217590 (Import - LCL)
-            ['2035217590', 'MV. OCEAN STAR 789N',           'departed',    'Suwaikh',          '2026-02-24', null, null],
-            ['2035217590', null,                             'discharge',   'Tanjung Pelepas',  '2026-02-28', null, null],
-            ['2035217590', 'LISBON EXPRESS V.0416W',         'connecting1', 'Tanjung Pelepas',  '2026-03-04', null, null],
-            ['2035217590', null,                             'discharge1',  'Jebel Ali',        '2026-03-08', null, null],
-            ['2035217590', 'HUI FA V.607W',                  'connecting2', 'Jebel Ali',        '2026-03-12', null, null],
-            ['2035217590', null,                             'arrival',     'Surabaya',         '2026-03-16', null, null],
-        ];
+        for ($k = 2; $k <= 50; $k++) {
+            $mainRow = $currentRow;
+            $row1st = $mainRow + 1;
+            $row2nd = $mainRow + 2;
+
+            // Main Leg Row
+            $this->rows[] = [
+                "=IF('Data Tracking'!B{$k}=\"\",\"\",'Data Tracking'!B{$k})",
+                "=IF(A{$mainRow}=\"\",\"\", IFERROR(VLOOKUP(A{$mainRow}, 'Data Tracking'!B:L, 11, FALSE), \"\"))",
+                "=IF(A{$mainRow}=\"\",\"\", IFERROR(VLOOKUP(A{$mainRow}, 'Data Tracking'!B:E, 4, FALSE), \"\"))",
+                null,
+                "=IF(A{$mainRow}=\"\",\"\", IFERROR(VLOOKUP(A{$mainRow}, 'Data Tracking'!B:F, 5, FALSE), \"\"))",
+                null,
+                null,
+                null
+            ];
+
+            // 1st Update Row
+            $this->rows[] = [
+                "=IF(A{$mainRow}=\"\",\"\", A{$mainRow})",
+                "=IF(C{$row1st}<>\"\",\"Connecting Vessel\",\"\")",
+                null,
+                null,
+                null,
+                null,
+                null,
+                '1st'
+            ];
+
+            // 2nd Update Row
+            $this->rows[] = [
+                "=IF(A{$mainRow}=\"\",\"\", A{$mainRow})",
+                "=IF(C{$row2nd}<>\"\",\"Connecting Vessel\",\"\")",
+                null,
+                null,
+                null,
+                null,
+                null,
+                '2nd'
+            ];
+
+            $currentRow += 3;
+        }
     }
 
     public function array(): array
@@ -48,7 +77,16 @@ class TrackingDetailSheet implements FromArray, WithHeadings, WithTitle, WithSty
 
     public function headings(): array
     {
-        return ['bl_number', 'vessel_information', 'status', 'place_of_activity', 'date', 'remarks', 'sequence'];
+        return [
+            'bl_number',
+            'vessel_information',
+            'place_of_activity',
+            'date_of_departure',
+            'port_of_arrival',
+            'date_of_arrival',
+            'remarks',
+            'sequence'
+        ];
     }
 
     public function title(): string
@@ -61,17 +99,20 @@ class TrackingDetailSheet implements FromArray, WithHeadings, WithTitle, WithSty
         return [
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
-                $totalRows = count($this->rows) + 1; // +1 for heading row
-                $lastDataRow = $totalRows;
+                $lastDataRow = count($this->rows) + 1;
 
-                $validation = $sheet->getDataValidation("C2:C{$lastDataRow}");
+                $validation = $sheet->getDataValidation("H2:H{$lastDataRow}");
                 $validation->setType(DataValidation::TYPE_LIST)
                     ->setErrorStyle(DataValidation::STYLE_INFORMATION)
                     ->setAllowBlank(true)
                     ->setShowDropDown(true)
-                    ->setFormula1('"departed,discharge,connecting1,discharge1,connecting2,arrival"');
+                    ->setFormula1('"1st,2nd,3rd"');
 
-                $sheet->getStyle("E2:E{$lastDataRow}")
+                $sheet->getStyle("D2:D{$lastDataRow}")
+                    ->getNumberFormat()
+                    ->setFormatCode(NumberFormat::FORMAT_DATE_YYYYMMDD2);
+
+                $sheet->getStyle("F2:F{$lastDataRow}")
                     ->getNumberFormat()
                     ->setFormatCode(NumberFormat::FORMAT_DATE_YYYYMMDD2);
 
@@ -80,34 +121,24 @@ class TrackingDetailSheet implements FromArray, WithHeadings, WithTitle, WithSty
                     ->addCondition('$A2=""');
                 $conditional->getStyle()->getFont()->setColor(new Color(Color::COLOR_WHITE));
 
-                $sheet->getStyle("A2:G{$lastDataRow}")->setConditionalStyles([$conditional]);
+                $sheet->getStyle("A2:H{$lastDataRow}")->setConditionalStyles([$conditional]);
 
-                $sheet->getStyle("A1:G{$lastDataRow}")
+                $sheet->getStyle("A1:H{$lastDataRow}")
                     ->getBorders()
                     ->getAllBorders()
                     ->setBorderStyle(Border::BORDER_THIN);
-
-                $dataRowCount = count($this->rows);
-                for ($i = 0; $i < $dataRowCount; $i += 12) {
-                    $startRow = $i + 2;          // offset heading
-                    $endRow   = min($startRow + 5, $lastDataRow);
-                    $sheet->getStyle("A{$startRow}:G{$endRow}")->getFill()->applyFromArray([
-                        'fillType'   => Fill::FILL_SOLID,
-                        'startColor' => ['argb' => 'FFF9F9F9'],
-                    ]);
-                }
             },
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->getStyle('A1:G1')->getFont()->setBold(true);
-        $sheet->getStyle('A1:G1')->getFill()->applyFromArray([
+        $sheet->getStyle('A1:H1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:H1')->getFill()->applyFromArray([
             'fillType'   => Fill::FILL_SOLID,
             'startColor' => ['argb' => 'FFE0E0E0'],
         ]);
-        foreach (range('A', 'G') as $col) {
+        foreach (range('A', 'H') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
     }

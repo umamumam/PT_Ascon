@@ -245,9 +245,14 @@
                     @endif
 
                     @if($columnsPerRoute[$route]['has_connecting'])
+                    @php $hasEtaKlf = $schedules->contains(fn($s) => !empty($s->eta_klf)); @endphp
                     <th style="width: 15%;">CONNECTING</th>
                     <th style="width: 10%;">VOY</th>
                     <th style="width: 12%;">{{ strtoupper($labelConnEtd) }}</th>
+                    @if($hasEtaKlf)
+                    <th style="width: 12%;">ETA KLF</th>
+                    <th style="width: 12%;">CONNECTING</th>
+                    @endif
                     <th style="width: 12%;">{{ strtoupper($labelConnEta) }}</th>
                     @endif
 
@@ -281,6 +286,12 @@
                     <td class="text-nowrap">
                         {{ $schedule->connecting_etd ? \Carbon\Carbon::parse($schedule->connecting_etd)->format('d-M') : '-' }}
                     </td>
+                    @if($hasEtaKlf)
+                    <td class="text-nowrap">
+                        {{ $schedule->eta_klf ? \Carbon\Carbon::parse($schedule->eta_klf)->format('d-M') : '-' }}
+                    </td>
+                    <td>{{ $schedule->connecting_klf ?? ($schedule->eta_klf ? 'By Truck' : '-') }}</td>
+                    @endif
                     <td class="text-nowrap">
                         {{ $schedule->connecting_eta ? \Carbon\Carbon::parse($schedule->connecting_eta)->format('d-M') : '-' }}
                     </td>

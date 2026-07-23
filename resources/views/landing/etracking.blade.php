@@ -134,7 +134,7 @@
     }
 </style>
 
-<div class="container py-5 mb-5" style="margin-top: 7em;">
+<div class="container py-5 mb-5" style="margin-top: 140px;">
     <div class="row">
         <div class="col-12 mb-4">
             <nav aria-label="breadcrumb">
@@ -307,13 +307,13 @@
                                         <div class="text-muted" style="font-size: 0.75rem;">ETD {{ $tracking->origin }}
                                         </div>
                                         <div class="fw-medium" style="font-size: 0.85rem;">{{
-                                            \Carbon\Carbon::parse($tracking->etd)->format('d M Y') }}</div>
+                                            $tracking->etd ? \Carbon\Carbon::parse($tracking->etd)->format('d M Y') : '-' }}</div>
                                     </div>
                                     <div class="text-end">
                                         <div class="text-muted" style="font-size: 0.75rem;">ETA {{
                                             $tracking->destination }}</div>
                                         <div class="fw-medium" style="font-size: 0.85rem;">{{
-                                            \Carbon\Carbon::parse($tracking->eta)->format('d M Y') }}</div>
+                                            $tracking->eta ? \Carbon\Carbon::parse($tracking->eta)->format('d M Y') : '-' }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -383,9 +383,9 @@
                                 <td class="text-center" style="padding: 12px; font-size: 0.85rem;">{{
                                     $tracking->vessel_voyage }}</td>
                                 <td class="text-center" style="padding: 12px; font-size: 0.85rem;">{{
-                                    \Carbon\Carbon::parse($tracking->etd)->format('d/m/Y') }}</td>
+                                    $tracking->etd ? \Carbon\Carbon::parse($tracking->etd)->format('d/m/Y') : '-' }}</td>
                                 <td class="text-center" style="padding: 12px; font-size: 0.85rem;">{{
-                                    \Carbon\Carbon::parse($tracking->eta)->format('d/m/Y') }}</td>
+                                    $tracking->eta ? \Carbon\Carbon::parse($tracking->eta)->format('d/m/Y') : '-' }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -443,61 +443,96 @@
         @endif
 
         <!-- Shipment Updates Section -->
-        @if($tracking->details && $tracking->details->count() > 0)
+        @if($tracking->sorted_details && $tracking->sorted_details->count() > 0)
+        @php
+            $details = $tracking->sorted_details ?? collect();
+
+            $mainDetail = $details->first(fn($d) => empty($d->sequence) || strtolower($d->sequence) === 'main') ?? $details->first();
+
+            $mainVessel = $mainDetail->vessel_information ?? $tracking->vessel_voyage;
+            $mainPol = $mainDetail->place_of_activity ?? $tracking->origin;
+            $mainEtd = $mainDetail->date_of_departure ?? null;
+            $mainPod = $mainDetail->port_of_arrival ?? $tracking->destination;
+            $mainEta = $mainDetail->date_of_arrival ?? null;
+            $mainRemarks = $mainDetail->remarks ?? '-';
+
+            $mainLeg = [
+                'vessel' => $mainVessel ?: '-',
+                'pol' => $mainPol ?: '-',
+                'etd' => $mainEtd ? \Carbon\Carbon::parse($mainEtd)->format('d/m/Y') : '-',
+                'pod' => $mainPod ?: '-',
+                'eta' => $mainEta ? \Carbon\Carbon::parse($mainEta)->format('d/m/Y') : '-',
+                'remarks' => $mainRemarks ?: '-',
+            ];
+
+            $sequences = ['1st', '2nd', '3rd'];
+            $updateLegs = [];
+
+            foreach ($sequences as $seq) {
+                $seqDetail = $details->first(fn($d) => strtolower($d->sequence ?? '') === strtolower($seq));
+                if ($seqDetail) {
+                    $rawVessel = $seqDetail->vessel_information ?: 'Connecting Vessel';
+                    $vesselDisplay = str_starts_with(strtolower($rawVessel), strtolower($seq))
+                        ? $rawVessel
+                        : $seq . ' ' . $rawVessel;
+
+                    $updateLegs[$seq] = [
+                        'vessel'  => $vesselDisplay,
+                        'pol'     => $seqDetail->place_of_activity ?: '-',
+                        'etd'     => $seqDetail->date_of_departure ? \Carbon\Carbon::parse($seqDetail->date_of_departure)->format('d/m/Y') : '-',
+                        'pod'     => $seqDetail->port_of_arrival ?: '-',
+                        'eta'     => $seqDetail->date_of_arrival ? \Carbon\Carbon::parse($seqDetail->date_of_arrival)->format('d/m/Y') : '-',
+                        'remarks' => $seqDetail->remarks ?: '-',
+                    ];
+                }
+            }
+        @endphp
+
         <div class="col-12 mt-4">
-            <div class="shadow-sm border rounded">
-                <div class="update-section">
+            <div class="card mb-4" style="border-radius: 8px; border: 1px solid #4171c6; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+                <div style="background-color: #4171c6; color: white; text-align: center; font-weight: 700; padding: 10px 16px; font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.5px;">
                     Shipment Updates
                 </div>
 
-                <!-- Update Header -->
-                <div class="row update-header m-0 bg-light">
-                    <div class="col-md-3">STATUS</div>
-                    <div class="col-md-3">Place of Activity</div>
-                    <div class="col-md-2">Date</div>
-                    <div class="col-md-3">Vessel Information</div>
-                    <div class="col-md-1">Remarks</div>
-                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered mb-0 align-middle text-center" style="font-size: 0.88rem; border-color: #cbd5e1;">
+                        <thead style="background-color: #d9d9d9; color: #000; font-weight: 700;">
+                            <tr>
+                                <th style="background-color: #d9d9d9; color: #000; font-weight: 700; text-align: left; padding: 10px 12px; width: 22%;">Vessel Information</th>
+                                <th style="background-color: #d9d9d9; color: #000; font-weight: 700; text-align: left; padding: 10px 12px; width: 17%;">Place of Activity</th>
+                                <th style="background-color: #d9d9d9; color: #000; font-weight: 700; text-align: center; padding: 10px 12px; width: 15%;">Date of Depature</th>
+                                <th style="background-color: #d9d9d9; color: #000; font-weight: 700; text-align: left; padding: 10px 12px; width: 17%;">Port of Arrival</th>
+                                <th style="background-color: #d9d9d9; color: #000; font-weight: 700; text-align: center; padding: 10px 12px; width: 15%;">Date of Arrival</th>
+                                <th style="background-color: #d9d9d9; color: #000; font-weight: 700; text-align: center; padding: 10px 12px; width: 14%;">Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Main Leg Row -->
+                            <tr>
+                                <td class="fw-bold text-start px-3" style="color: #1e293b;">{{ $mainLeg['vessel'] }}</td>
+                                <td class="text-start px-3">{{ $mainLeg['pol'] }}</td>
+                                <td class="text-center">{{ $mainLeg['etd'] }}</td>
+                                <td class="text-start px-3">{{ $mainLeg['pod'] }}</td>
+                                <td class="text-center">{{ $mainLeg['eta'] }}</td>
+                                <td class="text-center">{{ $mainLeg['remarks'] }}</td>
+                            </tr>
 
-                @php
-                $nullSequenceDetails = $tracking->details->whereNull('sequence');
-                $hasNullSequence = $nullSequenceDetails->count() > 0;
-                @endphp
-
-                @if($hasNullSequence)
-                <!-- Data tanpa sequence (null) ditampilkan pertama -->
-                <div class="bg-white p-3">
-                    @foreach($nullSequenceDetails as $detail)
-                    <div class="row update-row align-items-center">
-                        <div class="col-md-3"><span class="status-label">{{ ucfirst($detail->status) }}</span></div>
-                        <div class="col-md-3">{{ $detail->place_of_activity }}</div>
-                        <div class="col-md-2">{{ \Carbon\Carbon::parse($detail->date)->format('d/m/Y') }}</div>
-                        <div class="col-md-3">{{ $detail->vessel_information ?? '-' }}</div>
-                        <div class="col-md-1 text-center">{{ $detail->remarks ?? '-' }}</div>
-                    </div>
-                    @endforeach
+                            <!-- Sequence Updates -->
+                            @foreach(['1st', '2nd', '3rd'] as $seq)
+                                @if(isset($updateLegs[$seq]))
+                                <tr>
+                                    <td class="fw-bold text-start px-3" style="color: #1e293b;">{{ $updateLegs[$seq]['vessel'] }}</td>
+                                    <td class="text-start px-3">{{ $updateLegs[$seq]['pol'] }}</td>
+                                    <td class="text-center">{{ $updateLegs[$seq]['etd'] }}</td>
+                                    <td class="text-start px-3">{{ $updateLegs[$seq]['pod'] }}</td>
+                                    <td class="text-center">{{ $updateLegs[$seq]['eta'] }}</td>
+                                    <td class="text-center">{{ $updateLegs[$seq]['remarks'] }}</td>
+                                </tr>
+                                @endif
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
-                @endif
-
-                @foreach($groupedDetails as $sequence => $details)
-                <!-- Sequence Label -->
-                <div class="bg-light py-2 px-3 border-top border-bottom">
-                    <strong>{{ $sequence }} Update</strong>
-                </div>
-
-                <!-- Updates dengan sequence -->
-                <div class="bg-white p-3">
-                    @foreach($details as $detail)
-                    <div class="row update-row align-items-center">
-                        <div class="col-md-3"><span class="status-label">{{ ucfirst($detail->status) }}</span></div>
-                        <div class="col-md-3">{{ $detail->place_of_activity }}</div>
-                        <div class="col-md-2">{{ \Carbon\Carbon::parse($detail->date)->format('d/m/Y') }}</div>
-                        <div class="col-md-3">{{ $detail->vessel_information ?? '-' }}</div>
-                        <div class="col-md-1 text-center">{{ $detail->remarks ?? '-' }}</div>
-                    </div>
-                    @endforeach
-                </div>
-                @endforeach
             </div>
         </div>
         @endif

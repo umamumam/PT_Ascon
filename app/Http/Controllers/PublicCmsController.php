@@ -6,6 +6,7 @@ use App\Models\News;
 use App\Models\Career;
 use App\Models\SocialFeed;
 use App\Models\Setting;
+use App\Models\Inquiry;
 use Illuminate\Http\Request;
 
 class PublicCmsController extends Controller
@@ -13,7 +14,7 @@ class PublicCmsController extends Controller
     public function welcome()
     {
         $settings = Setting::pluck('value', 'key')->all();
-        $feeds = SocialFeed::latest()->get();
+        $feeds = SocialFeed::latest()->take(6)->get();
         return view('welcome', compact('settings', 'feeds'));
     }
 
@@ -34,5 +35,23 @@ class PublicCmsController extends Controller
     {
         $jobs = Career::where('status', true)->latest()->get();
         return view('careers', compact('jobs'));
+    }
+
+    public function storeInquiry(Request $request)
+    {
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:50',
+            'last_name'  => 'nullable|string|max:50',
+            'email'      => 'required|email|max:50',
+            'subject'    => 'nullable|string|max:100',
+            'message'    => 'required|string',
+        ]);
+
+        Inquiry::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Thank you! Your message has been sent successfully.'
+        ]);
     }
 }
