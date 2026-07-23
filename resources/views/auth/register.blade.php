@@ -73,7 +73,7 @@
             <!-- /Left Text -->
             <div class="d-none d-lg-flex col-lg-8 p-0">
                 <div class="auth-cover-bg w-100 h-100 position-relative">
-                    <img src="{{ asset('assets/img/front-pages/backgrounds/register.png') }}" alt="auth-register-cover"
+                    <img src="{{ asset('assets/img/front-pages/backgrounds/Register.png') }}" alt="auth-register-cover"
                         class="w-100 h-100" style="object-fit: cover;" />
                 </div>
             </div>
