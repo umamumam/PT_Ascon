@@ -12,11 +12,12 @@
     <meta name="description" content="PT Asia Connexindo Internasional (Ascon) - Freight Forwarding Expert with Trusted Global Network. Offering Sea Groupage, Airfreight, FCL, LCL, Customs Brokerage, Inland Transport, and Warehousing." />
     <meta name="keywords" content="freight forwarder, logistics, sea freight, air freight, FCL, LCL, customs brokerage, warehousing, Jakarta, Indonesia, Ascon" />
     <meta name="theme-color" content="#FF5722" />
-    <link rel="canonical" href="{{ url()->current() }}" />
+    <link rel="canonical" href="{{ str_replace('http://', 'https://', url()->current()) }}" />
 
     <!-- Open Graph / Social Meta Tags -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="{{ url()->current() }}" />
+    <meta property="og:url" content="{{ str_replace('http://', 'https://', url()->current()) }}" />
+
     <meta property="og:title" content="PT Asia Connexindo Internasional - Freight Forwarder Expert" />
     <meta property="og:description"
         content="Freight Forwarding Expert with Trusted Global Network. Offering Sea Groupage, Airfreight, FCL, LCL, Customs Brokerage, Inland Transport, and Warehousing." />
@@ -115,8 +116,14 @@
 
         .italic {
             font-style: italic;
-            font-size: 0.75rem;
+            font-size: 0.85rem;
         }
+
+        .btn-icon {
+            min-width: 44px !important;
+            min-height: 44px !important;
+        }
+
 
         .service-card {
             border: 1px solid #e5e5e5;
