@@ -6,8 +6,8 @@
             <source media="(max-width: 768px)"
                 srcset="{{ asset('assets/img/front-pages/backgrounds/Landing-mobile.webp') }}" type="image/webp">
             <source srcset="{{ asset('assets/img/front-pages/backgrounds/Landing.jpg') }}" type="image/jpeg">
-            <img src="{{ asset('assets/img/front-pages/backgrounds/Landing.jpg') }}" alt="PT Asia Connexindo Internasional Freight Forwarding Hero"
-                fetchpriority="high" decoding="async"
+            <img src="{{ asset('assets/img/front-pages/backgrounds/Landing.jpg') }}"
+                alt="PT Asia Connexindo Internasional Freight Forwarding Hero" fetchpriority="high" decoding="async"
                 class="position-absolute top-0 start-50 translate-middle-x object-fit-cover w-100 h-100"
                 style="filter: brightness(0.85);" />
         </picture>
@@ -63,7 +63,7 @@
 </section>
 
 {{-- about --}}
-<section id="landingAbout" class="section-py landing-about" style="background-color: #F8F8F8 !important;">
+<section id="landingAbout" class="section-py landing-about" style="background-color: #F1F1F1 !important;">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 mb-5 mb-lg-0 reveal-on-scroll">
@@ -98,8 +98,9 @@
 
             <div class="col-lg-6 text-center reveal-on-scroll delay-200">
                 <div class="position-relative">
-                    <img src="{{ asset('assets/img/front-pages/backgrounds/about1.webp') }}" alt="PT Asia Connexindo Internasional International Routes Logistics"
-                        loading="lazy" decoding="async" width="570" height="380" class="img-fluid" />
+                    <img src="{{ asset('assets/img/front-pages/backgrounds/aboutnew.webp') }}"
+                        alt="PT Asia Connexindo Internasional International Routes Logistics" loading="lazy"
+                        decoding="async" width="570" height="380" class="img-fluid" />
                 </div>
             </div>
         </div>
@@ -122,9 +123,10 @@
                 </p>
             </div>
             <div class="col-lg-6">
-                <img src="{{ asset('assets/img/front-pages/services/service-main.jpg') }}"
-                    loading="lazy" decoding="async" width="842" height="303" alt="Aerial View Cargo Container Ship - PT Asia Connexindo Services" class="img-fluid rounded shadow-sm" data-aos="fade-left"
-                    data-aos-duration="1000">
+                <img src="{{ asset('assets/img/front-pages/services/service-main.jpg') }}" loading="lazy"
+                    decoding="async" width="842" height="303"
+                    alt="Aerial View Cargo Container Ship - PT Asia Connexindo Services"
+                    class="img-fluid rounded shadow-sm" data-aos="fade-left" data-aos-duration="1000">
             </div>
         </div>
 
@@ -133,8 +135,9 @@
                 data-aos-anchor="#trigger-services">
                 <div class="service-card">
                     <div class="mb-3">
-                        <img src="{{ asset('assets/img/front-pages/services/sea-groupage.png') }}"
-                            loading="lazy" decoding="async" width="75" height="57" alt="Sea Groupage Service - PT Asia Connexindo" class="service-icon-img" />
+                        <img src="{{ asset('assets/img/front-pages/services/sea-groupage.png') }}" loading="lazy"
+                            decoding="async" width="75" height="57" alt="Sea Groupage Service - PT Asia Connexindo"
+                            class="service-icon-img" />
                     </div>
                     <h4 class="fw-bold mb-0 h6">Sea Groupage Service</h4>
                 </div>
@@ -144,8 +147,9 @@
                 data-aos-anchor="#trigger-services">
                 <div class="service-card">
                     <div class="mb-3">
-                        <img src="{{ asset('assets/img/front-pages/services/airfreight.png') }}"
-                            loading="lazy" decoding="async" width="103" height="57" alt="Airfreight Worldwide Service - PT Asia Connexindo" class="service-icon-img" />
+                        <img src="{{ asset('assets/img/front-pages/services/airfreight.png') }}" loading="lazy"
+                            decoding="async" width="103" height="57"
+                            alt="Airfreight Worldwide Service - PT Asia Connexindo" class="service-icon-img" />
                     </div>
                     <h4 class="fw-bold mb-0 h6">Airfreight Worldwide</h4>
                 </div>
@@ -155,8 +159,9 @@
                 data-aos-anchor="#trigger-services">
                 <div class="service-card">
                     <div class="mb-3">
-                        <img src="{{ asset('assets/img/front-pages/services/fcl-service.png') }}"
-                            loading="lazy" decoding="async" width="91" height="57" alt="Worldwide FCL Service - PT Asia Connexindo" class="service-icon-img" />
+                        <img src="{{ asset('assets/img/front-pages/services/fcl-service.png') }}" loading="lazy"
+                            decoding="async" width="91" height="57" alt="Worldwide FCL Service - PT Asia Connexindo"
+                            class="service-icon-img" />
                     </div>
                     <h4 class="fw-bold mb-0 h6">Worldwide FCL Service</h4>
                     <small class="fw-bold text-dark d-block italic">(Full Container Load)</small>
@@ -167,8 +172,9 @@
                 data-aos-anchor="#trigger-services">
                 <div class="service-card">
                     <div class="mb-3">
-                        <img src="{{ asset('assets/img/front-pages/services/lcl-service.png') }}"
-                            loading="lazy" decoding="async" width="96" height="57" alt="Worldwide LCL Service - PT Asia Connexindo" class="service-icon-img" />
+                        <img src="{{ asset('assets/img/front-pages/services/lcl-service.png') }}" loading="lazy"
+                            decoding="async" width="96" height="57" alt="Worldwide LCL Service - PT Asia Connexindo"
+                            class="service-icon-img" />
                     </div>
                     <h4 class="fw-bold mb-0 h6">Worldwide LCL Service</h4>
                     <small class="fw-bold text-dark d-block italic">(Less than Container Load)</small>
@@ -179,8 +185,9 @@
                 data-aos-anchor="#trigger-services">
                 <div class="service-card">
                     <div class="mb-3">
-                        <img src="{{ asset('assets/img/front-pages/services/customs-brokerage.png') }}"
-                            loading="lazy" decoding="async" width="49" height="59" alt="Customs Brokerage Service - PT Asia Connexindo" class="service-icon-img" />
+                        <img src="{{ asset('assets/img/front-pages/services/customs-brokerage.png') }}" loading="lazy"
+                            decoding="async" width="49" height="59" alt="Customs Brokerage Service - PT Asia Connexindo"
+                            class="service-icon-img" />
                     </div>
                     <h4 class="fw-bold mb-0 h6">Customs Brokerage</h4>
                 </div>
@@ -191,7 +198,8 @@
                 <div class="service-card">
                     <div class="mb-3">
                         <img src="{{ asset('assets/img/front-pages/services/buyers-consolidation.png') }}"
-                            loading="lazy" decoding="async" width="78" height="59" alt="Buyer Consolidation Service - PT Asia Connexindo" class="service-icon-img" />
+                            loading="lazy" decoding="async" width="78" height="59"
+                            alt="Buyer Consolidation Service - PT Asia Connexindo" class="service-icon-img" />
                     </div>
                     <h4 class="fw-bold mb-0 h6">Buyer's Consolidation</h4>
                 </div>
@@ -201,8 +209,9 @@
                 data-aos-anchor="#trigger-services">
                 <div class="service-card">
                     <div class="mb-3">
-                        <img src="{{ asset('assets/img/front-pages/services/inland-transport.png') }}"
-                            loading="lazy" decoding="async" width="111" height="59" alt="Inland Transport Service - PT Asia Connexindo" class="service-icon-img" />
+                        <img src="{{ asset('assets/img/front-pages/services/inland-transport.png') }}" loading="lazy"
+                            decoding="async" width="111" height="59" alt="Inland Transport Service - PT Asia Connexindo"
+                            class="service-icon-img" />
                     </div>
                     <h4 class="fw-bold mb-0 h6">Inland Transport</h4>
                 </div>
@@ -212,8 +221,9 @@
                 data-aos-anchor="#trigger-services">
                 <div class="service-card">
                     <div class="mb-3">
-                        <img src="{{ asset('assets/img/front-pages/services/combined-transport.png') }}"
-                            loading="lazy" decoding="async" width="82" height="79" alt="Combined Transport Service - PT Asia Connexindo" class="service-icon-img" />
+                        <img src="{{ asset('assets/img/front-pages/services/combined-transport.png') }}" loading="lazy"
+                            decoding="async" width="82" height="79"
+                            alt="Combined Transport Service - PT Asia Connexindo" class="service-icon-img" />
                     </div>
                     <h4 class="fw-bold mb-0 h6">Combined Sea and Land Transport</h4>
                     <small class="fw-bold text-dark d-block">(Via Dubai or other countries as required)</small>
@@ -224,8 +234,9 @@
                 data-aos-anchor="#trigger-services">
                 <div class="service-card">
                     <div class="mb-3">
-                        <img src="{{ asset('assets/img/front-pages/services/warehousing.png') }}"
-                            loading="lazy" decoding="async" width="72" height="72" alt="Warehousing Service - PT Asia Connexindo" class="service-icon-img" />
+                        <img src="{{ asset('assets/img/front-pages/services/warehousing.png') }}" loading="lazy"
+                            decoding="async" width="72" height="72" alt="Warehousing Service - PT Asia Connexindo"
+                            class="service-icon-img" />
                     </div>
                     <h4 class="fw-bold mb-0 h6">Warehousing</h4>
                 </div>
@@ -271,8 +282,9 @@
 
                     <div class="col-md-4" data-aos="fade-right" data-aos-delay="200" data-aos-anchor="#trigger-why">
                         <div class="custom-card-wrapper h-100">
-                            <img src="{{ asset('assets/img/front-pages/why/why-experience.jpg') }}"
-                                loading="lazy" decoding="async" width="302" height="533" class="img-fluid custom-arch-img" alt="26 Years Freight Forwarding Experience - PT Asia Connexindo">
+                            <img src="{{ asset('assets/img/front-pages/why/why-experience.jpg') }}" loading="lazy"
+                                decoding="async" width="302" height="533" class="img-fluid custom-arch-img"
+                                alt="26 Years Freight Forwarding Experience - PT Asia Connexindo">
                             <div class="custom-card-body bg-white p-3 shadow-sm">
                                 <h4 class="fw-bold mb-2 h6" style="color: #FF5722;">26+ Years of Experience</h4>
                                 <p class="small fw-bold text-dark mb-3">Our Experience has allowed us to convince
@@ -286,8 +298,9 @@
 
                     <div class="col-md-4" data-aos="fade-right" data-aos-delay="400" data-aos-anchor="#trigger-why">
                         <div class="custom-card-wrapper h-100">
-                            <img src="{{ asset('assets/img/front-pages/why/why-monitored.jpg') }}"
-                                loading="lazy" decoding="async" width="302" height="533" class="img-fluid custom-arch-img" alt="Monitored Freight Forwarding Shipments - PT Asia Connexindo">
+                            <img src="{{ asset('assets/img/front-pages/why/why-monitored.jpg') }}" loading="lazy"
+                                decoding="async" width="302" height="533" class="img-fluid custom-arch-img"
+                                alt="Monitored Freight Forwarding Shipments - PT Asia Connexindo">
                             <div class="custom-card-body bg-white p-3 shadow-sm">
                                 <h4 class="fw-bold mb-2 h6" style="color: #FF5722;">Your Goods Will be Monitored</h4>
                                 <p class="small fw-bold text-dark mb-3">Our customer service will act swiftly to notify
@@ -301,8 +314,9 @@
 
                     <div class="col-md-4" data-aos="fade-right" data-aos-delay="600" data-aos-anchor="#trigger-why">
                         <div class="custom-card-wrapper h-100">
-                            <img src="{{ asset('assets/img/front-pages/why/why-schedule.jpg') }}"
-                                loading="lazy" decoding="async" width="302" height="533" class="img-fluid custom-arch-img" alt="Weekly Shipping Sailing Schedule - PT Asia Connexindo">
+                            <img src="{{ asset('assets/img/front-pages/why/why-schedule.jpg') }}" loading="lazy"
+                                decoding="async" width="302" height="533" class="img-fluid custom-arch-img"
+                                alt="Weekly Shipping Sailing Schedule - PT Asia Connexindo">
                             <div class="custom-card-body bg-white p-3 shadow-sm">
                                 <h4 class="fw-bold mb-2 h6" style="color: #FF5722;">Weekly Schedule</h4>
                                 <p class="small fw-bold text-dark mb-3">We have a weekly regular service to Singapore,
@@ -329,8 +343,8 @@
             srcset="{{ asset('assets/img/front-pages/backgrounds/Worldwide-mobile.webp') }}" type="image/webp">
         <source srcset="{{ asset('assets/img/front-pages/backgrounds/Worldwide.webp') }}" type="image/webp">
         <img src="{{ asset('assets/img/front-pages/backgrounds/Worldwide.webp') }}" loading="lazy" decoding="async"
-            width="1440" height="650"
-            class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover" alt="PT Asia Connexindo Internasional Worldwide Freight Forwarder Network"
+            width="1440" height="650" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover"
+            alt="PT Asia Connexindo Internasional Worldwide Freight Forwarder Network"
             style="z-index: 1; object-position: center;" />
     </picture>
 
@@ -412,15 +426,18 @@
                 </p>
 
                 <div class="d-flex gap-3">
-                    <a href="{{ $settings['facebook_link'] ?? 'https://www.facebook.com' }}" target="_blank" rel="noopener" aria-label="PT Asia Connexindo Facebook"
+                    <a href="{{ $settings['facebook_link'] ?? 'https://www.facebook.com' }}" target="_blank"
+                        rel="noopener" aria-label="PT Asia Connexindo Facebook"
                         class="btn btn-icon btn-outline-primary rounded-circle">
                         <i class="ti ti-brand-facebook ti-md"></i>
                     </a>
-                    <a href="{{ $settings['instagram_link'] ?? 'https://www.instagram.com' }}" target="_blank" rel="noopener" aria-label="PT Asia Connexindo Instagram"
+                    <a href="{{ $settings['instagram_link'] ?? 'https://www.instagram.com' }}" target="_blank"
+                        rel="noopener" aria-label="PT Asia Connexindo Instagram"
                         class="btn btn-icon btn-outline-danger rounded-circle">
                         <i class="ti ti-brand-instagram ti-md"></i>
                     </a>
-                    <a href="{{ $settings['linkedin_link'] ?? 'https://www.linkedin.com' }}" target="_blank" rel="noopener" aria-label="PT Asia Connexindo LinkedIn"
+                    <a href="{{ $settings['linkedin_link'] ?? 'https://www.linkedin.com' }}" target="_blank"
+                        rel="noopener" aria-label="PT Asia Connexindo LinkedIn"
                         class="btn btn-icon btn-outline-info rounded-circle">
                         <i class="ti ti-brand-linkedin ti-md"></i>
                     </a>
@@ -440,9 +457,9 @@
                                 target="{{ $feed->link ? '_blank' : '_self' }}"
                                 class="position-relative h-100 d-block text-decoration-none">
                                 <img src="{{ str_starts_with($feed->image_path, 'http') ? $feed->image_path : asset($feed->image_path) }}"
-                                    class="d-block w-100 h-100" alt="{{ $feed->title ?: 'PT Asia Connexindo Social Feed' }}"
-                                    loading="lazy" decoding="async" width="300" height="180"
-                                    style="object-fit: cover; height: 180px;">
+                                    class="d-block w-100 h-100"
+                                    alt="{{ $feed->title ?: 'PT Asia Connexindo Social Feed' }}" loading="lazy"
+                                    decoding="async" width="300" height="180" style="object-fit: cover; height: 180px;">
                                 <div class="card-img-overlay d-flex align-items-end p-2 bg-dark-gradient-overlay"
                                     style="background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);">
                                     <span class="badge bg-{{ $badgeColors[$loop->index % count($badgeColors)] }}">{{
