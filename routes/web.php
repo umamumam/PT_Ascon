@@ -34,6 +34,14 @@ Route::get('/contact', function () {
 });
 Route::post('/contact', [PublicCmsController::class, 'storeInquiry'])->name('public.contact.store');
 
+Route::get('/rates', function () {
+    return view('errors.coming-soon');
+})->name('public.rates');
+
+Route::get('/coming-soon', function () {
+    return view('errors.coming-soon');
+})->name('public.coming-soon');
+
 Route::get('/sailing', [SailingScheduleController::class, 'publicSchedulesNew'])->name('sailing-schedule');
 Route::get('/sailing-classic', [SailingScheduleController::class, 'publicSchedules'])->name('sailing-schedule-classic');
 Route::get('/etracking', [TrackingController::class, 'publicTracking'])->name('public.tracking');
