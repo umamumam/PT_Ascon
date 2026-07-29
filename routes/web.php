@@ -38,6 +38,13 @@ Route::get('/rates', function () {
     return view('errors.coming-soon');
 })->name('public.rates');
 
+use App\Http\Controllers\CustomerRegistrationController;
+
+Route::get('/register', [CustomerRegistrationController::class, 'form']);
+Route::get('/customer-registration', [CustomerRegistrationController::class, 'index'])->name('public.customer-registration');
+Route::get('/customer-registration/form', [CustomerRegistrationController::class, 'form'])->name('public.customer-registration.form');
+Route::post('/customer-registration/submit', [CustomerRegistrationController::class, 'submit'])->name('public.customer-registration.submit');
+
 Route::get('/coming-soon', function () {
     return view('errors.coming-soon');
 })->name('public.coming-soon');
@@ -62,8 +69,8 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// ─── User routes (role=user) ──────────────────────────────────────────────────
-Route::middleware(['auth', 'user.role'])->prefix('user')->name('user.')->group(function () {
+// ─── User routes (Public GET access / read-only for guests) ───────────────────
+Route::prefix('user')->name('user.')->group(function () {
     Route::get('/tracking/{type?}', [UserTrackingController::class, 'index'])->name('tracking.index');
 });
 

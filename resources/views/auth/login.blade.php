@@ -131,7 +131,7 @@
 
                     <p class="text-center">
                         <span>New on our platform?</span>
-                        <a href="{{ route('register') }}">
+                        <a href="{{ route('public.customer-registration.form') }}">
                             <span>Create an account</span>
                         </a>
                     </p>

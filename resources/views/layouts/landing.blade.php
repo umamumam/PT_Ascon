@@ -9,8 +9,10 @@
 
     <title>PT Asia Connexindo Internasional - Freight Forwarder Expert</title>
 
-    <meta name="description" content="PT Asia Connexindo Internasional (Ascon) - Freight Forwarding Expert with Trusted Global Network. Offering Sea Groupage, Airfreight, FCL, LCL, Customs Brokerage, Inland Transport, and Warehousing." />
-    <meta name="keywords" content="freight forwarder, logistics, sea freight, air freight, FCL, LCL, customs brokerage, warehousing, Jakarta, Indonesia, Ascon" />
+    <meta name="description"
+        content="PT Asia Connexindo Internasional (Ascon) - Freight Forwarding Expert with Trusted Global Network. Offering Sea Groupage, Airfreight, FCL, LCL, Customs Brokerage, Inland Transport, and Warehousing." />
+    <meta name="keywords"
+        content="freight forwarder, logistics, sea freight, air freight, FCL, LCL, customs brokerage, warehousing, Jakarta, Indonesia, Ascon" />
     <meta name="theme-color" content="#FF5722" />
     <link rel="canonical" href="{{ str_replace('http://', 'https://', url()->current()) }}" />
 
@@ -31,7 +33,7 @@
 
     <!-- Schema.org JSON-LD Structured Data for SEO -->
     <script type="application/ld+json">
-    {
+        {
       "@@context": "https://schema.org",
       "@@type": "LogisticsService",
       "name": "PT Asia Connexindo Internasional",
@@ -65,7 +67,8 @@
 
     @if(request()->is('/'))
     <!-- Preload Critical Hero Image for Homepage -->
-    <link rel="preload" as="image" href="{{ asset('assets/img/front-pages/backgrounds/Landing.jpg') }}" fetchpriority="high" />
+    <link rel="preload" as="image" href="{{ asset('assets/img/front-pages/backgrounds/Landing.jpg') }}"
+        fetchpriority="high" />
     @endif
 
     <link rel="icon" type="image/png" href="{{ asset('Logo.png') }}" />
@@ -521,8 +524,8 @@
             <div class="container d-flex justify-content-between align-items-center py-1 px-3 px-md-8">
                 <!-- Left: Links -->
                 <div class="d-flex align-items-center gap-4" style="margin-left: 1.25rem;">
-                    <a href="/login" class="top-bar-link">
-                        <i class="ti ti-user-check" style="font-size: 0.95rem;"></i> Customer Portal
+                    <a href="{{ route('public.customer-registration.form') }}" class="top-bar-link">
+                        <i class="ti ti-user-check" style="font-size: 0.95rem;"></i> Customer Registration
                     </a>
                     <a href="/rates" class="top-bar-link">
                         <i class="ti ti-calculator" style="font-size: 0.95rem;"></i> Rates/Tarif
@@ -575,8 +578,8 @@
                             <a class="nav-link fw-medium" href="/services">Services</a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle fw-medium" href="javascript:void(0)" id="navbarDropdown" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle fw-medium" href="javascript:void(0)" id="navbarDropdown"
+                                role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Sailing Schedule
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -673,8 +676,8 @@
                 <!-- Column 1: Logo -->
                 <div class="col-lg-3 col-md-12 mb-5 mb-lg-0 text-center text-lg-start">
                     <a href="/" class="d-inline-block mb-3">
-                        <img src="{{ asset('LogoLanding.png') }}" alt="PT Asia Connexindo Internasional"
-                            width="130" height="45" loading="lazy" style="max-width: 130px; height: auto;">
+                        <img src="{{ asset('LogoLanding.png') }}" alt="PT Asia Connexindo Internasional" width="130"
+                            height="45" loading="lazy" style="max-width: 130px; height: auto;">
 
                     </a>
                 </div>
@@ -736,12 +739,15 @@
                     <div class="mt-5">
                         <h5 class="fw-bold text-dark mb-3" style="font-size: 1.1rem;">Socials</h5>
                         <ul class="list-unstyled mb-0">
-                            <li class="mb-2"><a href="{{ $settings['linkedin_link'] ?? 'https://www.linkedin.com' }}" target="_blank" rel="noopener"
-                                    class="footer-link" aria-label="PT Asia Connexindo LinkedIn">Linkedin</a></li>
-                            <li class="mb-2"><a href="{{ $settings['instagram_link'] ?? 'https://www.instagram.com' }}" target="_blank" rel="noopener"
-                                    class="footer-link" aria-label="PT Asia Connexindo Instagram">Instagram</a></li>
-                            <li class="mb-2"><a href="{{ $settings['facebook_link'] ?? 'https://www.facebook.com' }}" target="_blank" rel="noopener"
-                                    class="footer-link" aria-label="PT Asia Connexindo Facebook">Facebook</a></li>
+                            <li class="mb-2"><a href="{{ $settings['linkedin_link'] ?? 'https://www.linkedin.com' }}"
+                                    target="_blank" rel="noopener" class="footer-link"
+                                    aria-label="PT Asia Connexindo LinkedIn">Linkedin</a></li>
+                            <li class="mb-2"><a href="{{ $settings['instagram_link'] ?? 'https://www.instagram.com' }}"
+                                    target="_blank" rel="noopener" class="footer-link"
+                                    aria-label="PT Asia Connexindo Instagram">Instagram</a></li>
+                            <li class="mb-2"><a href="{{ $settings['facebook_link'] ?? 'https://www.facebook.com' }}"
+                                    target="_blank" rel="noopener" class="footer-link"
+                                    aria-label="PT Asia Connexindo Facebook">Facebook</a></li>
                         </ul>
 
                     </div>

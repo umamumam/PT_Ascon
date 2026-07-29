@@ -30,11 +30,34 @@
 
     <!-- Core CSS -->
 
-    <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/core.css') }}" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/theme-default.css') }}"
+    <link rel="stylesheet" href="{{ asset('assets/vendor/css/core.css') }}" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/css/theme-default.css') }}"
         class="template-customizer-theme-css" />
 
     <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
+
+    <style>
+        @media (min-width: 992px) {
+            .layout-page {
+                padding-left: 260px !important;
+                padding-right: 0 !important;
+            }
+            .layout-menu {
+                position: fixed !important;
+                top: 0 !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                width: 260px !important;
+                z-index: 1025 !important;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .layout-page {
+                padding-left: 0 !important;
+            }
+        }
+    </style>
 
     <!-- Vendors CSS -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/node-waves/node-waves.css') }}" />

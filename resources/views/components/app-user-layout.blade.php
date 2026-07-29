@@ -55,6 +55,7 @@
                     <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
                         <ul class="navbar-nav flex-row align-items-center ms-auto">
                             <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                                @auth
                                 <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
                                     <div class="avatar avatar-online">
                                         <span class="avatar-initial rounded-circle bg-label-primary">
@@ -94,6 +95,13 @@
                                         </div>
                                     </li>
                                 </ul>
+                                @else
+                                <div class="d-flex gap-2">
+                                    <a href="/login" class="btn btn-sm btn-primary">
+                                        <i class="ti ti-login me-1"></i> Login
+                                    </a>
+                                </div>
+                                @endauth
                             </li>
                         </ul>
                     </div>

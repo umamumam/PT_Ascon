@@ -21,6 +21,11 @@ class UserTrackingController extends Controller
         $connectingVessels = [];
         $searched          = false;
 
+        if (!auth()->check()) {
+            $blNumber = null;
+            $searched = false;
+        }
+
         if ($blNumber) {
             $searched = true;
             $tracking = Tracking::with(['details' => function ($query) {

@@ -21,16 +21,36 @@
         </li>
 
         {{-- Tracking --}}
-        <li class="menu-item {{ (request()->is('user/tracking/Export*') || request('type') == 'Export' || (request()->is('user/tracking*') && !request()->is('user/tracking/Import*') && !request('type'))) ? 'active' : '' }}">
+        <li
+            class="menu-item {{ (request()->is('user/tracking/Export*') || request('type') == 'Export' || (request()->is('user/tracking*') && !request()->is('user/tracking/Import*') && !request('type'))) ? 'active' : '' }}">
             <a href="{{ route('user.tracking.index', ['type' => 'Export']) }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-ship"></i>
                 <div data-i18n="Tracking Export LCL">Tracking Export LCL</div>
             </a>
         </li>
-        <li class="menu-item {{ (request()->is('user/tracking/Import*') || request('type') == 'Import') ? 'active' : '' }}">
+        <li
+            class="menu-item {{ (request()->is('user/tracking/Import*') || request('type') == 'Import') ? 'active' : '' }}">
             <a href="{{ route('user.tracking.index', ['type' => 'Import']) }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-ship"></i>
                 <div data-i18n="Tracking Import LCL">Tracking Import LCL</div>
+            </a>
+        </li>
+        <li class="menu-item {{ request()->is('rates*') ? 'active' : '' }}">
+            <a href="/rates" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-calculator"></i>
+                <div data-i18n="Rates/Tarif">Rates/Tarif</div>
+            </a>
+        </li>
+
+        {{-- Registration & Support --}}
+        <li class="menu-header small">
+            <span class="menu-header-text" data-i18n="Account Registration">Account Registration</span>
+        </li>
+        <li
+            class="menu-item {{ (request()->is('customer-registration*') || request()->is('register')) ? 'active' : '' }}">
+            <a href="{{ route('public.customer-registration.form') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-mail-fast"></i>
+                <div data-i18n="Customer Registration">Customer Registration</div>
             </a>
         </li>
     </ul>

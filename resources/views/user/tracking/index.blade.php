@@ -252,7 +252,7 @@
                 </p>
             </div>
             <div>
-                <form method="GET" action="{{ route('user.tracking.index', ['type' => $type]) }}" class="d-flex gap-2">
+                <form id="trackingForm" method="GET" action="{{ route('user.tracking.index', ['type' => $type]) }}" class="d-flex gap-2">
                     <input type="hidden" name="type" value="{{ $type }}">
                     <input type="text" name="bl_number" class="form-control" placeholder="Enter HBL Number..."
                         value="{{ $blNumber ?? '' }}"
@@ -539,4 +539,36 @@
         </div>
 
     </div>
+
+    @guest
+    @push('scripts')
+    <script>
+        $(document).ready(function() {
+            $('#trackingForm').on('submit', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Akses Memerlukan Login 🔐',
+                    html: 'Untuk melakukan live tracking dan melihat detail pengiriman, silakan Login menggunakan <strong>Customer Code</strong> yang telah diberikan oleh pihak ASCON.<br><br><small class="text-muted">Belum punya Customer Code? Silakan ajukan permohonan registrasi via email ke <strong>admin@asiaconnex.net</strong></small>',
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="ti ti-key me-1"></i> Login Sekarang',
+                    cancelButtonText: '<i class="ti ti-mail me-1"></i> Kirim Email Permohonan',
+                    customClass: {
+                        confirmButton: 'btn btn-primary me-2',
+                        cancelButton: 'btn btn-outline-primary'
+                    },
+                    buttonsStyling: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/login';
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        window.location.href = 'mailto:admin@asiaconnex.net?subject=Permohonan%20Registrasi%20Customer%20Portal%20ASCON';
+                    }
+                });
+                return false;
+            });
+        });
+    </script>
+    @endpush
+    @endguest
 </x-app-user-layout>
