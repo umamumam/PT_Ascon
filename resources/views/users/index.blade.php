@@ -87,128 +87,293 @@
             </div>
         </div>
 
-        <div class="card">
-            <div class="card-header border-bottom d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">List Users</h5>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddUser">
-                    <i class="ti ti-plus me-1"></i> Add New User
-                </button>
-            </div>
+        <div class="nav-align-top mb-6">
+            <ul class="nav nav-pills mb-4" role="tablist">
+                <li class="nav-item">
+                    <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+                        data-bs-target="#tab-all-users" aria-controls="tab-all-users" aria-selected="true">
+                        <i class="ti ti-users me-1_5"></i> Semua User
+                        <span class="badge rounded-pill bg-label-secondary ms-2">{{ $users->count() }}</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                        data-bs-target="#tab-client-users" aria-controls="tab-client-users" aria-selected="false">
+                        <i class="ti ti-user me-1_5"></i> Client / User
+                        <span class="badge rounded-pill bg-label-info ms-2">{{ $users->where('role', '!=', 'admin')->count() }}</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                        data-bs-target="#tab-admin-users" aria-controls="tab-admin-users" aria-selected="false">
+                        <i class="ti ti-shield-check me-1_5"></i> Admin
+                        <span class="badge rounded-pill bg-label-primary ms-2">{{ $users->where('role', 'admin')->count() }}</span>
+                    </button>
+                </li>
+            </ul>
 
-            <div class="card-datatable table-responsive">
-                <table class="datatables table">
-                    <thead class="border-top">
-                        <tr>
-                            <th>User</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($users as $user)
-                        <tr>
-                            <td>
-                                <div class="d-flex justify-content-start align-items-center user-name">
-                                    <div class="avatar-wrapper">
-                                        <div class="avatar avatar-sm me-4">
-                                            <span class="avatar-initial rounded-circle bg-label-secondary">
-                                                {{ strtoupper(substr($user->name, 0, 2)) }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex flex-column">
-                                        <span class="fw-medium">{{ $user->name }}</span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>{{ $user->email }}</td>
-                            <td>
-                                @if($user->role === 'admin')
-                                    <span class="badge bg-label-primary">Admin</span>
-                                @else
-                                    <span class="badge bg-label-info">Client</span>
-                                @endif
-                            </td>
-                            <td><span class="badge bg-label-success">Active</span></td>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <button type="button" class="btn btn-sm btn-icon text-primary"
-                                        data-bs-toggle="modal" data-bs-target="#modalEditUser{{ $user->id }}">
-                                        <i class="ti ti-edit"></i>
-                                    </button>
+            <div class="tab-content p-0 shadow-none bg-transparent">
+                <!-- Tab 1: Semua User -->
+                <div class="tab-pane fade show active" id="tab-all-users" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">List Semua User</h5>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddUser">
+                                <i class="ti ti-plus me-1"></i> Add New User
+                            </button>
+                        </div>
 
-                                    <form id="delete-form-{{ $user->id }}"
-                                        action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" class="btn btn-sm btn-icon text-danger"
-                                            onclick="confirmDelete('{{ $user->id }}')">
-                                            <i class="ti ti-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-
-                                <div class="modal fade" id="modalEditUser{{ $user->id }}" tabindex="-1"
-                                    aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Edit User: {{ $user->name }}</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
+                        <div class="card-datatable table-responsive">
+                            <table class="datatables table">
+                                <thead class="border-top">
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($users as $user)
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex justify-content-start align-items-center user-name">
+                                                <div class="avatar-wrapper">
+                                                    <div class="avatar avatar-sm me-4">
+                                                        <span class="avatar-initial rounded-circle bg-label-secondary">
+                                                            {{ strtoupper(substr($user->name, 0, 2)) }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex flex-column">
+                                                    <span class="fw-medium">{{ $user->name }}</span>
+                                                </div>
                                             </div>
-                                            <form action="{{ route('users.update', $user->id) }}" method="POST">
-                                                @csrf
-                                                @method('PUT')
-                                                <div class="modal-body">
-                                                    <div class="mb-4">
-                                                        <label class="form-label">Full Name</label>
-                                                        <input type="text" class="form-control" name="name"
-                                                            value="{{ $user->name }}" required />
-                                                    </div>
-                                                    <div class="mb-4">
-                                                        <label class="form-label">Email</label>
-                                                        <input type="email" class="form-control" name="email"
-                                                            value="{{ $user->email }}" required />
-                                                    </div>
-                                                    <div class="mb-4">
-                                                        <label class="form-label">Role</label>
-                                                        <select class="form-select" name="role" required>
-                                                            <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Admin</option>
-                                                            <option value="user" {{ $user->role === 'user' ? 'selected' : '' }}>Client (User)</option>
-                                                        </select>
-                                                    </div>
-                                                    <hr>
-                                                    <small class="text-muted d-block mb-3">Kosongkan password jika tidak
-                                                        ingin mengubahnya.</small>
-                                                    <div class="mb-4">
-                                                        <label class="form-label">New Password</label>
-                                                        <input type="password" class="form-control" name="password" />
-                                                    </div>
-                                                    <div class="mb-4">
-                                                        <label class="form-label">Confirm New Password</label>
-                                                        <input type="password" class="form-control"
-                                                            name="password_confirmation" />
+                                        </td>
+                                        <td>{{ $user->email }}</td>
+                                        <td>
+                                            @if($user->role === 'admin')
+                                                <span class="badge bg-label-primary">Admin</span>
+                                            @else
+                                                <span class="badge bg-label-info">Client</span>
+                                            @endif
+                                        </td>
+                                        <td><span class="badge bg-label-success">Active</span></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <button type="button" class="btn btn-sm btn-icon text-primary"
+                                                    data-bs-toggle="modal" data-bs-target="#modalEditUser{{ $user->id }}">
+                                                    <i class="ti ti-edit"></i>
+                                                </button>
+
+                                                <form id="delete-form-{{ $user->id }}"
+                                                    action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" class="btn btn-sm btn-icon text-danger"
+                                                        onclick="confirmDelete('{{ $user->id }}')">
+                                                        <i class="ti ti-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Client / User -->
+                <div class="tab-pane fade" id="tab-client-users" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">List User (Role Client)</h5>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddUser">
+                                <i class="ti ti-plus me-1"></i> Add New User
+                            </button>
+                        </div>
+
+                        <div class="card-datatable table-responsive">
+                            <table class="datatables table">
+                                <thead class="border-top">
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($users->where('role', '!=', 'admin') as $user)
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex justify-content-start align-items-center user-name">
+                                                <div class="avatar-wrapper">
+                                                    <div class="avatar avatar-sm me-4">
+                                                        <span class="avatar-initial rounded-circle bg-label-info">
+                                                            {{ strtoupper(substr($user->name, 0, 2)) }}
+                                                        </span>
                                                     </div>
                                                 </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-label-secondary"
-                                                        data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary">Update Data</button>
+                                                <div class="d-flex flex-column">
+                                                    <span class="fw-medium">{{ $user->name }}</span>
                                                 </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                                            </div>
+                                        </td>
+                                        <td>{{ $user->email }}</td>
+                                        <td>
+                                            <span class="badge bg-label-info">Client</span>
+                                        </td>
+                                        <td><span class="badge bg-label-success">Active</span></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <button type="button" class="btn btn-sm btn-icon text-primary"
+                                                    data-bs-toggle="modal" data-bs-target="#modalEditUser{{ $user->id }}">
+                                                    <i class="ti ti-edit"></i>
+                                                </button>
+
+                                                <form id="delete-form-client-{{ $user->id }}"
+                                                    action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" class="btn btn-sm btn-icon text-danger"
+                                                        onclick="confirmDelete('{{ $user->id }}')">
+                                                        <i class="ti ti-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Admin -->
+                <div class="tab-pane fade" id="tab-admin-users" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">List User (Role Admin)</h5>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddUser">
+                                <i class="ti ti-plus me-1"></i> Add New User
+                            </button>
+                        </div>
+
+                        <div class="card-datatable table-responsive">
+                            <table class="datatables table">
+                                <thead class="border-top">
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($users->where('role', 'admin') as $user)
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex justify-content-start align-items-center user-name">
+                                                <div class="avatar-wrapper">
+                                                    <div class="avatar avatar-sm me-4">
+                                                        <span class="avatar-initial rounded-circle bg-label-primary">
+                                                            {{ strtoupper(substr($user->name, 0, 2)) }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex flex-column">
+                                                    <span class="fw-medium">{{ $user->name }}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{{ $user->email }}</td>
+                                        <td>
+                                            <span class="badge bg-label-primary">Admin</span>
+                                        </td>
+                                        <td><span class="badge bg-label-success">Active</span></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <button type="button" class="btn btn-sm btn-icon text-primary"
+                                                    data-bs-toggle="modal" data-bs-target="#modalEditUser{{ $user->id }}">
+                                                    <i class="ti ti-edit"></i>
+                                                </button>
+
+                                                <form id="delete-form-admin-{{ $user->id }}"
+                                                    action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" class="btn btn-sm btn-icon text-danger"
+                                                        onclick="confirmDelete('{{ $user->id }}')">
+                                                        <i class="ti ti-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <!-- Modal Edit User untuk setiap user -->
+        @foreach($users as $user)
+        <div class="modal fade" id="modalEditUser{{ $user->id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit User: {{ $user->name }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ route('users.update', $user->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-body">
+                            <div class="mb-4">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-control" name="name" value="{{ $user->name }}" required />
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" name="email" value="{{ $user->email }}" required />
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Role</label>
+                                <select class="form-select" name="role" required>
+                                    <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Admin</option>
+                                    <option value="user" {{ $user->role === 'user' ? 'selected' : '' }}>Client (User)</option>
+                                </select>
+                            </div>
+                            <hr>
+                            <small class="text-muted d-block mb-3">Kosongkan password jika tidak ingin mengubahnya.</small>
+                            <div class="mb-4">
+                                <label class="form-label">New Password</label>
+                                <input type="password" class="form-control" name="password" />
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Confirm New Password</label>
+                                <input type="password" class="form-control" name="password_confirmation" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Update Data</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        @endforeach
     </div>
 
     <div class="modal fade" id="modalAddUser" tabindex="-1" aria-hidden="true">
