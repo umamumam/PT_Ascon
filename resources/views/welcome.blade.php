@@ -284,9 +284,9 @@
                         <div class="custom-card-wrapper h-100">
                             <img src="{{ asset('assets/img/front-pages/why/why-experience.jpg') }}" loading="lazy"
                                 decoding="async" width="302" height="533" class="img-fluid custom-arch-img"
-                                alt="26 Years Freight Forwarding Experience - PT Asia Connexindo">
+                                alt="{{ date('Y') - 1999 }} Years Freight Forwarding Experience - PT Asia Connexindo">
                             <div class="custom-card-body bg-white p-3 shadow-sm">
-                                <h4 class="fw-bold mb-2 h6" style="color: #FF5722;">26+ Years of Experience</h4>
+                                <h4 class="fw-bold mb-2 h6" style="color: #FF5722;">{{ date('Y') - 1999 }}+ Years of Experience</h4>
                                 <p class="small fw-bold text-dark mb-3">Our Experience has allowed us to convince
                                     clients
                                     and agents around the world to be part of our global network and partnership.

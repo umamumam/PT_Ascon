@@ -142,6 +142,7 @@
 
 <section id="landingNewsHeader" class="section-py bg-white" style="padding-top: 180px !important;">
     <div class="container">
+        {{--
         <!-- Header Title Section -->
         <div class="row mb-5 justify-content-center text-center">
             <div class="col-lg-8">
@@ -220,6 +221,20 @@
                 </div>
             </div>
             @endforelse
+        </div> --}}
+
+        <!-- Instagram Feed Section -->
+        <div class="row mt-5 pt-4">
+            <div class="col-12 text-center mb-4">
+                <h6 class="text-dark fw-bold mb-2 text-uppercase tracking-wider"
+                    style="letter-spacing: 2px; font-size: 0.8rem;">Social Media</h6>
+                <h2 class="fw-bold text-dark mb-0">Follow Us on Instagram</h2>
+            </div>
+            <div class="col-12">
+                <!-- Elfsight Instagram Feed -->
+                <script src="https://elfsightcdn.com/platform.js" async></script>
+                <div class="elfsight-app-3a9e7958-1009-4b17-9c3b-21c76afff0ca" data-elfsight-app-lazy></div>
+            </div>
         </div>
     </div>
 </section>
