@@ -221,38 +221,32 @@
 
     <!-- Schedules by Route (Destination) -->
     @forelse($groupedSchedules as $route => $schedules)
-        @php
-        $parts = explode(' - ', $route);
-        $destination = $type == 'Export' ? $parts[1] : $parts[0];
-        $firstSchedule = $schedules->first();
-        $polCode = $firstSchedule->pol->port_code ?? '';
-        $podCode = $firstSchedule->pod->port_code ?? '';
-        $customLabels = $routeColumnLabels[$route] ?? [];
-        $labelEtd = $customLabels['etd'] ?? "ETD " . strtoupper($polCode);
-        $labelEta = $customLabels['eta_destination'] ?? 'ETA';
-        $labelConnEtd = $customLabels['connecting_etd'] ?? 'ETD';
-        $labelConnEta = $customLabels['connecting_eta'] ?? "ETA " . strtoupper($podCode);
-        $hasEtaText = $schedules->contains(fn($s) => !empty($s->eta_text));
-        $hasRemarks = $columnsPerRoute[$route]['has_remarks'];
+    @php
+    $parts = explode(' - ', $route);
+    $destination = $type == 'Export' ? $parts[1] : $parts[0];
+    $firstSchedule = $schedules->first();
+    $polCode = $firstSchedule->pol->port_code ?? '';
+    $podCode = $firstSchedule->pod->port_code ?? '';
+    $customLabels = $routeColumnLabels[$route] ?? [];
+    $labelEtd = $customLabels['etd'] ?? "ETD " . strtoupper($polCode);
+    $labelEta = $customLabels['eta_destination'] ?? 'ETA';
+    $labelConnEtd = $customLabels['connecting_etd'] ?? 'ETD';
+    $labelConnEta = $customLabels['connecting_eta'] ?? "ETA " . strtoupper($podCode);
+    $hasEtaText = $schedules->contains(fn($s) => !empty($s->eta_text));
+    $hasRemarks = $columnsPerRoute[$route]['has_remarks'];
 
-        $totalCols = 4 + count($columnsPerRoute[$route]['eta_destinations']);
-        if ($hasEtaText) $totalCols++;
-        if ($columnsPerRoute[$route]['has_connecting']) {
-            $hasEtaKlf = $schedules->contains(fn($s) => !empty($s->eta_klf));
-            $totalCols += ($hasEtaKlf ? 6 : 4);
-        }
-        if ($hasRemarks) $totalCols++;
+    $totalCols = 4 + count($columnsPerRoute[$route]['eta_destinations']);
+    if ($hasEtaText) $totalCols++;
+    if ($columnsPerRoute[$route]['has_connecting']) {
+    $hasEtaKlf = $schedules->contains(fn($s) => !empty($s->eta_klf));
+    $totalCols += ($hasEtaKlf ? 6 : 4);
+    }
+    if ($hasRemarks) $totalCols++;
 
-        $sectionWidth = '100%';
-        if ($totalCols <= 4) {
-            $sectionWidth = '50%';
-        } elseif ($totalCols == 5) {
-            $sectionWidth = '60%';
-        } elseif ($totalCols == 6) {
-            $sectionWidth = '75%';
-        }
-        @endphp
-    <div class="route-section" style="width: {{ $sectionWidth }};">
+    $sectionWidth = '100%';
+    if ($totalCols <= 4) { $sectionWidth='50%' ; } elseif ($totalCols==5) { $sectionWidth='60%' ; } elseif
+        ($totalCols==6) { $sectionWidth='75%' ; } @endphp <div class="route-section"
+        style="width: {{ $sectionWidth }};">
 
         <div class="route-header">{{ strtoupper($destination) }}</div>
 
@@ -338,56 +332,59 @@
                 @endforeach
             </tbody>
         </table>
-    </div>
-    @empty
-    <div class="no-data">
-        No sailing schedules found for the selected criteria.
-    </div>
-    @endforelse
-
-    <!-- Global Remarks Section -->
-    @php
-    $allRemarks = collect();
-    foreach($groupedSchedules as $schedules) {
-    $remarksInGroup = $schedules->filter(function($schedule) {
-    return !empty($schedule->remarks_field);
-    });
-    $allRemarks = $allRemarks->merge($remarksInGroup);
-    }
-    $allRemarks = $allRemarks->unique('id');
-    @endphp
-
-    <div class="remarks-section">
-        <div class="remarks-title">REMARKS :</div>
-        <div class="remark-item">*** Please send your booking instruction asap to check space availability.</div>
-        <div class="remark-item">*** Cancellation Booking, sudden postpone & decreasing in big volume from initial
-            booking subj to penalty charges</div>
-        <div class="remark-item">*** Please enclose Original NPE, PEB, Packing List & Commercial Invoice when deliver
-            your goods to our warehouse.</div>
-        <div class="remark-item">*** Operational Warehouse asf :</div>
-        <div class="remark-item">
-            <span class="indent-remarks">Monday - Friday : 09.00 - 17.00 (overtime will charge IDR 150,000/hours if your
-                cargo reached warehouse @ 17.01)</span>
         </div>
-        <div class="remark-item">
-            <span class="indent-remarks">Saturday : 09.00 - 12.00 (overtime will charge IDR 150,000/hours if your cargo
-                reached warehouse @ 12.01)</span>
+        @empty
+        <div class="no-data">
+            No sailing schedules found for the selected criteria.
         </div>
-    </div>
+        @endforelse
 
-    <div class="warehouse-section">
-        <div class="warehouse-title">WAREHOUSE ADDRESS :</div>
-        <div class="warehouse-info">
-            <strong>PT. BIMARUNA JAYA</strong><br>
-            <span class="font-normal">
-                JL. CAKUNG CILINCING RAYA KM 1.5<br>
-                KEL. CAKUNG BARAT, KEC. CILINCING<br>
-                KOTA JAKARTA TIMUR 13910
-            </span><br>
-            <br>
-            <strong>Pic : Pak Djaffar / 081519121901</strong>
+        <!-- Global Remarks Section -->
+        @php
+        $allRemarks = collect();
+        foreach($groupedSchedules as $schedules) {
+        $remarksInGroup = $schedules->filter(function($schedule) {
+        return !empty($schedule->remarks_field);
+        });
+        $allRemarks = $allRemarks->merge($remarksInGroup);
+        }
+        $allRemarks = $allRemarks->unique('id');
+        @endphp
+
+        {{-- <div class="remarks-section">
+            <div class="remarks-title">REMARKS :</div>
+            <div class="remark-item">*** Please send your booking instruction asap to check space availability.</div>
+            <div class="remark-item">*** Cancellation Booking, sudden postpone & decreasing in big volume from initial
+                booking subj to penalty charges</div>
+            <div class="remark-item">*** Please enclose Original NPE, PEB, Packing List & Commercial Invoice when
+                deliver
+                your goods to our warehouse.</div>
+            <div class="remark-item">*** Operational Warehouse asf :</div>
+            <div class="remark-item">
+                <span class="indent-remarks">Monday - Friday : 09.00 - 17.00 (overtime will charge IDR 150,000/hours if
+                    your
+                    cargo reached warehouse @ 17.01)</span>
+            </div>
+            <div class="remark-item">
+                <span class="indent-remarks">Saturday : 09.00 - 12.00 (overtime will charge IDR 150,000/hours if your
+                    cargo
+                    reached warehouse @ 12.01)</span>
+            </div>
+        </div> --}}
+
+        <div class="warehouse-section">
+            <div class="warehouse-title">WAREHOUSE ADDRESS :</div>
+            <div class="warehouse-info">
+                <strong>PT. BIMARUNA JAYA</strong><br>
+                <span class="font-normal">
+                    JL. CAKUNG CILINCING RAYA KM 1.5<br>
+                    KEL. CAKUNG BARAT, KEC. CILINCING<br>
+                    KOTA JAKARTA TIMUR 13910
+                </span><br>
+                <br>
+                <strong>Pic : Pak Djaffar / 081519121901</strong>
+            </div>
         </div>
-    </div>
 
 </body>
 
