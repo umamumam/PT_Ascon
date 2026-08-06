@@ -382,7 +382,7 @@
 
                     <div class="col-6 col-md-3">
                         <div class="d-flex align-items-center">
-                            <span class="h1 fw-bold text-white mb-0 counter-value" data-target="26">0</span>
+                            <span class="h1 fw-bold text-white mb-0 counter-value" data-target="{{ date('Y') - 1999 }}">0</span>
                             <span class="h1 fw-bold text-white mb-0">+</span>
                         </div>
                         <div style="width: 30px; height: 3px; background-color: #FF5722;" class="my-2"></div>

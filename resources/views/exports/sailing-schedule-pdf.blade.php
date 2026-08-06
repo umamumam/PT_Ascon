@@ -21,11 +21,9 @@
         }
 
         .header-container {
-            border: 2px solid #000;
-            padding: 8px 12px;
-            margin-bottom: 20px;
             display: table;
             width: 100%;
+            margin-bottom: 20px;
         }
 
         .header-content {
@@ -36,56 +34,67 @@
             display: table-cell;
             width: 100px;
             vertical-align: middle;
-            padding-right: 15px;
+            padding-right: 5px;
         }
 
         .logo {
-            max-height: 60px;
-            max-width: 90px;
+            max-height: 100px;
+            max-width: 250px;
+            width: auto;
+            height: auto;
+            display: block;
         }
 
         .company-info-cell {
             display: table-cell;
-            vertical-align: middle;
+            vertical-align: left;
+        }
+
+        .company-box {
+            border: 1.5px solid #000;
+            padding: 6px 10px;
             text-align: center;
         }
 
         .company-name {
             font-weight: bold;
-            font-size: 13px;
+            font-size: 22px;
             margin-bottom: 2px;
+            color: #000;
         }
 
         .company-address {
-            font-size: 10px;
+            font-size: 14px;
             line-height: 1.4;
         }
 
         .title-section {
             text-align: center;
-            margin: 25px 0 20px 0;
+            margin: 20px 0 15px 0;
         }
 
         .main-title {
-            font-size: 14px;
+            font-size: 17px;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .route-section {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             page-break-inside: avoid;
         }
 
         .route-header {
-            background-color: #ff4545;
-            color: white;
-            padding: 5px 10px;
+            background-color: #ff0000;
+            color: #ffffff;
+            padding: 4px 8px;
             font-weight: bold;
-            font-size: 11px;
+            font-size: 9.5px;
             text-transform: uppercase;
             margin-bottom: 0;
+            border: 1px solid #000;
+            border-bottom: none;
         }
 
         table {
@@ -95,20 +104,20 @@
         }
 
         th {
-            background-color: #7eafeb;
-            color: #000;
-            padding: 5px 6px;
+            background-color: #a4c2f4;
+            color: #000000;
+            padding: 4px 5px;
             text-align: center;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: bold;
-            border: 1px solid #333;
+            border: 1px solid #000;
         }
 
         td {
-            padding: 4px 6px;
+            padding: 4px 5px;
             text-align: center;
-            border: 1px solid #333;
-            font-size: 9px;
+            border: 1px solid #000;
+            font-size: 8.5px;
         }
 
         .text-left {
@@ -170,14 +179,16 @@
     <div class="header-container">
         <div class="header-content">
             <div class="logo-cell">
-                <img src="{{ public_path('Logo.png') }}" alt="Logo" class="logo">
+                <img src="{{ public_path('logoascon.png') }}" alt="Logo" class="logo">
             </div>
             <div class="company-info-cell">
-                <div class="company-name">PT. Asia Connexindo Internasional</div>
-                <div class="company-address">
-                    Soepomo Office Park, Unit O<br>
-                    Jl. Prof. Dr. Supomo No. 143 Tebet, Jakarta Selatan 12810<br>
-                    Ph : 021-83791179 Fx : 021-83791180
+                <div class="company-box">
+                    <div class="company-name">PT. Asia Connexindo Internasional</div>
+                    <div class="company-address">
+                        Soepomo Office Park, Unit O<br>
+                        Jl. Prof. Dr. Supomo No. 143 Tebet, Jakarta Selatan 12810<br>
+                        Ph : 021-83791179 Fx : 021-83791180
+                    </div>
                 </div>
             </div>
         </div>
@@ -210,20 +221,38 @@
 
     <!-- Schedules by Route (Destination) -->
     @forelse($groupedSchedules as $route => $schedules)
-    <div class="route-section">
         @php
-            $parts         = explode(' - ', $route);
-            $destination   = $type == 'Export' ? $parts[1] : $parts[0];
-            $firstSchedule = $schedules->first();
-            $polCode       = $firstSchedule->pol->port_code ?? '';
-            $podCode       = $firstSchedule->pod->port_code ?? '';
-            $customLabels  = $routeColumnLabels[$route] ?? [];
-            $labelEtd      = $customLabels['etd']             ?? "ETD " . strtoupper($polCode);
-            $labelEta      = $customLabels['eta_destination']  ?? 'ETA';
-            $labelConnEtd  = $customLabels['connecting_etd']   ?? 'ETD';
-            $labelConnEta  = $customLabels['connecting_eta']   ?? "ETA " . strtoupper($podCode);
-            $hasEtaText    = $schedules->contains(fn($s) => !empty($s->eta_text));
+        $parts = explode(' - ', $route);
+        $destination = $type == 'Export' ? $parts[1] : $parts[0];
+        $firstSchedule = $schedules->first();
+        $polCode = $firstSchedule->pol->port_code ?? '';
+        $podCode = $firstSchedule->pod->port_code ?? '';
+        $customLabels = $routeColumnLabels[$route] ?? [];
+        $labelEtd = $customLabels['etd'] ?? "ETD " . strtoupper($polCode);
+        $labelEta = $customLabels['eta_destination'] ?? 'ETA';
+        $labelConnEtd = $customLabels['connecting_etd'] ?? 'ETD';
+        $labelConnEta = $customLabels['connecting_eta'] ?? "ETA " . strtoupper($podCode);
+        $hasEtaText = $schedules->contains(fn($s) => !empty($s->eta_text));
+        $hasRemarks = $columnsPerRoute[$route]['has_remarks'];
+
+        $totalCols = 4 + count($columnsPerRoute[$route]['eta_destinations']);
+        if ($hasEtaText) $totalCols++;
+        if ($columnsPerRoute[$route]['has_connecting']) {
+            $hasEtaKlf = $schedules->contains(fn($s) => !empty($s->eta_klf));
+            $totalCols += ($hasEtaKlf ? 6 : 4);
+        }
+        if ($hasRemarks) $totalCols++;
+
+        $sectionWidth = '100%';
+        if ($totalCols <= 4) {
+            $sectionWidth = '50%';
+        } elseif ($totalCols == 5) {
+            $sectionWidth = '60%';
+        } elseif ($totalCols == 6) {
+            $sectionWidth = '75%';
+        }
         @endphp
+    <div class="route-section" style="width: {{ $sectionWidth }};">
 
         <div class="route-header">{{ strtoupper($destination) }}</div>
 
@@ -256,17 +285,20 @@
                     <th style="width: 12%;">{{ strtoupper($labelConnEta) }}</th>
                     @endif
 
+                    @if($hasRemarks)
                     <th style="width: 15%;">REMARKS</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
                 @foreach($schedules as $schedule)
                 <tr>
-                    <td class="text-left">{{ strtoupper($schedule->vessel) }}</td>
+                    <td>{{ strtoupper($schedule->vessel) }}</td>
                     <td>{{ $schedule->voyage }}</td>
                     <td class="text-nowrap">{{ \Carbon\Carbon::parse($schedule->etd)->format('d-M') }}</td>
                     <td class="text-nowrap">
-                        {{ $schedule->eta_destination ? \Carbon\Carbon::parse($schedule->eta_destination)->format('d-M') : '-' }}
+                        {{ $schedule->eta_destination ? \Carbon\Carbon::parse($schedule->eta_destination)->format('d-M')
+                        : '-' }}
                     </td>
 
                     @foreach($columnsPerRoute[$route]['eta_destinations'] as $destNum)
@@ -284,7 +316,8 @@
                     <td>{{ $schedule->connecting_vessel ?? '-' }}</td>
                     <td>{{ $schedule->connecting_voyage ?? '-' }}</td>
                     <td class="text-nowrap">
-                        {{ $schedule->connecting_etd ? \Carbon\Carbon::parse($schedule->connecting_etd)->format('d-M') : '-' }}
+                        {{ $schedule->connecting_etd ? \Carbon\Carbon::parse($schedule->connecting_etd)->format('d-M') :
+                        '-' }}
                     </td>
                     @if($hasEtaKlf)
                     <td class="text-nowrap">
@@ -293,11 +326,14 @@
                     <td>{{ $schedule->connecting_klf ?? ($schedule->eta_klf ? 'By Truck' : '-') }}</td>
                     @endif
                     <td class="text-nowrap">
-                        {{ $schedule->connecting_eta ? \Carbon\Carbon::parse($schedule->connecting_eta)->format('d-M') : '-' }}
+                        {{ $schedule->connecting_eta ? \Carbon\Carbon::parse($schedule->connecting_eta)->format('d-M') :
+                        '-' }}
                     </td>
                     @endif
 
+                    @if($hasRemarks)
                     <td class="text-left">{{ $schedule->remarks_field ?? '-' }}</td>
+                    @endif
                 </tr>
                 @endforeach
             </tbody>

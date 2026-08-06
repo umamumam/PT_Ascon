@@ -264,7 +264,7 @@ class SailingScheduleController extends Controller
                     $columns['has_connecting'] = true;
                 }
 
-                if (!empty($schedule->remarks_field))
+                if (!empty($schedule->remarks_field) && trim($schedule->remarks_field) !== '' && trim($schedule->remarks_field) !== '-')
                     $columns['has_remarks'] = true;
 
                 for ($i = 1; $i <= 7; $i++) {
@@ -273,6 +273,10 @@ class SailingScheduleController extends Controller
                         $columns['eta_destinations'][] = $i;
                     }
                 }
+            }
+
+            if (str_contains(strtoupper($route), 'JAPAN')) {
+                $columns['has_connecting'] = false;
             }
 
             sort($columns['eta_destinations']);
@@ -472,7 +476,7 @@ class SailingScheduleController extends Controller
                     $columns['has_connecting'] = true;
                 }
 
-                if (!empty($schedule->remarks_field))
+                if (!empty($schedule->remarks_field) && trim($schedule->remarks_field) !== '' && trim($schedule->remarks_field) !== '-')
                     $columns['has_remarks'] = true;
 
                 for ($i = 1; $i <= 7; $i++) {
@@ -481,6 +485,10 @@ class SailingScheduleController extends Controller
                         $columns['eta_destinations'][] = $i;
                     }
                 }
+            }
+
+            if (str_contains(strtoupper($route), 'JAPAN')) {
+                $columns['has_connecting'] = false;
             }
 
             sort($columns['eta_destinations']);
@@ -651,7 +659,7 @@ class SailingScheduleController extends Controller
                     $columns['has_connecting'] = true;
                 }
 
-                if (!empty($schedule->remarks_field))
+                if (!empty($schedule->remarks_field) && trim($schedule->remarks_field) !== '' && trim($schedule->remarks_field) !== '-')
                     $columns['has_remarks'] = true;
 
                 for ($i = 1; $i <= 7; $i++) {
@@ -660,6 +668,10 @@ class SailingScheduleController extends Controller
                         $columns['eta_destinations'][] = $i;
                     }
                 }
+            }
+
+            if (str_contains(strtoupper($route), 'JAPAN')) {
+                $columns['has_connecting'] = false;
             }
 
             sort($columns['eta_destinations']);

@@ -317,7 +317,7 @@
             $columns       = $columnsPerRoute[$route];
             $hasConnecting = $columns['has_connecting'];
             $hasEtaText    = $columns['has_eta_text'];
-            $hasRemarks    = true;
+            $hasRemarks    = $columns['has_remarks'];
             $etaDestinations = $columns['eta_destinations'];
             $customLabels  = $routeColumnLabels[$route] ?? [];
             $labelEtd      = $customLabels['etd']             ?? 'ETD';
