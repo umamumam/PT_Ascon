@@ -372,7 +372,7 @@
             </div>
         </div> --}}
 
-        <div class="warehouse-section">
+        {{-- <div class="warehouse-section">
             <div class="warehouse-title">WAREHOUSE ADDRESS :</div>
             <div class="warehouse-info">
                 <strong>PT. BIMARUNA JAYA</strong><br>
@@ -384,7 +384,7 @@
                 <br>
                 <strong>Pic : Pak Djaffar / 081519121901</strong>
             </div>
-        </div>
+        </div> --}}
 
 </body>
 
