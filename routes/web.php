@@ -87,6 +87,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('vessels', VesselController::class);
 
     Route::get('schedules/template/download', [SailingScheduleController::class, 'downloadTemplate'])->name('schedules.template.download');
+    Route::get('schedules/export/excel', [SailingScheduleController::class, 'exportExcel'])->name('schedules.export.excel');
     Route::post('schedules/import', [SailingScheduleController::class, 'import'])->name('schedules.import');
     Route::resource('schedules', SailingScheduleController::class);
 

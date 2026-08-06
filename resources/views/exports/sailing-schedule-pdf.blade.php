@@ -237,9 +237,13 @@
 
     $totalCols = 4 + count($columnsPerRoute[$route]['eta_destinations']);
     if ($hasEtaText) $totalCols++;
+    $hasConnecting2 = $schedules->contains(fn($s) => !empty($s->eta_nha) || !empty($s->connecting2_vessel) || !empty($s->connecting2_voyage) || !empty($s->connecting2_etd));
     if ($columnsPerRoute[$route]['has_connecting']) {
-    $hasEtaKlf = $schedules->contains(fn($s) => !empty($s->eta_klf));
-    $totalCols += ($hasEtaKlf ? 6 : 4);
+        $hasEtaKlf = $schedules->contains(fn($s) => !empty($s->eta_klf));
+        $totalCols += 3;
+        if ($hasConnecting2) $totalCols += 4;
+        if ($hasEtaKlf) $totalCols += 2;
+        $totalCols += 1;
     }
     if ($hasRemarks) $totalCols++;
 
@@ -269,14 +273,20 @@
 
                     @if($columnsPerRoute[$route]['has_connecting'])
                     @php $hasEtaKlf = $schedules->contains(fn($s) => !empty($s->eta_klf)); @endphp
-                    <th style="width: 15%;">CONNECTING</th>
-                    <th style="width: 10%;">VOY</th>
-                    <th style="width: 12%;">{{ strtoupper($labelConnEtd) }}</th>
-                    @if($hasEtaKlf)
-                    <th style="width: 12%;">ETA KLF</th>
-                    <th style="width: 12%;">CONNECTING</th>
+                    <th>{{ $hasConnecting2 ? '1st CONNECTING' : 'CONNECTING' }}</th>
+                    <th>VOY</th>
+                    <th>{{ strtoupper($labelConnEtd) }}</th>
+                    @if($hasConnecting2)
+                    <th>ETA NHA</th>
+                    <th>2nd CONNECTING</th>
+                    <th>VOY</th>
+                    <th>ETD NHA</th>
                     @endif
-                    <th style="width: 12%;">{{ strtoupper($labelConnEta) }}</th>
+                    @if($hasEtaKlf)
+                    <th>ETA KLF</th>
+                    <th>{{ $hasConnecting2 ? '3rd CONNECTING' : 'CONNECTING' }}</th>
+                    @endif
+                    <th>{{ strtoupper($labelConnEta) }}</th>
                     @endif
 
                     @if($hasRemarks)
@@ -313,6 +323,16 @@
                         {{ $schedule->connecting_etd ? \Carbon\Carbon::parse($schedule->connecting_etd)->format('d-M') :
                         '-' }}
                     </td>
+                    @if($hasConnecting2)
+                    <td class="text-nowrap">
+                        {{ $schedule->eta_nha ? \Carbon\Carbon::parse($schedule->eta_nha)->format('d-M') : '-' }}
+                    </td>
+                    <td>{{ $schedule->connecting2_vessel ?? '-' }}</td>
+                    <td>{{ $schedule->connecting2_voyage ?? '-' }}</td>
+                    <td class="text-nowrap">
+                        {{ $schedule->connecting2_etd ? \Carbon\Carbon::parse($schedule->connecting2_etd)->format('d-M') : '-' }}
+                    </td>
+                    @endif
                     @if($hasEtaKlf)
                     <td class="text-nowrap">
                         {{ $schedule->eta_klf ? \Carbon\Carbon::parse($schedule->eta_klf)->format('d-M') : '-' }}

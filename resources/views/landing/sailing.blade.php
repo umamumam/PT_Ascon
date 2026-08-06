@@ -323,12 +323,20 @@
             $labelEtd      = $customLabels['etd']             ?? 'ETD';
             $labelEta      = $customLabels['eta_destination']  ?? 'ETA';
 
+            $hasConnecting2 = $routeSchedules->contains(fn($s) => !empty($s->eta_nha) || !empty($s->connecting2_vessel) || !empty($s->connecting2_voyage) || !empty($s->connecting2_etd));
+            $hasEtaKlf = $routeSchedules->contains(fn($s) => !empty($s->eta_klf));
+
             // Hitung total kolom
             $totalColumns = 3; // Vessel, Voy, ETD
             $totalColumns++;   // ETA (eta_destination)
             $totalColumns += count($etaDestinations);
             if ($hasEtaText)    $totalColumns++;
-            if ($hasConnecting) $totalColumns += 4;
+            if ($hasConnecting) {
+                $totalColumns += 3; // 1st connecting
+                if ($hasConnecting2) $totalColumns += 4; // ETA NHA, 2nd connecting, voy, ETD NHA
+                if ($hasEtaKlf) $totalColumns += 2; // ETA KLF, 3rd connecting
+                $totalColumns += 1; // ETA final
+            }
             if ($hasRemarks)    $totalColumns++;
         @endphp
         <div class="col-12 mt-5">
@@ -362,12 +370,18 @@
                             @endif
 
                             @if($hasConnecting)
-                            <th class="text-dark">Connecting</th>
+                            <th class="text-dark">{{ $hasConnecting2 ? '1st Connecting' : 'Connecting' }}</th>
                             <th class="text-dark">Voy</th>
                             <th class="text-dark">{{ $customLabels['connecting_etd'] ?? 'ETD' }}</th>
-                            @if($routeSchedules->contains(fn($s) => !empty($s->eta_klf)))
+                            @if($hasConnecting2)
+                            <th class="text-dark">ETA NHA</th>
+                            <th class="text-dark">2nd Connecting</th>
+                            <th class="text-dark">Voy</th>
+                            <th class="text-dark">ETD NHA</th>
+                            @endif
+                            @if($hasEtaKlf)
                             <th class="text-dark">ETA KLF</th>
-                            <th class="text-dark">Connecting</th>
+                            <th class="text-dark">{{ $hasConnecting2 ? '3rd Connecting' : 'Connecting' }}</th>
                             @endif
                             <th class="text-dark">{{ $customLabels['connecting_eta'] ?? 'ETA' }}</th>
                             @endif
@@ -409,7 +423,23 @@
                                 @else -
                                 @endif
                             </td>
-                            @if($routeSchedules->contains(fn($s) => !empty($s->eta_klf)))
+                            @if($hasConnecting2)
+                            <td>
+                                @if($schedule->eta_nha)
+                                    {{ \Carbon\Carbon::parse($schedule->eta_nha)->format('d - M') }}
+                                @else -
+                                @endif
+                            </td>
+                            <td>{{ $schedule->connecting2_vessel ?? '-' }}</td>
+                            <td>{{ $schedule->connecting2_voyage ?? '-' }}</td>
+                            <td>
+                                @if($schedule->connecting2_etd)
+                                    {{ \Carbon\Carbon::parse($schedule->connecting2_etd)->format('d - M') }}
+                                @else -
+                                @endif
+                            </td>
+                            @endif
+                            @if($hasEtaKlf)
                             <td>
                                 @if($schedule->eta_klf)
                                     {{ \Carbon\Carbon::parse($schedule->eta_klf)->format('d - M') }}

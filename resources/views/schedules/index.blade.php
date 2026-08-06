@@ -197,6 +197,9 @@
             <div class="card-header border-bottom d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">List Sailing Schedules</h5>
                 <div class="d-flex gap-2">
+                    <a href="{{ route('schedules.export.excel', request()->all()) }}" class="btn btn-label-info">
+                        <i class="ti ti-file-export me-1"></i> Export Excel
+                    </a>
                     <button class="btn btn-label-success" data-bs-toggle="modal" data-bs-target="#modalImportExcel">
                         <i class="ti ti-file-import me-1"></i> Import Excel
                     </button>
@@ -240,8 +243,20 @@
                             </td>
                             <td>
                                 @if($item->connecting_vessel)
-                                    <small>{{ $item->connecting_vessel }}</small>
-                                @else
+                                    <small class="fw-bold text-primary">{{ $item->connecting_vessel }}</small>
+                                    @if($item->connecting_voyage)<small class="text-muted"> ({{ $item->connecting_voyage }})</small>@endif
+                                    @if($item->connecting_etd)<br><small class="text-muted">ETD: {{ \Carbon\Carbon::parse($item->connecting_etd)->format('d M') }}</small>@endif
+                                @endif
+                                @if($item->eta_nha || $item->connecting2_vessel)
+                                    <br><small class="fw-bold text-info">2nd: {{ $item->connecting2_vessel ?? 'NHA' }}</small>
+                                    @if($item->connecting2_voyage)<small class="text-muted"> ({{ $item->connecting2_voyage }})</small>@endif
+                                    @if($item->connecting2_etd)<br><small class="text-muted">ETD NHA: {{ \Carbon\Carbon::parse($item->connecting2_etd)->format('d M') }}</small>@endif
+                                @endif
+                                @if($item->eta_klf || $item->connecting_klf)
+                                    <br><small class="fw-bold text-warning">3rd: {{ $item->connecting_klf ?? 'By Truck' }}</small>
+                                    @if($item->connecting_eta)<br><small class="text-muted">ETA: {{ \Carbon\Carbon::parse($item->connecting_eta)->format('d M') }}</small>@endif
+                                @endif
+                                @if(!$item->connecting_vessel && !$item->connecting2_vessel && !$item->connecting_klf && !$item->eta_nha && !$item->eta_klf)
                                     <span class="text-muted">-</span>
                                 @endif
                             </td>
@@ -403,6 +418,32 @@
                                                                 value="{{ $item->etd_code_connecting }}"
                                                                 placeholder="Ex: SIN, TPP">
                                                             <small class="text-muted">Kode port transit setelah Connecting ETD</small>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <label class="form-label">ETA NHA</label>
+                                                            <input type="date" name="eta_nha"
+                                                                class="form-control"
+                                                                value="{{ $item->eta_nha }}">
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <label class="form-label">2nd Connecting Vessel</label>
+                                                            <input type="text" name="connecting2_vessel"
+                                                                class="form-control"
+                                                                value="{{ $item->connecting2_vessel }}"
+                                                                placeholder="2nd Connecting vessel">
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <label class="form-label">2nd Connecting Voyage</label>
+                                                            <input type="text" name="connecting2_voyage"
+                                                                class="form-control"
+                                                                value="{{ $item->connecting2_voyage }}"
+                                                                placeholder="2nd Connecting voyage">
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <label class="form-label">ETD NHA</label>
+                                                            <input type="date" name="connecting2_etd"
+                                                                class="form-control"
+                                                                value="{{ $item->connecting2_etd }}">
                                                         </div>
                                                         <div class="col-md-4">
                                                             <label class="form-label">ETA KLF</label>
@@ -568,6 +609,24 @@
                                     placeholder="Ex: SIN, TPP">
                                 <small class="text-muted">Kode port transit setelah Connecting ETD</small>
                             </div>
+                            <div class="col-md-3">
+                                <label class="form-label">ETA NHA</label>
+                                <input type="date" name="eta_nha" class="form-control">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">2nd Connecting Vessel</label>
+                                <input type="text" name="connecting2_vessel" class="form-control"
+                                    placeholder="2nd Connecting vessel">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">2nd Connecting Voyage</label>
+                                <input type="text" name="connecting2_voyage" class="form-control"
+                                    placeholder="2nd Connecting voyage">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">ETD NHA</label>
+                                <input type="date" name="connecting2_etd" class="form-control">
+                            </div>
                             <div class="col-md-4">
                                 <label class="form-label">ETA KLF</label>
                                 <input type="date" name="eta_klf" class="form-control">
@@ -707,9 +766,74 @@
                                             <td>Kode port transit setelah ETA Destination (Opsional)</td>
                                         </tr>
                                         <tr>
+                                            <td>eta_destination1..7</td>
+                                            <td>2024-01-25</td>
+                                            <td>Tanggal ETA pelabuhan/destinasi tambahan 1 s/d 7 (Opsional)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>eta_text</td>
+                                            <td>Delayed</td>
+                                            <td>Teks/keterangan ETA khusus (Opsional)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>connecting_vessel</td>
+                                            <td>WAN HAI 507</td>
+                                            <td>Nama Kapal Perantara 1st Connecting (Opsional)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>connecting_voyage</td>
+                                            <td>W245</td>
+                                            <td>Voyage Kapal 1st Connecting (Opsional)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>connecting_etd</td>
+                                            <td>2024-01-22</td>
+                                            <td>ETD 1st Connecting (Opsional)</td>
+                                        </tr>
+                                        <tr>
                                             <td>etd_code_connecting</td>
-                                            <td>TPP</td>
-                                            <td>Kode port transit setelah Connecting ETD (Opsional)</td>
+                                            <td>TPP / SIN</td>
+                                            <td>Kode port transit setelah 1st Connecting ETD (Opsional)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>eta_nha</td>
+                                            <td>2024-01-26</td>
+                                            <td>ETA di NHA / Transit Point 2 (Opsional)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>connecting2_vessel</td>
+                                            <td>TSS AMBER</td>
+                                            <td>Nama Kapal Perantara 2nd Connecting (Opsional)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>connecting2_voyage</td>
+                                            <td>2635W</td>
+                                            <td>Voyage Kapal 2nd Connecting (Opsional)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>connecting2_etd</td>
+                                            <td>2024-02-01</td>
+                                            <td>ETD di NHA / 2nd Connecting ETD (Opsional)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>eta_klf</td>
+                                            <td>2024-02-08</td>
+                                            <td>ETA KLF / Transit Point 3 (Opsional)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>connecting_klf</td>
+                                            <td>By Truck</td>
+                                            <td>Status/Kapal 3rd Connecting (Default 'By Truck' jika ETA KLF diisi)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>connecting_eta</td>
+                                            <td>2024-02-13</td>
+                                            <td>ETA Akhir / Final Destination (Opsional)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>remarks</td>
+                                            <td>Good condition</td>
+                                            <td>Catatan / Remarks tambahan (Opsional)</td>
                                         </tr>
                                     </tbody>
                                 </table>

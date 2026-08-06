@@ -100,6 +100,10 @@ class SailingScheduleController extends Controller
             'connecting_voyage' => 'nullable|string|max:50',
             'connecting_etd'    => 'nullable|date',
             'etd_code_connecting' => 'nullable|string|max:20',
+            'eta_nha'           => 'nullable|date',
+            'connecting2_vessel'  => 'nullable|string|max:100',
+            'connecting2_voyage'  => 'nullable|string|max:50',
+            'connecting2_etd'     => 'nullable|date',
             'eta_klf'           => 'nullable|date',
             'connecting_klf'    => 'nullable|string|max:100',
             'connecting_eta'    => 'nullable|date',
@@ -138,6 +142,10 @@ class SailingScheduleController extends Controller
             'connecting_voyage' => 'nullable|string|max:50',
             'connecting_etd'    => 'nullable|date',
             'etd_code_connecting' => 'nullable|string|max:20',
+            'eta_nha'           => 'nullable|date',
+            'connecting2_vessel'  => 'nullable|string|max:100',
+            'connecting2_voyage'  => 'nullable|string|max:50',
+            'connecting2_etd'     => 'nullable|date',
             'eta_klf'           => 'nullable|date',
             'connecting_klf'    => 'nullable|string|max:100',
             'connecting_eta'    => 'nullable|date',
@@ -161,6 +169,34 @@ class SailingScheduleController extends Controller
     public function downloadTemplate(): BinaryFileResponse
     {
         return Excel::download(new SailingScheduleTemplateExport(), 'sailing_schedule_template.xlsx');
+    }
+
+    public function exportExcel(Request $request): BinaryFileResponse
+    {
+        $query = SailingSchedule::with(['pol', 'pod']);
+
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+        if ($request->filled('service')) {
+            $query->where('service', $request->service);
+        }
+        if ($request->filled('pol_id')) {
+            $query->where('pol_id', $request->pol_id);
+        }
+        if ($request->filled('pod_id')) {
+            $query->where('pod_id', $request->pod_id);
+        }
+        if ($request->filled('from_date')) {
+            $query->whereDate('etd', '>=', $request->from_date);
+        }
+        if ($request->filled('to_date')) {
+            $query->whereDate('etd', '<=', $request->to_date);
+        }
+
+        $schedules = $query->orderBy('id', 'asc')->get();
+
+        return Excel::download(new \App\Exports\SailingScheduleExport($schedules), 'sailing_schedules_' . date('Y-m-d') . '.xlsx');
     }
 
     public function import(Request $request)
@@ -236,7 +272,7 @@ class SailingScheduleController extends Controller
             if ($pod_id) $query->where('pod_id', $pod_id);
         }
 
-        $schedules = $query->orderBy('etd', 'asc')->get();
+        $schedules = $query->orderBy('id', 'asc')->get();
 
         $groupedSchedules = $schedules->groupBy(function ($schedule) {
             return $schedule->pol->port_name . ' - ' . $schedule->pod->port_name;
@@ -259,6 +295,8 @@ class SailingScheduleController extends Controller
                     !empty($schedule->connecting_vessel)    || !empty($schedule->connecting_voyage) ||
                     !empty($schedule->connecting_etd)       || !empty($schedule->connecting_eta)    ||
                     !empty($schedule->eta_code_connecting)  || !empty($schedule->etd_code_connecting) ||
+                    !empty($schedule->eta_nha)              || !empty($schedule->connecting2_vessel) ||
+                    !empty($schedule->connecting2_voyage)   || !empty($schedule->connecting2_etd)    ||
                     !empty($schedule->eta_klf)              || !empty($schedule->connecting_klf)
                 ) {
                     $columns['has_connecting'] = true;
@@ -290,7 +328,7 @@ class SailingScheduleController extends Controller
                 'eta_destination1' => 'ETA YOK (via TYO)',
                 'eta_destination2' => 'ETA NGY',
                 'eta_destination3' => 'ETA KBE',
-                'eta_destination4' => 'ETA OSK (via KBE)',
+                'eta_destination4' => 'ETA OSK',
             ],
         ];
 
@@ -448,7 +486,7 @@ class SailingScheduleController extends Controller
             }
         }
 
-        $schedules = $query->orderBy('etd', 'asc')->get();
+        $schedules = $query->orderBy('id', 'asc')->get();
 
         $groupedSchedules = $schedules->groupBy(function ($schedule) {
             return $schedule->pol->port_name . ' - ' . $schedule->pod->port_name;
@@ -471,6 +509,8 @@ class SailingScheduleController extends Controller
                     !empty($schedule->connecting_vessel)    || !empty($schedule->connecting_voyage) ||
                     !empty($schedule->connecting_etd)       || !empty($schedule->connecting_eta)    ||
                     !empty($schedule->eta_code_connecting)  || !empty($schedule->etd_code_connecting) ||
+                    !empty($schedule->eta_nha)              || !empty($schedule->connecting2_vessel) ||
+                    !empty($schedule->connecting2_voyage)   || !empty($schedule->connecting2_etd)    ||
                     !empty($schedule->eta_klf)              || !empty($schedule->connecting_klf)
                 ) {
                     $columns['has_connecting'] = true;
@@ -502,7 +542,7 @@ class SailingScheduleController extends Controller
                 'eta_destination1' => 'ETA YOK (via TYO)',
                 'eta_destination2' => 'ETA NGY',
                 'eta_destination3' => 'ETA KBE',
-                'eta_destination4' => 'ETA OSK (via KBE)',
+                'eta_destination4' => 'ETA OSK',
             ],
         ];
 
@@ -631,7 +671,7 @@ class SailingScheduleController extends Controller
             if ($pod_id) $query->where('pod_id', $pod_id);
         }
 
-        $schedules = $query->orderBy('etd', 'asc')->get();
+        $schedules = $query->orderBy('id', 'asc')->get();
 
         $groupedSchedules = $schedules->groupBy(function ($schedule) {
             return $schedule->pol->port_name . ' - ' . $schedule->pod->port_name;
@@ -654,6 +694,8 @@ class SailingScheduleController extends Controller
                     !empty($schedule->connecting_vessel)    || !empty($schedule->connecting_voyage) ||
                     !empty($schedule->connecting_etd)       || !empty($schedule->connecting_eta)    ||
                     !empty($schedule->eta_code_connecting)  || !empty($schedule->etd_code_connecting) ||
+                    !empty($schedule->eta_nha)              || !empty($schedule->connecting2_vessel) ||
+                    !empty($schedule->connecting2_voyage)   || !empty($schedule->connecting2_etd)    ||
                     !empty($schedule->eta_klf)              || !empty($schedule->connecting_klf)
                 ) {
                     $columns['has_connecting'] = true;
@@ -685,7 +727,7 @@ class SailingScheduleController extends Controller
                 'eta_destination1' => 'ETA YOK (via TYO)',
                 'eta_destination2' => 'ETA NGY',
                 'eta_destination3' => 'ETA KBE',
-                'eta_destination4' => 'ETA OSK (via KBE)',
+                'eta_destination4' => 'ETA OSK',
             ],
         ];
 
