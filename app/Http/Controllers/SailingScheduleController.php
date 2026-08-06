@@ -166,9 +166,18 @@ class SailingScheduleController extends Controller
         return redirect()->route('schedules.index')->with('success', 'Jadwal berhasil dihapus!');
     }
 
-    public function downloadTemplate(): BinaryFileResponse
+    public function downloadTemplate(Request $request): BinaryFileResponse
     {
-        return Excel::download(new SailingScheduleTemplateExport(), 'sailing_schedule_template.xlsx');
+        $template = $request->input('template', 'direct');
+
+        $filename = match ($template) {
+            'connecting' => 'template_schedule_with_connecting.xlsx',
+            'japan'      => 'template_schedule_japan_route.xlsx',
+            'jebel_ali'  => 'template_schedule_jebel_ali_route.xlsx',
+            default      => 'template_schedule_direct.xlsx',
+        };
+
+        return Excel::download(new SailingScheduleTemplateExport($template), $filename);
     }
 
     public function exportExcel(Request $request): BinaryFileResponse

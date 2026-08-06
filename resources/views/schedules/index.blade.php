@@ -670,10 +670,21 @@
                     <div class="modal-body">
                         <div class="mb-4">
                             <h6>Template Format Excel</h6>
-                            <p class="text-muted">Download template untuk memastikan format data sesuai:</p>
-                            <a href="{{ route('schedules.template.download') }}" class="btn btn-outline-primary btn-sm">
-                                <i class="ti ti-download me-1"></i> Download Template
-                            </a>
+                            <p class="text-muted mb-2">Pilih dan download template sesuai dengan jenis rute / data jadwal:</p>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="{{ route('schedules.template.download', ['template' => 'direct']) }}" class="btn btn-outline-primary btn-sm">
+                                    <i class="ti ti-download me-1"></i> 1. Tanpa Connecting (Direct)
+                                </a>
+                                <a href="{{ route('schedules.template.download', ['template' => 'connecting']) }}" class="btn btn-outline-info btn-sm">
+                                    <i class="ti ti-download me-1"></i> 2. Dengan Connecting
+                                </a>
+                                <a href="{{ route('schedules.template.download', ['template' => 'japan']) }}" class="btn btn-outline-success btn-sm">
+                                    <i class="ti ti-download me-1"></i> 3. Rute Japan
+                                </a>
+                                <a href="{{ route('schedules.template.download', ['template' => 'jebel_ali']) }}" class="btn btn-outline-warning btn-sm">
+                                    <i class="ti ti-download me-1"></i> 4. Rute Jebel Ali
+                                </a>
+                            </div>
                         </div>
 
                         <hr class="my-4">
@@ -704,141 +715,6 @@
                                 </select>
                                 <small class="text-muted">Jika kolom "service" kosong di Excel, akan menggunakan nilai ini</small>
                             </div>
-                        </div>
-
-                        <div class="alert alert-info mt-4">
-                            <h6 class="alert-heading mb-2">Format Data yang Diperlukan:</h6>
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-sm mb-0">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th width="20%">Kolom</th>
-                                            <th width="30%">Contoh</th>
-                                            <th width="50%">Keterangan</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>type</td>
-                                            <td>Export</td>
-                                            <td><span class="text-primary">Export / Import</span><br>
-                                                <small class="text-muted">(Opsional - gunakan default jika kosong)</small></td>
-                                        </tr>
-                                        <tr>
-                                            <td>service</td>
-                                            <td>FCL</td>
-                                            <td><span class="text-primary">LCL / FCL</span><br>
-                                                <small class="text-muted">(Opsional - gunakan default jika kosong)</small></td>
-                                        </tr>
-                                        <tr>
-                                            <td>pol</td>
-                                            <td>Singapore</td>
-                                            <td>Nama Port of Loading (Harus sesuai database)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>pod</td>
-                                            <td>Jakarta</td>
-                                            <td>Nama Port of Discharge (Harus sesuai database)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>vessel</td>
-                                            <td>HAPPY LUCKY</td>
-                                            <td>Nama Vessel (Wajib diisi)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>voyage</td>
-                                            <td>001N</td>
-                                            <td>Nomor Voyage (Wajib diisi)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>etd</td>
-                                            <td>2024-01-15</td>
-                                            <td>Format: YYYY-MM-DD (Wajib diisi)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>eta_destination</td>
-                                            <td>2024-01-20</td>
-                                            <td>Format: YYYY-MM-DD (Wajib diisi)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>eta_code_connecting</td>
-                                            <td>SIN</td>
-                                            <td>Kode port transit setelah ETA Destination (Opsional)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>eta_destination1..7</td>
-                                            <td>2024-01-25</td>
-                                            <td>Tanggal ETA pelabuhan/destinasi tambahan 1 s/d 7 (Opsional)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>eta_text</td>
-                                            <td>Delayed</td>
-                                            <td>Teks/keterangan ETA khusus (Opsional)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>connecting_vessel</td>
-                                            <td>WAN HAI 507</td>
-                                            <td>Nama Kapal Perantara 1st Connecting (Opsional)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>connecting_voyage</td>
-                                            <td>W245</td>
-                                            <td>Voyage Kapal 1st Connecting (Opsional)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>connecting_etd</td>
-                                            <td>2024-01-22</td>
-                                            <td>ETD 1st Connecting (Opsional)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>etd_code_connecting</td>
-                                            <td>TPP / SIN</td>
-                                            <td>Kode port transit setelah 1st Connecting ETD (Opsional)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>eta_nha</td>
-                                            <td>2024-01-26</td>
-                                            <td>ETA di NHA / Transit Point 2 (Opsional)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>connecting2_vessel</td>
-                                            <td>TSS AMBER</td>
-                                            <td>Nama Kapal Perantara 2nd Connecting (Opsional)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>connecting2_voyage</td>
-                                            <td>2635W</td>
-                                            <td>Voyage Kapal 2nd Connecting (Opsional)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>connecting2_etd</td>
-                                            <td>2024-02-01</td>
-                                            <td>ETD di NHA / 2nd Connecting ETD (Opsional)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>eta_klf</td>
-                                            <td>2024-02-08</td>
-                                            <td>ETA KLF / Transit Point 3 (Opsional)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>connecting_klf</td>
-                                            <td>By Truck</td>
-                                            <td>Status/Kapal 3rd Connecting (Default 'By Truck' jika ETA KLF diisi)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>connecting_eta</td>
-                                            <td>2024-02-13</td>
-                                            <td>ETA Akhir / Final Destination (Opsional)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>remarks</td>
-                                            <td>Good condition</td>
-                                            <td>Catatan / Remarks tambahan (Opsional)</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <p class="mt-2 mb-0"><small>Note: Kolom selain yang disebutkan di atas bersifat opsional</small></p>
                         </div>
                     </div>
                     <div class="modal-footer">
