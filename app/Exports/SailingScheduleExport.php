@@ -94,7 +94,7 @@ class SailingScheduleExport implements FromCollection, WithHeadings, WithMapping
             'eta_klf',
             'connecting_klf',
             'connecting_eta',
-            'remarks_field'
+            'remarks'
         ];
     }
 

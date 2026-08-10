@@ -40,7 +40,8 @@ class SailingScheduleTemplateExport implements FromArray, WithHeadings, WithTitl
                     'W245',
                     '2026-08-16',
                     'SIN',
-                    '2026-09-13'
+                    '2026-09-13',
+                    ''
                 ]
             ],
             'japan' => [
@@ -57,6 +58,7 @@ class SailingScheduleTemplateExport implements FromArray, WithHeadings, WithTitl
                     '2026-08-18',
                     '2026-08-20',
                     '2026-08-18',
+                    '',
                     '',
                     '',
                     ''
@@ -83,7 +85,8 @@ class SailingScheduleTemplateExport implements FromArray, WithHeadings, WithTitl
                     '2026-09-01',
                     '2026-09-09',
                     'By Truck',
-                    '2026-09-13'
+                    '2026-09-13',
+                    ''
                 ]
             ],
             default => [
@@ -95,7 +98,8 @@ class SailingScheduleTemplateExport implements FromArray, WithHeadings, WithTitl
                     'INCRES',
                     '078N',
                     '2026-08-03',
-                    '2026-08-05'
+                    '2026-08-05',
+                    ''
                 ]
             ]
         };
@@ -119,7 +123,8 @@ class SailingScheduleTemplateExport implements FromArray, WithHeadings, WithTitl
                 'connecting_voyage',
                 'connecting_etd',
                 'etd_code_connecting',
-                'connecting_eta'
+                'connecting_eta',
+                'remarks'
             ],
             'japan' => [
                 'type',
@@ -136,7 +141,8 @@ class SailingScheduleTemplateExport implements FromArray, WithHeadings, WithTitl
                 'eta_destination4',
                 'eta_destination5',
                 'eta_destination6',
-                'eta_destination7'
+                'eta_destination7',
+                'remarks'
             ],
             'jebel_ali' => [
                 'type',
@@ -158,7 +164,8 @@ class SailingScheduleTemplateExport implements FromArray, WithHeadings, WithTitl
                 'connecting2_etd',
                 'eta_klf',
                 'connecting_klf',
-                'connecting_eta'
+                'connecting_eta',
+                'remarks'
             ],
             default => [
                 'type',
@@ -168,7 +175,8 @@ class SailingScheduleTemplateExport implements FromArray, WithHeadings, WithTitl
                 'vessel',
                 'voyage',
                 'etd',
-                'eta_destination'
+                'eta_destination',
+                'remarks'
             ]
         };
     }
