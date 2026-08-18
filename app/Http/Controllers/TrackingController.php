@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Tracking;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Imports\TrackingImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\TrackingTemplateExport;
@@ -130,6 +131,44 @@ class TrackingController extends Controller
     {
         $tracking->delete();
         return redirect()->route('trackings.index')->with('success', 'Data tracking berhasil dihapus.');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'from_date' => 'required|date',
+            'to_date'   => 'required|date|after_or_equal:from_date',
+            'type'      => 'nullable|in:Export,Import',
+        ]);
+
+        $query = Tracking::query();
+
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        $query->whereBetween('created_at', [
+            $request->from_date . ' 00:00:00',
+            $request->to_date . ' 23:59:59'
+        ]);
+
+        $trackings = $query->get();
+        $count = $trackings->count();
+
+        if ($count === 0) {
+            return redirect()->route('trackings.index')
+                ->with('error', 'Tidak ada data tracking yang sesuai dengan kriteria periode dan jenis yang dipilih.');
+        }
+
+        DB::transaction(function () use ($trackings) {
+            foreach ($trackings as $tracking) {
+                $tracking->details()->delete();
+                $tracking->delete();
+            }
+        });
+
+        return redirect()->route('trackings.index')
+            ->with('success', "Berhasil menghapus {$count} data tracking.");
     }
 
     public function downloadTemplate(): BinaryFileResponse

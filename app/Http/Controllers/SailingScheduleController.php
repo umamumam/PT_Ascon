@@ -166,6 +166,35 @@ class SailingScheduleController extends Controller
         return redirect()->route('schedules.index')->with('success', 'Jadwal berhasil dihapus!');
     }
 
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'from_date' => 'required|date',
+            'to_date'   => 'required|date|after_or_equal:from_date',
+            'type'      => 'nullable|in:Export,Import',
+        ]);
+
+        $query = SailingSchedule::query();
+
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        $query->whereBetween('etd', [$request->from_date, $request->to_date]);
+
+        $count = $query->count();
+
+        if ($count === 0) {
+            return redirect()->route('schedules.index')
+                ->with('error', 'Tidak ada data jadwal yang sesuai dengan kriteria periode dan jenis yang dipilih.');
+        }
+
+        $query->delete();
+
+        return redirect()->route('schedules.index')
+            ->with('success', "Berhasil menghapus {$count} data jadwal berlayar.");
+    }
+
     public function downloadTemplate(Request $request): BinaryFileResponse
     {
         $template = $request->input('template', 'direct');

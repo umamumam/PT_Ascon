@@ -89,10 +89,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('schedules/template/download', [SailingScheduleController::class, 'downloadTemplate'])->name('schedules.template.download');
     Route::get('schedules/export/excel', [SailingScheduleController::class, 'exportExcel'])->name('schedules.export.excel');
     Route::post('schedules/import', [SailingScheduleController::class, 'import'])->name('schedules.import');
+    Route::delete('schedules/bulk-delete', [SailingScheduleController::class, 'bulkDelete'])->name('schedules.bulk-delete');
     Route::resource('schedules', SailingScheduleController::class);
 
     Route::get('trackings/template/download', [TrackingController::class, 'downloadTemplate'])->name('trackings.template.download');
     Route::post('trackings/import', [TrackingController::class, 'import'])->name('trackings.import');
+    Route::delete('trackings/bulk-delete', [TrackingController::class, 'bulkDelete'])->name('trackings.bulk-delete');
     Route::post('/tracking/{trackingId}/details', [TrackingDetailController::class, 'store'])->name('tracking_details.store');
     Route::put('tracking-details/{id}', [TrackingDetailController::class, 'update'])->name('tracking_details.update');
     Route::delete('tracking-details/{id}', [TrackingDetailController::class, 'destroy'])->name('tracking_details.destroy');

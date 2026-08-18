@@ -194,9 +194,12 @@
 
         {{-- Table --}}
         <div class="card">
-            <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+            <div class="card-header border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <h5 class="card-title mb-0">List Sailing Schedules</h5>
-                <div class="d-flex gap-2">
+                <div class="d-flex gap-2 flex-wrap">
+                    <button class="btn btn-label-danger" data-bs-toggle="modal" data-bs-target="#modalBulkDeleteSchedule">
+                        <i class="ti ti-trash me-1"></i> Hapus per Periode
+                    </button>
                     <a href="{{ route('schedules.export.excel', request()->all()) }}" class="btn btn-label-info">
                         <i class="ti ti-file-export me-1"></i> Export Excel
                     </a>
@@ -725,6 +728,55 @@
             </div>
         </div>
     </div>
+
+    {{-- Modal Bulk Delete Schedule --}}
+    <div class="modal fade" id="modalBulkDeleteSchedule" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-label-danger">
+                    <h5 class="modal-title text-danger">
+                        <i class="ti ti-trash me-1"></i> Hapus Jadwal Berdasarkan Periode
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formBulkDeleteSchedule" action="{{ route('schedules.bulk-delete') }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <div class="modal-body">
+                        <div class="alert alert-warning mb-4" role="alert">
+                            Data pada periode tanggal dan jenis yang dipilih akan dihapus secara permanen.
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Dari Tanggal (ETD) <span class="text-danger">*</span></label>
+                                <input type="date" name="from_date" class="form-control" required value="{{ $fromDate ?? date('Y-m-01') }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Sampai Tanggal (ETD) <span class="text-danger">*</span></label>
+                                <input type="date" name="to_date" class="form-control" required value="{{ $toDate ?? date('Y-m-t') }}">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Jenis Jadwal (Type)</label>
+                                <select name="type" class="form-select">
+                                    <option value="">Semua Jenis (Export & Import)</option>
+                                    <option value="Export">Export</option>
+                                    <option value="Import">Import</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-danger" onclick="confirmBulkDeleteSchedule()">
+                            <i class="ti ti-trash me-1"></i> Hapus Data
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('change', function(e) {
             if (e.target && e.target.matches('input[name="eta_klf"]')) {
@@ -737,5 +789,51 @@
                 }
             }
         });
+
+        function confirmBulkDeleteSchedule() {
+            const form = document.getElementById('formBulkDeleteSchedule');
+            const fromDate = form.querySelector('[name="from_date"]').value;
+            const toDate = form.querySelector('[name="to_date"]').value;
+
+            if (!fromDate || !toDate) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian',
+                    text: 'Harap isi periode tanggal dari dan sampai!',
+                    customClass: { confirmButton: 'btn btn-primary' },
+                    buttonsStyling: false
+                });
+                return;
+            }
+
+            if (fromDate > toDate) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian',
+                    text: 'Tanggal awal tidak boleh lebih besar dari tanggal akhir!',
+                    customClass: { confirmButton: 'btn btn-primary' },
+                    buttonsStyling: false
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Yakin hapus data ini?',
+                text: 'Data pada periode dan jenis yang dipilih akan dihapus permanen.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                customClass: {
+                    confirmButton: 'btn btn-danger me-3',
+                    cancelButton: 'btn btn-label-secondary'
+                },
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        }
     </script>
 </x-app-layout>

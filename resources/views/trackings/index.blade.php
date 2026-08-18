@@ -143,10 +143,13 @@
 
         {{-- Table --}}
         <div class="card">
-            <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+            <div class="card-header border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <h5 class="card-title mb-0">List Trackings</h5>
-                <div>
-                    <button class="btn btn-label-success me-2" data-bs-toggle="modal"
+                <div class="d-flex gap-2 flex-wrap">
+                    <button class="btn btn-label-danger" data-bs-toggle="modal" data-bs-target="#modalBulkDeleteTracking">
+                        <i class="ti ti-trash me-1"></i> Hapus per Periode
+                    </button>
+                    <button class="btn btn-label-success" data-bs-toggle="modal"
                         data-bs-target="#modalImportTracking">
                         <i class="ti ti-file-import me-1"></i> Import Excel
                     </button>
@@ -840,6 +843,56 @@
         </div>
     </div>
 
+    {{-- ============================== --}}
+    {{-- Modal: Bulk Delete Tracking    --}}
+    {{-- ============================== --}}
+    <div class="modal fade" id="modalBulkDeleteTracking" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-label-danger">
+                    <h5 class="modal-title text-danger">
+                        <i class="ti ti-trash me-1"></i> Hapus Tracking Berdasarkan Periode
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formBulkDeleteTracking" action="{{ route('trackings.bulk-delete') }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <div class="modal-body">
+                        <div class="alert alert-warning mb-4" role="alert">
+                            Data pada periode tanggal dan jenis yang dipilih akan dihapus secara permanen.
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Dari Tanggal <span class="text-danger">*</span></label>
+                                <input type="date" name="from_date" class="form-control" required value="{{ $fromDate ?? date('Y-m-01') }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Sampai Tanggal <span class="text-danger">*</span></label>
+                                <input type="date" name="to_date" class="form-control" required value="{{ $toDate ?? date('Y-m-t') }}">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Jenis Tracking (Type)</label>
+                                <select name="type" class="form-select">
+                                    <option value="">Semua Jenis (Export & Import)</option>
+                                    <option value="Export">Export</option>
+                                    <option value="Import">Import</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-danger" onclick="confirmBulkDeleteTracking()">
+                            <i class="ti ti-trash me-1"></i> Hapus Data
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script>
         function toggleShipmentFields(id) {
             const shipmentType = document.getElementById('shipmentType' + id).value;
@@ -857,16 +910,62 @@
 
         function confirmDelete(id) {
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
+                title: 'Yakin hapus data ini?',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
                     document.getElementById('delete-form-' + id).submit();
+                }
+            });
+        }
+
+        function confirmBulkDeleteTracking() {
+            const form = document.getElementById('formBulkDeleteTracking');
+            const fromDate = form.querySelector('[name="from_date"]').value;
+            const toDate = form.querySelector('[name="to_date"]').value;
+
+            if (!fromDate || !toDate) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian',
+                    text: 'Harap isi periode tanggal dari dan sampai!',
+                    customClass: { confirmButton: 'btn btn-primary' },
+                    buttonsStyling: false
+                });
+                return;
+            }
+
+            if (fromDate > toDate) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian',
+                    text: 'Tanggal awal tidak boleh lebih besar dari tanggal akhir!',
+                    customClass: { confirmButton: 'btn btn-primary' },
+                    buttonsStyling: false
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Yakin hapus data ini?',
+                text: 'Data pada periode dan jenis yang dipilih akan dihapus permanen.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                customClass: {
+                    confirmButton: 'btn btn-danger me-3',
+                    cancelButton: 'btn btn-label-secondary'
+                },
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
                 }
             });
         }
