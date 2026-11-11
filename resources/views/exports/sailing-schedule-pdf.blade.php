@@ -85,6 +85,34 @@
             page-break-inside: avoid;
         }
 
+        .route-pair {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+        }
+
+        .route-pair-row {
+            display: table-row;
+        }
+
+        .route-pair-col {
+            display: table-cell;
+            width: 49%;
+            vertical-align: top;
+        }
+
+        .route-pair-gap {
+            display: table-cell;
+            width: 2%;
+        }
+
+        .route-pair .route-section,
+        .route-pair table {
+            margin-bottom: 0;
+        }
+
         .route-header {
             background-color: #ff0000;
             color: #ffffff;
@@ -100,7 +128,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
+            margin-bottom: 0;
         }
 
         th {
@@ -220,110 +248,164 @@
     </div>
 
     <!-- Schedules by Route (Destination) -->
-    @forelse($groupedSchedules as $route => $schedules)
     @php
-    $parts = explode(' - ', $route);
-    $destination = $type == 'Export' ? $parts[1] : $parts[0];
-    $firstSchedule = $schedules->first();
-    $polCode = $firstSchedule->pol->port_code ?? '';
-    $podCode = $firstSchedule->pod->port_code ?? '';
-    $customLabels = $routeColumnLabels[$route] ?? [];
-    $labelEtd = $customLabels['etd'] ?? "ETD " . strtoupper($polCode);
-    $labelEta = $customLabels['eta_destination'] ?? 'ETA';
-    $labelConnEtd = $customLabels['connecting_etd'] ?? 'ETD';
-    $labelConnEta = $customLabels['connecting_eta'] ?? "ETA " . strtoupper($podCode);
-    $hasEtaText = $schedules->contains(fn($s) => !empty($s->eta_text));
-    $hasRemarks = $columnsPerRoute[$route]['has_remarks'];
+    $routeItems = [];
+    foreach ($groupedSchedules as $route => $schedules) {
+        $parts = explode(' - ', $route);
+        $destination = $type == 'Export' ? ($parts[1] ?? $route) : ($parts[0] ?? $route);
+        $firstSchedule = $schedules->first();
+        $polCode = $firstSchedule->pol->port_code ?? '';
+        $podCode = $firstSchedule->pod->port_code ?? '';
+        $customLabels = $routeColumnLabels[$route] ?? [];
+        $labelEtd = $customLabels['etd'] ?? "ETD " . strtoupper($polCode);
+        $labelEta = $customLabels['eta_destination'] ?? 'ETA';
+        $labelConnEtd = $customLabels['connecting_etd'] ?? 'ETD';
+        $labelConnEta = $customLabels['connecting_eta'] ?? "ETA " . strtoupper($podCode);
+        $etaDestinations = $columnsPerRoute[$route]['eta_destinations'] ?? [];
+        $hasConnecting = $columnsPerRoute[$route]['has_connecting'] ?? false;
+        $hasEtaText = $schedules->contains(fn($s) => !empty($s->eta_text));
+        $hasRemarks = $columnsPerRoute[$route]['has_remarks'] ?? false;
+        $hasConnecting2 = $schedules->contains(fn($s) => !empty($s->eta_nha) || !empty($s->connecting2_vessel) || !empty($s->connecting2_voyage) || !empty($s->connecting2_etd));
+        $hasEtaKlf = $hasConnecting && $schedules->contains(fn($s) => !empty($s->eta_klf));
 
-    $totalCols = 4 + count($columnsPerRoute[$route]['eta_destinations']);
-    if ($hasEtaText) $totalCols++;
-    $hasConnecting2 = $schedules->contains(fn($s) => !empty($s->eta_nha) || !empty($s->connecting2_vessel) || !empty($s->connecting2_voyage) || !empty($s->connecting2_etd));
-    if ($columnsPerRoute[$route]['has_connecting']) {
-        $hasEtaKlf = $schedules->contains(fn($s) => !empty($s->eta_klf));
-        $totalCols += 3;
-        if ($hasConnecting2) $totalCols += 4;
-        if ($hasEtaKlf) $totalCols += 2;
-        $totalCols += 1;
+        $totalCols = 4 + count($etaDestinations);
+        if ($hasEtaText) $totalCols++;
+        if ($hasConnecting) {
+            $totalCols += 3;
+            if ($hasConnecting2) $totalCols += 4;
+            if ($hasEtaKlf) $totalCols += 2;
+            $totalCols += 1;
+        }
+        if ($hasRemarks) $totalCols++;
+
+        $sectionWidth = '100%';
+        if ($totalCols <= 4) {
+            $sectionWidth = '50%';
+        } elseif ($totalCols == 5) {
+            $sectionWidth = '60%';
+        } elseif ($totalCols == 6) {
+            $sectionWidth = '75%';
+        }
+
+        $routeItems[] = [
+            'route'           => $route,
+            'schedules'       => $schedules,
+            'destination'     => $destination,
+            'customLabels'    => $customLabels,
+            'labelEtd'        => $labelEtd,
+            'labelEta'        => $labelEta,
+            'labelConnEtd'    => $labelConnEtd,
+            'labelConnEta'    => $labelConnEta,
+            'etaDestinations' => $etaDestinations,
+            'hasConnecting'   => $hasConnecting,
+            'hasEtaText'      => $hasEtaText,
+            'hasRemarks'      => $hasRemarks,
+            'hasConnecting2'  => $hasConnecting2,
+            'hasEtaKlf'       => $hasEtaKlf,
+            'isTwoCol'        => $totalCols <= 4,
+            'sectionWidth'    => $sectionWidth,
+        ];
     }
-    if ($hasRemarks) $totalCols++;
 
-    $sectionWidth = '100%';
-    if ($totalCols <= 4) { $sectionWidth='50%' ; } elseif ($totalCols==5) { $sectionWidth='60%' ; } elseif
-        ($totalCols==6) { $sectionWidth='75%' ; } @endphp <div class="route-section"
-        style="width: {{ $sectionWidth }};">
+    // Group consecutive 4-column tables (VESSEL | VOY. | ETD | ETA) into left/right pairs
+    $layoutRows = [];
+    $pendingPair = [];
+    foreach ($routeItems as $item) {
+        if ($item['isTwoCol']) {
+            $pendingPair[] = $item;
+            if (count($pendingPair) === 2) {
+                $layoutRows[] = ['is_pair' => true, 'items' => $pendingPair];
+                $pendingPair = [];
+            }
+        } else {
+            if (!empty($pendingPair)) {
+                $layoutRows[] = ['is_pair' => true, 'items' => [$pendingPair[0], null]];
+                $pendingPair = [];
+            }
+            $layoutRows[] = ['is_pair' => false, 'items' => [$item]];
+        }
+    }
+    if (!empty($pendingPair)) {
+        $layoutRows[] = ['is_pair' => true, 'items' => [$pendingPair[0], null]];
+    }
+    @endphp
 
-        <div class="route-header">{{ strtoupper($destination) }}</div>
+    @forelse($layoutRows as $row)
+    @if($row['is_pair'])<div class="route-pair"><div class="route-pair-row">@endif
+    @foreach($row['items'] as $colIndex => $item)
+    @if($row['is_pair'])@if($colIndex === 1)<div class="route-pair-gap"></div>@endif<div class="route-pair-col">@endif
+    @if($item)
+    <div class="route-section" style="width: {{ $row['is_pair'] ? '100%' : $item['sectionWidth'] }};">
+
+        <div class="route-header">{{ strtoupper($item['destination']) }}</div>
 
         <table>
             <thead>
                 <tr>
                     <th style="width: 20%;">VESSEL</th>
                     <th style="width: 10%;">VOY.</th>
-                    <th style="width: 12%;">{{ strtoupper($labelEtd) }}</th>
-                    <th style="width: 12%;">{{ strtoupper($labelEta) }}</th>
+                    <th style="width: 12%;">{{ strtoupper($item['labelEtd']) }}</th>
+                    <th style="width: 12%;">{{ strtoupper($item['labelEta']) }}</th>
 
-                    @foreach($columnsPerRoute[$route]['eta_destinations'] as $destNum)
-                    @php $etaLabel = $customLabels["eta_destination{$destNum}"] ?? "ETA DEST {$destNum}"; @endphp
+                    @foreach($item['etaDestinations'] as $destNum)
+                    @php $etaLabel = $item['customLabels']["eta_destination{$destNum}"] ?? "ETA DEST {$destNum}"; @endphp
                     <th style="width: 12%;">{{ strtoupper($etaLabel) }}</th>
                     @endforeach
 
-                    @if($hasEtaText)
+                    @if($item['hasEtaText'])
                     <th style="width: 15%;">ETA TEXT</th>
                     @endif
 
-                    @if($columnsPerRoute[$route]['has_connecting'])
-                    @php $hasEtaKlf = $schedules->contains(fn($s) => !empty($s->eta_klf)); @endphp
-                    <th>{{ $hasConnecting2 ? '1st CONNECTING' : 'CONNECTING' }}</th>
+                    @if($item['hasConnecting'])
+                    <th>{{ $item['hasConnecting2'] ? '1st CONNECTING' : 'CONNECTING' }}</th>
                     <th>VOY</th>
-                    <th>{{ strtoupper($labelConnEtd) }}</th>
-                    @if($hasConnecting2)
+                    <th>{{ strtoupper($item['labelConnEtd']) }}</th>
+                    @if($item['hasConnecting2'])
                     <th>ETA NHA</th>
                     <th>2nd CONNECTING</th>
                     <th>VOY</th>
                     <th>ETD NHA</th>
                     @endif
-                    @if($hasEtaKlf)
+                    @if($item['hasEtaKlf'])
                     <th>ETA KLF</th>
-                    <th>{{ $hasConnecting2 ? '3rd CONNECTING' : 'CONNECTING' }}</th>
+                    <th>{{ $item['hasConnecting2'] ? '3rd CONNECTING' : 'CONNECTING' }}</th>
                     @endif
-                    <th>{{ strtoupper($labelConnEta) }}</th>
+                    <th>{{ strtoupper($item['labelConnEta']) }}</th>
                     @endif
 
-                    @if($hasRemarks)
+                    @if($item['hasRemarks'])
                     <th style="width: 15%;">REMARKS</th>
                     @endif
                 </tr>
             </thead>
             <tbody>
-                @foreach($schedules as $schedule)
+                @foreach($item['schedules'] as $schedule)
                 <tr>
                     <td>{{ strtoupper($schedule->vessel) }}</td>
                     <td>{{ $schedule->voyage }}</td>
                     <td class="text-nowrap">{{ \Carbon\Carbon::parse($schedule->etd)->format('d-M') }}</td>
                     <td class="text-nowrap">
-                        {{ $schedule->eta_destination ? \Carbon\Carbon::parse($schedule->eta_destination)->format('d-M')
-                        : '-' }}
+                        {{ $schedule->eta_destination ? \Carbon\Carbon::parse($schedule->eta_destination)->format('d-M') : '-' }}
                     </td>
 
-                    @foreach($columnsPerRoute[$route]['eta_destinations'] as $destNum)
+                    @foreach($item['etaDestinations'] as $destNum)
                     @php $etaField = "eta_destination{$destNum}"; @endphp
                     <td class="text-nowrap">
                         {{ $schedule->$etaField ? \Carbon\Carbon::parse($schedule->$etaField)->format('d-M') : '-' }}
                     </td>
                     @endforeach
 
-                    @if($hasEtaText)
+                    @if($item['hasEtaText'])
                     <td>{{ $schedule->eta_text ?? '-' }}</td>
                     @endif
 
-                    @if($columnsPerRoute[$route]['has_connecting'])
+                    @if($item['hasConnecting'])
                     <td>{{ $schedule->connecting_vessel ?? '-' }}</td>
                     <td>{{ $schedule->connecting_voyage ?? '-' }}</td>
                     <td class="text-nowrap">
-                        {{ $schedule->connecting_etd ? \Carbon\Carbon::parse($schedule->connecting_etd)->format('d-M') :
-                        '-' }}
+                        {{ $schedule->connecting_etd ? \Carbon\Carbon::parse($schedule->connecting_etd)->format('d-M') : '-' }}
                     </td>
-                    @if($hasConnecting2)
+                    @if($item['hasConnecting2'])
                     <td class="text-nowrap">
                         {{ $schedule->eta_nha ? \Carbon\Carbon::parse($schedule->eta_nha)->format('d-M') : '-' }}
                     </td>
@@ -333,31 +415,36 @@
                         {{ $schedule->connecting2_etd ? \Carbon\Carbon::parse($schedule->connecting2_etd)->format('d-M') : '-' }}
                     </td>
                     @endif
-                    @if($hasEtaKlf)
+                    @if($item['hasEtaKlf'])
                     <td class="text-nowrap">
                         {{ $schedule->eta_klf ? \Carbon\Carbon::parse($schedule->eta_klf)->format('d-M') : '-' }}
                     </td>
                     <td>{{ $schedule->connecting_klf ?? ($schedule->eta_klf ? 'By Truck' : '-') }}</td>
                     @endif
                     <td class="text-nowrap">
-                        {{ $schedule->connecting_eta ? \Carbon\Carbon::parse($schedule->connecting_eta)->format('d-M') :
-                        '-' }}
+                        {{ $schedule->connecting_eta ? \Carbon\Carbon::parse($schedule->connecting_eta)->format('d-M') : '-' }}
                     </td>
                     @endif
 
-                    @if($hasRemarks)
+                    @if($item['hasRemarks'])
                     <td class="text-left">{{ $schedule->remarks_field ?? '-' }}</td>
                     @endif
                 </tr>
                 @endforeach
             </tbody>
         </table>
-        </div>
-        @empty
-        <div class="no-data">
-            No sailing schedules found for the selected criteria.
-        </div>
-        @endforelse
+    </div>
+    @else
+    &nbsp;
+    @endif
+    @if($row['is_pair'])</div>@endif
+    @endforeach
+    @if($row['is_pair'])</div></div>@endif
+    @empty
+    <div class="no-data">
+        No sailing schedules found for the selected criteria.
+    </div>
+    @endforelse
 
         <!-- Global Remarks Section -->
         @php
